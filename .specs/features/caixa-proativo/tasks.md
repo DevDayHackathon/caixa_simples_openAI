@@ -436,12 +436,18 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(experiencia): interação de voz por turnos`
+
+**Evidence (Jecky)**: 64 unitários (23 novos incluindo handlers HTTP), 6 integração e 3 E2E; lint/tipos/build verdes via npm run check testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso: `src/features/experience/audio-handlers.test.ts:8` — 200/data.text/no-store (VOICE-01); :9 — 422 e provedor não chamado para bytes/formato/duração/vazio inválidos (HOST-03); :10 — audio/mpeg e bytes exatos (VOICE-02); :11 — 422 sem síntese para >1200/vazio/tipo; :12 — 503 para saída >3 MiB; :13 — 503 sem segredo bruto (SAFE-01/VOICE-03); :14/:15 — 401/429 sem provedor; :16 — rotas 503 até dependências compartilhadas; :17 — payload malformado rejeitado. `recording.test.ts:5` — parada em 60 s/bytes/segundos/tracks; :6 — excesso descartado sem callback de upload; :7 — cancelamento sem transcrição. `voice.test.tsx:9` — microfone negado mantém envio textual; :10 — síntese só por ação e fallback; :11 — >1200 não envia; :12 — transcrição editada, zero turno automático, payload final exato (VOICE-01). Todos PASS e manter. **Limite de integração**: captura/UI/handlers/adaptador concluídos; rotas reais permanecem 503 até sessão assinada e rate limit persistido de T21. Não atesta VOICE/SAFE completos. Guia em src/features/experience/README.md. Duração server-side é declarada pelo capturador, não inferida de arquivo arbitrário.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T20: Notificações e acompanhamento
 
