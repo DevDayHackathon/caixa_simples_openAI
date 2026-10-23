@@ -1,3 +1,4 @@
+import { ExperienceWorkspace } from "@/features/experience/workspace";
 import { CashPanel } from "@/features/experience/cash-panel";
 import { createMockAgentPort, createMockFinancePort } from "@/adapters/mock";
 
@@ -21,6 +22,7 @@ export default async function Home() {
       </section>
       <p className="mt-5 text-sm text-slate-600">Referência fixa: 23/10/2026. Sem integração bancária ou chamadas de IA nesta base.</p>
       <CashPanel snapshot={snapshot} />
+      <ExperienceWorkspace />
       <details className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
         <summary className="font-medium">Ver resposta de exemplo</summary>
         <p className="mt-4 leading-7">{example.reply_text}</p>

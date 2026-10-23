@@ -367,12 +367,18 @@ Adequação: critérios locais cobertos; testes necessários e sem skips; contra
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): experiência de importação`
+
+**Evidence (Jecky)**: 27 unitários (6 novos); typecheck verde testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Tabela de cobertura e mapeamento reverso: `src/features/experience/import-panel.test.tsx:12` — `expect(input).toEqual({preview_id:... ,idempotency_key:key})`, resultado 2 importadas (DATA-01/03); :13 payload saldo 100000/data/CSV intacto (DATA-01); :14 erro linha 2/amount e botão disabled, correção invalida prévia (DATA-02); :15 arquivo >1 MiB não chama porta (limite); :16 saldo alterado remove confirmação (prévia coerente); :17 `queryByText(/movimentações importadas/)` null em falha (não simular sucesso). Todos PASS e manter.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T17: Comparação de cenários
 
