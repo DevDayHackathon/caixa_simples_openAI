@@ -9,7 +9,7 @@ export function localDatabaseUrl(raw = process.env.TEST_DATABASE_URL ?? "postgre
   if (!["postgres:", "postgresql:"].includes(url.protocol) || !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) throw new Error("TEST_DATABASE_URL deve usar Postgres em loopback.");
   return url;
 }
-const psql = process.env.PSQL_PATH ?? resolve("output/finance-local/pgsql/bin/psql.exe");
+const psql = process.env.PSQL_PATH || (process.platform === "win32" ? resolve("output/finance-local/pgsql/bin/psql.exe") : "psql");
 export function sql(url: URL, query: string): Promise<string> {
   return new Promise((yes, no) => {
     const child = spawn(psql, [url.toString(), "-X", "-A", "-t", "-q", "-v", "ON_ERROR_STOP=1"], { windowsHide: true });

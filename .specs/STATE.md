@@ -36,13 +36,15 @@
 
 ## Handoff
 
-- **Feature**: `.specs/features/caixa-proativo/`
-- **Phase / Task**: T1 concluída na main; restante não iniciado.
-- **Completed**: Configuração Next.js/TS/Tailwind/Node24, lockfile, schemas e portas v1, F1/F2, mocks, clientes HTTP, página/endpoint demo, env de exemplo e guia. npm run check passou: 15 unitários, 6 integração e 3 E2E, lint/tipos/build. Sensor em cópia temporária detectou 2/2 falhas. Evidência em t1-checks.md.
-- **Next step**: compartilhar o commit-base e criar as três branches já propostas, quando solicitado. T2–T22 ainda pendentes; nenhum requisito completo de produto marcado Verified.
-- **Blockers**: nenhum para iniciar as frentes após criação/compartilhamento das branches. Sem push, deploy ou provisionamento remoto nesta entrega.
-- **Uncommitted files**: remoção preexistente de fluxo_agente_proativo.png preservada e excluída do commit de T1.
-- **Branch**: main; nenhuma branch de integrante criada.
+- **Feature**: `.specs/features/integracao-final/`, composição das três frentes e correções do PR3.
+- **Phase / Task**: T1–T5 locais concluídas; T6 publicação/merge aguardando verificação independente final.
+- **Completed**: FinancePort persistida compartilhada, sessão financeira para agente/voz, migrações002/003 corrigidas, propostas/aceites transacionais e idempotentes, feed real, áudio com quota SQL, runner com cancelamento e validação de tentativa/lease.
+- **Validation**: npm run check PASS135 unitários,99 integração SQL,11 E2E, zero falhas/skips; lint/tipos/build. SQL real e provedor OpenAI simulado localmente, sem chamadas pagas.
+- **Publication authority**: usuário autorizou explicitamente correções, push na branch do Bruno e merge automático após validação nesta conversa.
+- **Next step**: revisão independente PASS (8/8 mutações detectadas); publicar candidato corrigido e fazer merge com head validado. Configurar credenciais/migrações no ambiente demo depois.
+- **Environment pending**: OpenAI/Supabase reais, deploy, extensões/Vault/Cron remoto e UAT U01–U13 ainda não executados. Guia atual em docs/integracao-financeira.md.
+- **Uncommitted user files**: exclusão preexistente fluxo_agente_proativo.png e AGENTS.md não rastreado preservados e excluídos dos commits.
+- **Branch**: codex/integracao-financeira, base main1e3b9c7; código final909085f.
 
 ## Handoff Daniel — 2026-10-23 (atualiza somente a frente financeira)
 

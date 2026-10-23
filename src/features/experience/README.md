@@ -1,5 +1,7 @@
 # Experiência e voz de Jecky
 
+Atualização da integração: `/caixa` conecta agente/feed reais e as rotas de voz usam sessão financeira e quota persistida quando configuradas. As seções abaixo registram a entrega original isolada de Jecky; o estado atual e a ativação estão em `docs/integracao-financeira.md`.
+
 Branch `feat/jecky-experiencia-voz`, base `eaa8068e400dab48f929224e9ac77c2c033e2a41`.
 
 Node 24; `npm ci`, `npm run dev`, abrir http://localhost:3000. Verificação: `npm run check`; Chromium via `npm run test:e2e:install` se necessário. Sem credenciais para os mocks.

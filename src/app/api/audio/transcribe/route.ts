@@ -1,5 +1,4 @@
-import {createAudioHandlers} from '@/features/experience/audio-handlers';
+import {liveAudioRoute} from '@/features/experience/audio-server';
 export const runtime='nodejs';
 export const maxDuration=60;
-// T21 wires the signed demo session and persistent limiter before enabling providers.
-export const POST=createAudioHandlers().transcribe;
+export const POST=(request:Request)=>liveAudioRoute('transcribe',request);
