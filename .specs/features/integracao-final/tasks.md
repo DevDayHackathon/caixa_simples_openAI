@@ -10,6 +10,7 @@ T2 --> T3
 T3 --> T4
 T4 --> T5
 T5 --> T6
+T6 --> T7
 ```
 
 ## Gate Check Commands
@@ -26,6 +27,7 @@ build: npm run check
 | T4 | FINAL-04 | HTTP áudio e UI/E2E |
 | T5 | FINAL-01, FINAL-03 | integração SQL real |
 | T6 | FINAL-05 | gate completo e verificador |
+| T7 | FINAL-05 | preparo SQL concorrente e gate completo |
 
 ## Task Breakdown
 
@@ -96,3 +98,16 @@ T5 PASS: npm run check,135 unitários,99 integração,11 E2E; zero falhas/skips.
 T6 correção CI: run40005794067 no head21335e6 expôs dependência entre cenários (saldo500 no lugar1000). Reproduzida localmente com finance.spec --workers=1, sem alterar expectativas. beforeEach/afterEach agora isolam banco/servidor por cenário. Gate completo com todos11E2E em1worker PASS (135unit,99integração,11E2E). Nenhuma asserção foi removida/enfraquecida.
 
 T6 publicação concluída: revisão independente PASS e 8/8 mutações detectadas; CI do candidato `4186bdf` aprovado em https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40006622435/job/120599339880. PR3 aprovado e integrado no merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116` em 2026-10-23T19:00:21Z. Protótipo publicado via CLI em https://folego-hackathon-2026.vercel.app (projeto `folego-hackathon-2026`, sem vínculo GitHub), com landing demonstrativa verificada. Evidência de publicação e seus limites em docs/CONTINUAR-SESSAO.md; configuração remota OpenAI/Supabase, migrações/Vault/Cron e UAT U01–U13 permanecem pendentes e não são declarados executados por este fechamento de T6.
+
+### T7: Serializar roles globais do fixture SQL
+**What**: Corrigir a corrida entre suítes que criam as mesmas roles do cluster antes de aplicar migrações em bancos isolados.
+**Where**: tests/integration/finance/database.ts
+**Depends on**: T6
+**Requirement**: FINAL-05
+**Tests**: integration, e2e
+**Gate**: build
+**Done when**: Preparo concorrente das roles é serializado na conexão admin comum, gate completo passa sem alterar asserções e revisão independente confirma o caso concorrente. [x]
+
+T7 origem: CI da main consolidada40009173098 falhou em pg_authid_rolname_index ao criar anon; lint/tipos e135unitários PASS, integração98/99; E2E não executado. Trata-se do fixture SQL, não de credenciais ou migração remota.
+
+T7 PASS: lock transacional no banco admin comum; sensor independente reproduziu erro pg_authid no SQL antigo (1/2 processos falha) e ambos passam no novo SQL, com três roles únicas. Roles scratch removidas. npm run check nesta continuidade:135unitários99integrações11E2E, lint/tipos/build PASS, nenhum teste removido/ignorado nem assert alterado. Log local /tmp/folego-continuacao-gate.log; evidência independente em validation.md.
