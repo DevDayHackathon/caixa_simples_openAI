@@ -29,7 +29,8 @@ test.describe("T8 rotas reais em produção local", () => {
     const running = child;
     await new Promise<void>(yes => { running.once("exit", () => yes()); running.kill(); }); child = undefined;
   }
-  test.beforeAll(async () => {
+  // Each scenario owns its database and server, even when a worker is reused.
+  test.beforeEach(async () => {
     test.setTimeout(60000);
     db = await testDatabase(); gateway = await localRpcGateway(db, key);
     const probe = createServer(); await new Promise<void>(yes => probe.listen(0, "127.0.0.1", yes));
@@ -37,7 +38,7 @@ test.describe("T8 rotas reais em produção local", () => {
     port = address.port; await new Promise<void>(yes => probe.close(() => yes())); origin = `http://127.0.0.1:${port}`;
     await start(); api = await apiRequest.newContext({ baseURL: origin, extraHTTPHeaders: { Origin: origin } });
   });
-  test.afterAll(async () => { await api?.dispose(); await stop(); await gateway?.close(); await db?.close(); });
+  test.afterEach(async () => { await api?.dispose(); await stop(); await gateway?.close(); await db?.close(); });
   test("CSV, snapshot, cenário, atualização, reserva, liquidação e reinício", async () => {
     test.setTimeout(60000);
     const today = saoPauloDate(new Date()), tomorrow = addDays(today, 1), delayed = addDays(today, 9);

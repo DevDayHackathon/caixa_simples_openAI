@@ -73,8 +73,8 @@ build: npm run check
 **Done when**: Runner SQL real entrega uma vez, cancelamento suprime aviso, dono expirado é rejeitado e alerta sem parâmetros não oferece aceite. [x]
 
 ### T6: Verificar e publicar integração
-**What**: Revisão independente/sensor, documentação final, push e merge autorizado com head validado.
-**Where**: docs/, .specs/features/integracao-final/, .specs/STATE.md
+**What**: Revisão independente/sensor, isolamento E2E por cenário no CI, documentação final, push e merge autorizado com head validado.
+**Where**: docs/, .specs/features/integracao-final/, .specs/STATE.md, tests/e2e/finance.spec.ts
 **Depends on**: T5
 **Requirement**: FINAL-05
 **Tests**: integration, e2e
@@ -90,3 +90,5 @@ T3 PASS: lint/tipos,135 unitários,91 integração. agent-actions.test.ts:32 `re
 T4 PASS: npm run check,135 unitários,95 integração,11 E2E; lint/tipos/build. FINAL-04 audio-live.test.ts:16 HTTP200/texto, :21 bytes MP3 e falha sanitizada, :27 401/429 e zero provedor; agent-integrated.spec.ts:47 proposta sem escrita, :50 reserva persistida50000, :51 recarga/version3 e 360px. Reverso: quatro casos de áudio/status e E2E correspondem somente FINAL-04. Provedor OpenAI local de teste; Postgres real e rotas Next de produção.
 
 T5 PASS: npm run check,135 unitários,99 integração,11 E2E; zero falhas/skips. tasks-sql-runtime.test.ts:25 runner claimed1/completed1/notified1, :26 repetição claimed0, :32 cancelamento devolve createNotification=false, :40 tentativa antiga rejeitada e statusrunning, :43 tentativa atual completed. agent-actions.test.ts:67 alerta negativo não oferece proposta incompleta; :71 simulação concreta accepted sem escrita/version3. Reverso: casos novos correspondem FINAL-01/03 e corrigem achados da revisão independente; nenhuma asserção preexistente alterada.
+
+T6 correção CI: run40005794067 no head21335e6 expôs dependência entre cenários (saldo500 no lugar1000). Reproduzida localmente com finance.spec --workers=1, sem alterar expectativas. beforeEach/afterEach agora isolam banco/servidor por cenário. Gate completo com todos11E2E em1worker PASS (135unit,99integração,11E2E). Nenhuma asserção foi removida/enfraquecida; publicação final segue pendente.
