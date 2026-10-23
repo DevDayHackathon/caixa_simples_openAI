@@ -117,12 +117,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): persistência financeira`
+
+**Evidence**: `daniel-checks.md` — T2; gate verde; 6 casos novos.
 
 ### T3: Importador CSV atômico
 
@@ -134,12 +136,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): importador csv atômico`
+
+**Evidence**: `daniel-checks.md` — T3; gate verde; 10 casos novos.
 
 ### T4: Cálculo do caixa diário
 
@@ -151,12 +155,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(caixa): cálculo do caixa diário`
+
+**Evidence**: `daniel-checks.md` — T4; gate verde; 10 casos novos.
 
 ### T5: Atualização e liquidação de compromissos
 
@@ -168,12 +174,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): atualização e liquidação de compromissos`
+
+**Evidence**: `daniel-checks.md` — T5; gate verde; 8 casos novos.
 
 ### T6: Simulador isolado
 
@@ -185,12 +193,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(caixa): simulador isolado`
+
+**Evidence**: `daniel-checks.md` — T6; gate verde; 6 casos novos.
 
 ### T7: Reservas virtuais
 
@@ -202,12 +212,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): reservas virtuais`
+
+**Evidence**: `daniel-checks.md` — T7; gate verde; 8 casos novos.
 
 ### T8: Adaptador HTTP financeiro
 
@@ -219,12 +231,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): adaptador http financeiro`
+
+**Evidence**: `daniel-checks.md` — T8; gate verde; 18 casos novos.
 
 ### T9: Catálogo seguro de ferramentas
 
