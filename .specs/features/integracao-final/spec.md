@@ -1,9 +1,9 @@
 # Integração final
 
-## Objective
+## Problem Statement
 Corrigir o PR Bruno e integrar agente, finanças, tarefas e voz sem mocks em produção.
 
-## Assumptions
+## Assumptions & Open Questions
 Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort v1. Sem credenciais reais disponíveis. Usuário autorizou correções, push e merge automático; não autorizou deploy nem migração remota. Sessão antiga assinada permanece compatível, nova sessão financeira é a autoridade. Modelos são configurados explicitamente no servidor.
 
 ## Requirements
@@ -13,5 +13,21 @@ Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort 
 - FINAL-04: WHEN agente e voz estiverem configurados THEN /caixa SHALL oferecer conversa/feed e áudio real com sessão e quota persistida antes do provedor; sem configuração SHALL preservar finanças e erro textual.
 - FINAL-05: WHEN os gates e revisão independente passarem THEN os commits SHALL ser publicados e incorporados à main; testes reais com credenciais SHALL permanecer explicitamente pendentes até sua configuração.
 
-## Out of scope
+## Out of Scope
 Deploy, alterações remotas no Supabase, chaves reais, operações bancárias, envio externo de cobranças.
+
+## User Stories
+Como apresentador, quero perguntar sobre o caixa persistido e confirmar propostas para demonstrar decisões verificáveis.
+Como usuário, quero receber um aviso de tarefa já programada ao reabrir a aplicação sem manter uma aba ativa.
+Como equipe, queremos configurar as chaves no servidor e ensaiar voz e conversa com APIs reais após o gate local.
+
+## Requirement Traceability
+| ID | Tasks | Status |
+| --- | --- | --- |
+| FINAL-01 | T1 | Verified |
+| FINAL-02 | T2 | Verified |
+| FINAL-03 | T3 | Verified |
+| FINAL-04 | T4 | Implementing |
+| FINAL-05 | T5 | Implementing |
+
+Sem questões em aberto para implementação. O ensaio com APIs reais depende das credenciais a serem configuradas pelo usuário e não é declarado realizado.

@@ -1,4 +1,4 @@
-import {createAudioHandlers} from '@/features/experience/audio-handlers';
+import {liveAudioRoute} from '@/features/experience/audio-server';
 export const runtime='nodejs';
 export const maxDuration=60;
-export const POST=createAudioHandlers().speak;
+export const POST=(request:Request)=>liveAudioRoute('speak',request);

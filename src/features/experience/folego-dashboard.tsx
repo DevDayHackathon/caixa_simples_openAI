@@ -440,7 +440,7 @@ export function FolegoDashboard({
         </details>}
         <footer className="folego-source">
           <p>{persisted ? "Empresa demonstrativa · dados fictícios persistidos" : "Modo de desenvolvimento · dados simulados"}</p>
-          <p>Sem integração bancária ou chamadas de IA nesta base.</p>
+          <p>{persisted ? "Sem integração bancária. Agente e voz usam a configuração do servidor." : "Sem integração bancária ou chamadas de IA nesta base."}</p>
           <p>
             Reservas virtuais · cobranças em rascunho · projeção limitada a 30
             dias
@@ -448,7 +448,7 @@ export function FolegoDashboard({
           <details>
             <summary>Sobre os dados desta prévia</summary>
             <p>
-              Atualização: {snapshot.updated_at}. {persisted ? "Conversa, iniciativas e voz aguardam integração do agente e limites persistidos. Use as ações financeiras manuais." : "Importação e mutações aguardam os adaptadores reais. Áudio depende da integração de sessão e limites persistidos; o texto continua disponível."}
+              Atualização: {snapshot.updated_at}. {persisted ? "Conversa e iniciativas estão disponíveis abaixo quando o servidor está configurado. Voz usa sessão e quota persistida; confirme propostas antes de alterar o caixa." : "Importação e mutações aguardam os adaptadores reais. Áudio depende da integração de sessão e limites persistidos; o texto continua disponível."}
             </p>
           </details>
         </footer>
