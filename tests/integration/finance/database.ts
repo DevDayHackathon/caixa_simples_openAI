@@ -22,11 +22,15 @@ export function sql(url: URL, query: string): Promise<string> {
 export async function testDatabase() {
   const admin = localDatabaseUrl();
   const name = "caixa_finance_test_" + randomUUID().replaceAll("-", "");
+  // Roles are cluster-wide: serialize their setup in the shared maintenance database.
+  await sql(admin, `begin;
+    select pg_advisory_xact_lock(20261023, 1);
+    do $$ begin if not exists(select from pg_roles where rolname='anon') then create role anon; end if;
+    if not exists(select from pg_roles where rolname='authenticated') then create role authenticated; end if;
+    if not exists(select from pg_roles where rolname='service_role') then create role service_role bypassrls; end if; end $$;
+    commit;`);
   await sql(admin, `create database ${name};`);
   const url = new URL(admin); url.pathname = "/" + name;
-  await sql(url, `do $$ begin if not exists(select from pg_roles where rolname='anon') then create role anon; end if;
-    if not exists(select from pg_roles where rolname='authenticated') then create role authenticated; end if;
-    if not exists(select from pg_roles where rolname='service_role') then create role service_role bypassrls; end if; end $$;`);
   await sql(url, await readFile("supabase/migrations/001_finance.sql", "utf8"));
   const store = createFinanceStore(async (fn, args) => {
     if (!/^finance_[a-z_]+$/.test(fn)) throw new Error("RPC inválida");
