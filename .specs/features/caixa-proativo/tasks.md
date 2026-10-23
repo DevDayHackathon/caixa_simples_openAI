@@ -250,12 +250,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(agente): catálogo seguro de ferramentas`
+
+**Evidence**: `tools.test.ts` verifies the allowlist, strict validation, ambiguous scheduling without mutation, proposals that remain reviewable and finance reads delegated through `FinancePort`. Quick gate: unit suite passes.
 
 ### T10: Turno de conversa com contexto
 
@@ -267,12 +269,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): turno de conversa com contexto`
+
+**Evidence**: `agent-turn.test.ts` covers validated input, successful persisted context, provider failure, tool result continuation, correct task context, repeated task idempotency and tool-side effect without false conversational success. Full gate: unit and integration suites pass; build and 3 E2E pass.
 
 ### T11: Avaliador de iniciativas
 
@@ -284,12 +288,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(agente): avaliador de iniciativas`
+
+**Evidence**: `proactivity.test.ts` covers the F1 delayed minimum, base F1, origin-aware notification behavior, ordering, facts-based collection draft, deduplication and three-initiative cap. Quick gate: unit suite passes.
 
 ### T12: Persistência e criação de tarefas
 
@@ -301,12 +307,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): persistência e criação de tarefas`
+
+**Evidence**: `schedule.test.ts` covers explicit and agent-chosen time, lead time, deduplication, changed time, disabled reminders, cancellation/version conflicts, reason/stop condition and persisted context. `supabase-tasks.test.ts` covers task RPC persistence, claims, completion, duplicate notification and context restoration. Full gate: 51 unit, 27 integration and 3 E2E pass; production build and types pass.
 
 ### T13: Executor de ocorrências
 
@@ -318,12 +326,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 12 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 12 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): executor de ocorrências`
+
+**Evidence**: `runner.test.ts` covers empty/future queues, single occurrence, settled commitment recheck, retry and delay, concurrent ticks, five-item cap, 30-second budget, retry exhaustion, expired lease and duplicate notifications. Full gate: unit and integration suites pass; build and 3 E2E pass.
 
 ### T14: Adaptador HTTP do agente e tarefas
 
@@ -335,12 +345,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): adaptador http do agente e tarefas`
+
+**Evidence**: `agent-routes.test.ts` covers signed-session auth, altered signatures, origin checks, input validation, rate-protected agent turns, notifications, task scope, executor secret and an empty tick. Full gate: integration/unit suites pass; production build and 3 E2E pass.
 
 ### T15: Painel de caixa
 
