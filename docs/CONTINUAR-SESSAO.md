@@ -1,6 +1,6 @@
 # Continuidade — Fôlego, 23/10/2026
 
-Este registro substitui indicações antigas de merge/deploy pendentes. Conferir novamente Git/GitHub/Vercel antes de alterar estado externo.
+O estado vigente está na seção **Estado vigente após configuração e UAT** ao final. Os registros anteriores são históricos e não devem ser usados como pendências atuais. Os registros abaixo preservam os snapshots da continuidade. O último estado de ambiente está na seção final e em docs/uat-real-2026-10-23.md; .specs/STATE.md contém o próximo passo. Conferir novamente Git/GitHub/Vercel antes de alterar estado externo.
 
 ## Objetivo e autorização do usuário
 
@@ -82,3 +82,23 @@ Testes automatizados devem usar Postgres local e OpenAI simulado. O cluster temp
 - `vercel inspect` reconfirmou o deployment `dpl_4SKfLAyz3Lxm9hNEVN8VpPkuctpf` Ready e o alias canônico preservado.
 - Supabase conectado contém projeto `fôlego`, ref `optwdryxvpnqdumzexcs`, ACTIVE_HEALTHY. Consultas somente leitura listaram zero migrações registradas e zero tabelas públicas. Isso não constitui autorização: usuário foi consultado para confirmar se é o banco demo antes de qualquer escrita. Nenhuma chave foi obtida.
 - Próxima ação: aguardar confirmação do banco demo e variáveis prontas, então executar configuração/migrações/redeploy/UAT. Conferir resultados finais dos CIs acima antes de afirmar aprovação pós-merge.
+
+## Configuração real e correção de CI — estado posterior
+
+- CI40009173098 expôs corrida CREATE ROLE anon no fixture de testes paralelo (pg_authid_rolname_index):135unitPASS,98/99integrações; E2E não executado naquele run. T7 corrigiu o preparo global no banco admin com lock transacional. Commit `dbb5574`, PR6 https://github.com/DevDayHackathon/caixa_simples_openAI/pull/6 ; CI https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40010083938 em execução na última consulta. Gate local novo PASS135/99/11, lint/tipos/build, revisão independente e sensor concorrente PASS.
+- Usuário confirmou o projeto Supabase demo `optwdryxvpnqdumzexcs`. Migrações001–003 e extensões pg_cron/pg_net aplicadas com sucesso pelo conector; Vault já existia. A RPC temporária restrita de configuração foi removida após401, sem criar segredos ou Cron.
+- As3credenciais estavam no.env.local, não na Vercel. Foram transferidas com segurança a Production; modelos configurados também localmente: gpt-6-luna, gpt-transcribe, gpt-4o-mini-tts. Chamada mínima Responses200completed e teste síntese/transcrição200aprovados. Houve chamadas pagas mínimas expressamente solicitadas nesta continuidade, ao contrário do estado histórico anterior. Áudio somente em memória.
+- Bloqueio concreto: SUPABASE_SERVICE_ROLE_KEY contém uma chave publishable, não privilegiada. REST retornou401/42501. Usuário orientado a substituí-la no.env.local pela service_role JWT ou sb_secret_ do mesmo projeto; não enviar chave no chat. Atualizar Vercel após correção sem imprimir o valor.
+- Ainda não houve redeploy com as novas variáveis, Vault/Cron não estão configurados e U01–U13 reais continuam pendentes. Próximo passo seguro está em docs/uat-real-2026-10-23.md. Preservar link/projeto; não repetir migrações001–003 já registradas no Supabase.
+
+## Estado vigente após configuração e UAT
+
+- PR6, PR7 e PR8 integrados. Base funcional `fc9da5079639ba6109afa0c9da5452b6eaf8c63e`; consultar Git para o commit documental posterior. T7–T10 corrigiram concorrência do fixture, horários ISO/contexto temporal, isolamento OpenAI nos E2E e recibos finais de propostas.
+- Gate final PASS144 unitários,100 integrações SQL locais,11 E2E, lint/tipos/build (`/tmp/folego-receipt-gate.log`), com revisão independente e sensores. CI PR8 run40013929936 PASS; pós-merge40014394994 em andamento na última consulta.
+- Deployment vigente READY `dpl_8bfXTQwSKkj9rQ3EHr1gdyuESPrL`, fonte6c0d43c equivalente ao merge PR8 para a aplicação. Link preservado https://folego-hackathon-2026.vercel.app . Alterações documentais não exigem novo deploy.
+- Credencial Supabase privilegiada corrigida e validada REST200; nove variáveis Production prontas. Modelos gpt-6-luna, gpt-transcribe e gpt-4o-mini-tts funcionaram nas chamadas reais autorizadas. Nunca registrar valores de segredos.
+- Supabase demo `optwdryxvpnqdumzexcs` autorizado pelo usuário: migrações001–003, extensões, Vault e Cron configurados. RPC temporária removida. Job1 ativo a cada cinco minutos, sem HTTP ocioso. Não repetir provisionamento nem executar suítes destrutivas remotas.
+- UAT real registrada em `docs/uat-real-2026-10-23.md`: persistência entre abas, IA com caixa atual, confirmações/replays, rejeição de revisão antiga, simulação, tarefas com horário explícito e esclarecimento de horário ambíguo, notificação com aba fechada e cancelamento comprovados. Lotes/leases ensaiados isoladamente; não confundir com stress remoto.
+- Ainda não há aceite global U01–U13: captura física de microfone e ensaio completo no aparelho da apresentação pendentes; isolamento de nova sessão e falhas reais de fornecedor/banco parcialmente cobertos. Upload anônimo3,2MB alternou401/500 de borda, causa inconclusiva e achado aberto U12.
+- Dados fictícios preservados: statev7, saldoR$900, reservaR$500; recebível rec-1 restaurado para25/10 após ensaio de alteração confirmada. Compromisso UAT liquidadoR$100 explica diferença do saldo inicialR$1.000. Não resetar dados compartilhados sem necessidade.
+- Próximos passos: confirmar CI pós-merge, executar passos parciais da matriz no dispositivo real e investigar o upload grande. As autorizações anteriores de correção/merge/deploy/banco continuam válidas. Preservar exclusão do PNG e AGENTS.md não rastreado, fora de commits.
