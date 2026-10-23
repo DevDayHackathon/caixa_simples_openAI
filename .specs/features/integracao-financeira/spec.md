@@ -19,6 +19,8 @@ Como usuário da empresa demo, quero gerenciar compromissos persistidos pela int
 Somente empresa demo e dados fictícios. Sem deploy, migração remota ou push. Não alterar FinancePort v1 nem implementar agente, cron ou migrações do Bruno. Leitura agregada é endpoint adicional de experiência, não mudança no contrato v1. Horizonte permanece fixo em 30 dias; fora dele usar data de referência explícita dentro da janela. Áudio seguro continua dependendo da quota compartilhada de Bruno.
 
 ## Assumptions & Open Questions
+
+Open questions: nenhuma no recorte financeiro local.
 - Assumimos uma empresa fictícia compartilhada, conforme a demo existente; não há contas privadas por usuário.
 - `/` preserva a prévia; `/caixa` usa somente persistência, com sessão assinada e dados da mesma revisão.
 - Não há autorização para provisionamento remoto, push ou deploy nesta entrega.
@@ -27,9 +29,9 @@ Somente empresa demo e dados fictícios. Sem deploy, migração remota ou push. 
 ## Requirement Traceability
 | Requirement ID | Tasks | Status |
 | --- | --- | --- |
-| INT-01 | T2, T3 | In Progress |
-| INT-02 | T3 | In Progress |
-| INT-03 | T3 | In Progress |
-| INT-04 | T2, T3 | In Progress |
-| INT-05 | T1 | Verified local |
-| INT-06 | T4 | In Progress |
+| INT-01 | T2, T3 | Verified |
+| INT-02 | T3 | Verified |
+| INT-03 | T3 | Verified |
+| INT-04 | T2, T3 | Verified |
+| INT-05 | T1 | Verified |
+| INT-06 | T4 | Verified |

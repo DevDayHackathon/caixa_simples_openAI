@@ -84,3 +84,7 @@ Gate completo PASS: 99 unitários, 56 integração SQL e 10 E2E; lint/tipos/buil
 Mapeamento reverso: os três testes novos E2E correspondem INT-01/02/03/04/06; workspace.test.ts corresponde INT-01/04. Cada asserção nova cobre um resultado acima, sem testes especulativos. O caso de layout preserva a exigência de360px da experiência existente. Captura output/playwright/persisted-cash-mobile.png inspecionada; checkbox e cabeçalho ajustados, gate reexecutado. Regras seguidas: AGENTS.md fornecido, Karpathy e TLC.
 
 I4: composição e limites documentados em docs/integracao-financeira.md. Estados indisponíveis de agente/voz validados pelos E2E de I3 e testes de handlers existentes. Gate completo herdado sem alterações de código posteriores; revisão independente é o fechamento obrigatório a seguir. T21/T22 do MVP continuam pendentes.
+
+
+## Fechamento independente
+PASS em validation.md: 165 testes (99 unitários, 56 SQL, 10 E2E), zero falhas/skips. Sensor 2/2 morto: HTTP201 indevido e ausência de recarga após importação. INT-01–06 Verified somente para esta extensão local. Não marca T21/T22 do MVP como concluídas. UAT humana, CI hospedada e Supabase remoto não executados. Advertências de granularidade do validador foram revistas: cada tarefa é uma entrega coesa com arquivos de suporte e testes, sem necessidade de dividir infraestrutura/endpoint/documentação em partes não verificáveis separadamente. Cadeia I1→I2→I3→I4 conferida contra Depends on.

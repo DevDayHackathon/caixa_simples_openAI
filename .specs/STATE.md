@@ -36,13 +36,16 @@
 
 ## Handoff
 
-- **Feature**: `.specs/features/caixa-proativo/`
-- **Phase / Task**: T1 concluída na main; restante não iniciado.
-- **Completed**: Configuração Next.js/TS/Tailwind/Node24, lockfile, schemas e portas v1, F1/F2, mocks, clientes HTTP, página/endpoint demo, env de exemplo e guia. npm run check passou: 15 unitários, 6 integração e 3 E2E, lint/tipos/build. Sensor em cópia temporária detectou 2/2 falhas. Evidência em t1-checks.md.
-- **Next step**: compartilhar o commit-base e criar as três branches já propostas, quando solicitado. T2–T22 ainda pendentes; nenhum requisito completo de produto marcado Verified.
-- **Blockers**: nenhum para iniciar as frentes após criação/compartilhamento das branches. Sem push, deploy ou provisionamento remoto nesta entrega.
-- **Uncommitted files**: remoção preexistente de fluxo_agente_proativo.png preservada e excluída do commit de T1.
-- **Branch**: main; nenhuma branch de integrante criada.
+
+- **Feature**: `.specs/features/integracao-financeira/`, extensão independente do agente.
+- **Phase / Task**: I1–I4 concluídas e verificadas localmente em 23/10/2026. T21 integral e T22 do MVP permanecem pendentes.
+- **Completed**: main remota recebeu Daniel/Jecky; esta branch adiciona CI/Postgres reproduzível, workspace autenticado consistente, `/caixa` com CSV/simulação/ações manuais persistidas, recuperação de erro e handoff de agente/voz. FinancePort v1 preservado.
+- **Validation**: gate completo independente PASS: 99 unitários, 56 integração SQL, 10 E2E, zero skips; lint/tipos/build. Sensor 2/2 morto em scratch. Relatório em `.specs/features/integracao-financeira/validation.md`.
+- **In-progress**: nenhum código parcial desta extensão. Somente commits locais, sem push, deploy, chamadas pagas ou migração remota.
+- **Next step**: configurar ambiente demo autorizado conforme `docs/integracao-financeira.md`; integrar AgentPort/quota persistida de Bruno quando disponíveis; publicar commits somente com autorização.
+- **Blockers**: agente, tarefas, quota de áudio e cron dependem de Bruno; ambiente persistido exige Supabase e segredos do servidor configurados. UAT humana e CI hospedada ainda não realizados.
+- **Uncommitted files**: exclusão preexistente de fluxo_agente_proativo.png e AGENTS.md não rastreado preservados e excluídos dos commits.
+- **Branch**: codex/integracao-financeira, base main `1e3b9c7`.
 
 ## Handoff Daniel — 2026-10-23 (atualiza somente a frente financeira)
 
