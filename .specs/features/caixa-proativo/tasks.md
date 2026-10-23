@@ -459,14 +459,20 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): notificações e acompanhamento`
 
 ### Phase 3: Integração e demonstração
+
+**Evidence (Jecky)**: 73 unitários (9 novos), 6 integração e 3 E2E; npm run check verde com lint/tipos/build testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso em `src/features/experience/inbox.test.tsx`: :9 — `getAllByText(title)` length 1 e origem Tarefa programada (TASK-04); :10 — três artigos e ordem exata recebida (PRO-04; ordenação financeira pertence a T11); :11 — consultas no foco/refresh e zero consulta após avançar cinco minutos; :12 — read_at recebido vira Lida e payload de leitura exato; :13 — horário 10h São Paulo vira 13h UTC no turno (TASK-05); :14 — cancelar/resolver pedem ação e preservam alerta até confirmação de estado (TASK-03); :15 — erro não aparece como vazio; :16 — histórico 20+2. Todos PASS; manter. Ações usam AgentPort.turn porque v1 não fornece mutadores específicos de notificação/tarefa. Paginação local, sem alteração unilateral de contrato. Fechamento independente limitado a Jecky, sem marcar produto completo ou requisitos compartilhados Verified.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T21: Composição dos adaptadores reais
 

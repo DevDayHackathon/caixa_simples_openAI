@@ -19,3 +19,9 @@ As rotas `/api/audio/transcribe` e `/api/audio/speak` retornam **503 AUDIO_UNAVA
 O adaptador `createOpenAIAudioProvider()` usa apenas no servidor `OPENAI_API_KEY`, `OPENAI_TRANSCRIBE_MODEL`, `OPENAI_TTS_MODEL`. Sem modelo default ou segredo NEXT_PUBLIC. Não foi feita chamada real à API. Na integração server-side, combinar esse adaptador com `authorize` e `allow` e injetá-los no handler. Falhas externas são sanitizadas, sem mensagem bruta do provedor.
 
 Referências consultadas em 23/10/2026: [transcrição](https://developers.openai.com/api/docs/guides/speech-to-text) e [síntese](https://developers.openai.com/api/reference/typescript/resources/audio/subresources/speech/methods/create). Limites do aplicativo são os da spec e menores que os do provedor. Nenhum serviço adicional ou deploy.
+
+## Iniciativas
+
+`Inbox` conserva a ordem de prioridade recebida (a ordenação financeira pertence ao agente), deduplica por `occurrence_key`, mostra três prioridades e oferece histórico em páginas locais de 20. `AgentPort.listNotifications` v1 não recebe cursor: a paginação remota depende de acordo de contrato, sem alteração unilateral nesta branch.
+
+A consulta acontece ao montar, focar a janela e após ações; `refreshKey` conecta importação, atualização financeira e conversa ao feed. Não há setInterval. Respostas de consultas anteriores são ignoradas. Ações de ler, adiar, cancelar e resolver pedem execução por AgentPort.turn e relêem o feed; não removem alerta nem marcam leitura por suposição. Bruno deve validar essas intenções e reconsultar o compromisso na integração. Horários do formulário são explicitamente de São Paulo, convertidos para UTC com offset -03:00 definido para a demo de 2026.
