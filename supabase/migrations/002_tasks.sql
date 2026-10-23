@@ -142,14 +142,14 @@ create or replace function public.append_agent_context(p_session_id text,p_entri
 returns void language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   insert into public.agent_contexts(session_id,history) values(p_session_id,p_entries)
-  on conflict(session_id) do update set history=(public.agent_contexts.history || excluded.history)->-20, updated_at=now();
+  on conflict(session_id) do update set history=(select coalesce(jsonb_agg(item order by ord), '[]'::jsonb) from jsonb_array_elements(public.agent_contexts.history || excluded.history) with ordinality as h(item,ord) where ord > jsonb_array_length(public.agent_contexts.history || excluded.history)-20), updated_at=now();
 end $$;
 
 create or replace function public.consume_agent_rate_limit(p_scope text,p_limit int default 10)
 returns boolean language plpgsql security definer set search_path = public, pg_temp as $$
-declare window timestamptz := date_trunc('minute',now()); count_now int;
+declare rate_window timestamptz := date_trunc('minute',now()); count_now int;
 begin
-  insert into public.agent_rate_limits(scope,window_start,request_count) values(p_scope,window,1)
+  insert into public.agent_rate_limits(scope,window_start,request_count) values(p_scope,rate_window,1)
   on conflict(scope,window_start) do update set request_count=agent_rate_limits.request_count+1 returning request_count into count_now;
   delete from public.agent_rate_limits where window_start < now()-interval '2 hours';
   return count_now <= p_limit;
@@ -189,3 +189,46 @@ grant execute on function public.finish_agent_occurrence(text,timestamptz,text,t
 grant execute on function public.append_agent_context(text,jsonb) to service_role;
 grant execute on function public.consume_agent_rate_limit(text,int) to service_role;
 grant execute on function public.dispatch_due_agent_tasks() to postgres, service_role;
+
+-- The service key is server-only; all browser roles remain denied.
+revoke all on public.agent_tasks, public.agent_task_runs, public.agent_notifications,
+  public.agent_contexts, public.agent_rate_limits, public.agent_dispatch_leases from public, anon, authenticated;
+grant select, insert, update on public.agent_tasks, public.agent_notifications, public.agent_contexts to service_role;
+
+create or replace function public.read_task_commitment_status(p_business_id text,p_target_id text)
+returns text language plpgsql security definer set search_path=public,pg_temp as $$
+declare result text;
+begin
+  if p_business_id <> 'demo' then raise exception 'FORBIDDEN'; end if;
+  select t->>'status' into result from public.finance_state f,
+    lateral jsonb_array_elements(f.data->'transactions') t
+    where f.business_id=p_business_id and t->>'id'=p_target_id;
+  if result is null then raise exception 'COMMITMENT_NOT_FOUND'; end if;
+  return result;
+end $$;
+revoke all on function public.read_task_commitment_status(text,text) from public,anon,authenticated;
+grant execute on function public.read_task_commitment_status(text,text) to service_role;
+
+create or replace function public.close_resolved_agent_tasks()
+returns trigger language plpgsql security definer set search_path=public,pg_temp as $$
+begin
+ update public.agent_tasks set status='cancelled',version=version+1,updated_at=now()
+ where business_id=new.business_id and target_id=new.transaction_id and status in ('pending','running','failed');
+ return new;
+end $$;
+revoke all on function public.close_resolved_agent_tasks() from public,anon,authenticated;
+create trigger close_resolved_tasks after insert on public.finance_resolutions
+ for each row execute function public.close_resolved_agent_tasks();
+
+-- Lock the financial revision until notification insertion commits. Settlement and
+-- notification cannot pass each other after the runner's final application check.
+create or replace function public.guard_agent_notification()
+returns trigger language plpgsql security definer set search_path=public,pg_temp as $$
+begin
+ perform 1 from public.finance_state where business_id=new.business_id for update;
+ if public.read_task_commitment_status(new.business_id,new.target_id) <> 'pending' then return null; end if;
+ return new;
+end $$;
+revoke all on function public.guard_agent_notification() from public,anon,authenticated;
+create trigger guard_agent_notification before insert on public.agent_notifications
+ for each row execute function public.guard_agent_notification();

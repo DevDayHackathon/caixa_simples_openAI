@@ -50,3 +50,10 @@ describe("Supabase task persistence adapter", () => {
     expect(await repo.getContext(reminderFixture.id)).toEqual({ user_message: "me lembre", stop_condition: "pago" });
   });
 });
+
+it('FINAL-01 normalizes real SQL timestamps, metadata and nullable eligibility', async () => {
+ const { repo } = repository(vi.fn().mockResolvedValue({data:{...reminderFixture,
+  due_at:'2026-10-29T18:00:00+00:00',eligible_at:null,context:{},created_at:'2026-10-23T12:00:00+00:00',updated_at:'2026-10-23T12:00:00+00:00'},error:null}));
+ const task=await repo.saveTask(reminderFixture);
+ expect(task.due_at).toBe('2026-10-29T18:00:00.000Z');expect(task.eligible_at).toBeUndefined();expect(task).not.toHaveProperty('created_at');
+});

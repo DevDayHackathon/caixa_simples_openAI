@@ -11,7 +11,7 @@ export class SupabaseTaskRepository implements TaskRepository {
   async saveTask(task: ScheduledTask) {
     const { data, error } = await this.client.rpc("schedule_agent_task", { p_task: task });
     if (error) throw error;
-    return scheduledTaskSchema.parse(data);
+    return taskFromRow(data as TaskRow);
   }
   async getTask(id: string) {
     const { data, error } = await this.client.from("agent_tasks").select("*").eq("id", id).maybeSingle();
@@ -26,7 +26,7 @@ export class SupabaseTaskRepository implements TaskRepository {
   async cancelTask(id: string, expectedVersion: number) {
     const { data, error } = await this.client.rpc("transition_agent_task", { p_task_id: id, p_expected_version: expectedVersion, p_next_status: "cancelled" });
     if (error) { if (error.code === "P0001") throw new TaskConflictError(error.message); throw error; }
-    return scheduledTaskSchema.parse(data);
+    return taskFromRow(data as TaskRow);
   }
   async claimDueTasks(now: string, limit: number, leaseSeconds: number): Promise<ClaimedOccurrence[]> {
     const { data, error } = await this.client.rpc("claim_due_agent_tasks", { p_now: now, p_limit: Math.min(limit, 5), p_lease_seconds: leaseSeconds });
@@ -49,7 +49,7 @@ export class SupabaseTaskRepository implements TaskRepository {
   async listNotifications(businessId: string) {
     const { data, error } = await this.client.from("agent_notifications").select("*").eq("business_id", businessId).order("created_at", { ascending: false }).limit(20);
     if (error) throw error;
-    return (data ?? []) as NotificationRecord[];
+    return (data ?? []).map(({ business_id: _business, ...notice }) => ({ ...notice, business_id: _business, created_at: new Date(notice.created_at).toISOString(), read_at: notice.read_at ? new Date(notice.read_at).toISOString() : null })) as NotificationRecord[];
   }
   async storeContext(taskId: string, context: Record<string, unknown>) {
     const { error } = await this.client.from("agent_tasks").update({ context }).eq("id", taskId);
@@ -68,8 +68,11 @@ export function createServerTaskRepository() {
   return new SupabaseTaskRepository(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
 }
 
-function taskFromRow(row: TaskRow): ScheduledTask {
-  const task = { ...row };
-  delete task.context;
+export function taskFromRow(row: TaskRow) {
+  const task = Object.fromEntries(Object.entries(row).filter(([key]) => key in scheduledTaskSchema.shape));
+  for (const key of ["due_at", "eligible_at"]) {
+    if (task[key] == null) delete task[key];
+    else task[key] = new Date(String(task[key])).toISOString();
+  }
   return scheduledTaskSchema.parse(task);
 }
