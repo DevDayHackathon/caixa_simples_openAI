@@ -17,3 +17,9 @@ Gate: npm run check, sem skip/remoção. Casos novos: 6. Log: output/finance-loc
 CSV: F1, retry, reimportacao identica, rollback com linha invalida/conflitante, IDs repetidos, limites UTF8/1000, datas/cabecalho, RFC4180, concorrencia e expiracao/stale. Testes: tests/integration/finance/import.test.ts. Previa parseada expira em 30 minutos; CSV bruto descartado. Gate: 15 unitarios, 22 integracao, 3 E2E.
 
 Gate: npm run check, sem skip/remoção. Casos novos: 10. Log: output/finance-local/t3-gate.log.
+
+## T4
+
+Calculo puro: F1 100000/300000/150000, janela fixa ate 21/11, vazio/zero, abertura, realizados, incerteza, dividas vencidas, reservas, overflow e escopo. Somatorios BigInt validados como centavos seguros. Testes: src/features/finance/cash.test.ts. Gate quick: 25 unitarios, lint e tipos verdes.
+
+Gate: npm run check, sem skip/remoção. Casos novos: 10. Log: output/finance-local/t4-gate.log.
