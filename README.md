@@ -30,3 +30,7 @@ python3 /home/mestre/.agents/skills/tlc-spec-driven/scripts/validate_tasks.py ca
 ```
 
 Os comandos npm de tasks.md são uma proposta a materializar em T1. Nenhuma suíte de produto passou nesta etapa; somente os gates estruturais da documentação foram executados.
+
+## Hospedagem alvo confirmada
+
+Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gratuito.md) define agendamento Supabase, limites serverless, áudio, ambientes e colaboração. O consumo da API OpenAI é separado. Nenhuma publicação foi realizada.

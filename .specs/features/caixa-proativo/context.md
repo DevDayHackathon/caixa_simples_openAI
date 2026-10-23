@@ -26,3 +26,7 @@ Conta Azul: alimentação de dados e alertas. Omie: comandos por áudio. Float: 
 ## Deferred Ideas
 
 Estoque P2, WhatsApp, banco, pagamentos reais, envio externo, personalização de reservas e inferência histórica. O diagrama ideal não torna todas essas extensões obrigatórias no MVP.
+
+## Atualização de 23/10/2026 — hospedagem confirmada
+
+Usuário determinou Vercel grátis e Supabase grátis. Decisão fechada de ambiente; demais propostas de stack/ownership continuam em revisão. O cron de lembretes fica no Supabase; Vercel Hobby recebe o HTTP protegido. Áudio foi reduzido de 10 MiB para 3 MiB por compatibilidade de payload. Ver docs/deploy-gratuito.md. Nenhuma implantação foi solicitada para execução agora.

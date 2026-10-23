@@ -74,3 +74,7 @@ Leia a especificação caixa-proativo, contratos e tarefas T2–T8; T1 precisa e
 ### Bruno
 
 Leia a especificação caixa-proativo, contratos e tarefas T9–T14. Ative tlc-spec-driven e mantenha separados input do usuário e tarefa programada. Use FinancePort, inicialmente com mocks, sem duplicar cálculos. Teste reprocessamento, concorrência e compromisso já resolvido. Não execute transação bancária nem envie cobrança externa. Um commit por tarefa. Não faça push, provisionamento ou deploy sem autorização.
+
+## Hospedagem gratuita confirmada
+
+Todos seguem [deploy-gratuito.md](deploy-gratuito.md). Jecky limita áudio e evita polling permanente. Daniel usa Postgres persistido, transações/RPC e testes locais isolados, sem banco remoto por branch. Bruno configura o único cron Supabase de cinco minutos, lotes pequenos e executor protegido na Vercel, sem Vercel Cron frequente ou worker residente. Um responsável pela conta Hobby publica main; ainda será designado. As três branches continuam sendo desenvolvimento paralelo, sem pressupor três assentos pagos ou três projetos Supabase.

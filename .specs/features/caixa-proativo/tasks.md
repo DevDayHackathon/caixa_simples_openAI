@@ -89,10 +89,10 @@ T21 -> T22
 ### T1: Base comum e contratos executáveis
 
 **Owner**: Daniel + revisão dos três
-**What**: Fixar stack, lockfile, schemas v1, fixtures F1/F2, mocks e scripts de gates; rejeitar schema inválido e provar mocks compatíveis.
+**What**: Incorporar a configuração Vercel Hobby/Supabase Free do guia, sem provisionamento, e Fixar stack, lockfile, schemas v1, fixtures F1/F2, mocks e scripts de gates; rejeitar schema inválido e provar mocks compatíveis.
 **Where**: `package.json`
 **Depends on**: None
-**Requirement**: DATA-01, CASH-01, AGENT-01, TASK-01
+**Requirement**: HOST-01, DATA-01, CASH-01, AGENT-01, TASK-01
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -111,7 +111,7 @@ T21 -> T22
 **What**: Persistir a empresa demo e compromissos versionados; recarga preserva dados e escrita fora do escopo é rejeitada.
 **Where**: `supabase/migrations/001_finance.sql`
 **Depends on**: T1
-**Requirement**: DATA-04, SAFE-02, SAFE-05
+**Requirement**: HOST-04, DATA-04, SAFE-02, SAFE-05
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -281,7 +281,7 @@ T21 -> T22
 **What**: Criar, persistir, cancelar e adiar compromisso não duplica tarefa; preferências desativadas impedem nova criação.
 **Where**: `src/features/tasks/schedule.ts`
 **Depends on**: T1
-**Requirement**: TASK-01, TASK-05, TASK-06
+**Requirement**: HOST-04, TASK-01, TASK-05, TASK-06
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -295,10 +295,10 @@ T21 -> T22
 ### T13: Executor de ocorrências
 
 **Owner**: Bruno
-**What**: Executor processa sem usuário, adquire ocorrência uma vez, relê pagamento antes de notificar e resiste a retry/falha/concorrência.
+**What**: Processar no máximo cinco ocorrências por tick, orçamento 30 s/maxDuration 60 s e persistência entre instâncias; Executor processa sem usuário, adquire ocorrência uma vez, relê pagamento antes de notificar e resiste a retry/falha/concorrência.
 **Where**: `src/features/tasks/runner.ts`
 **Depends on**: T11, T12
-**Requirement**: TASK-02, TASK-03, TASK-04, TASK-06
+**Requirement**: HOST-02, HOST-04, TASK-02, TASK-03, TASK-04, TASK-06
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -397,10 +397,10 @@ T21 -> T22
 ### T19: Interação de voz por turnos
 
 **Owner**: Jecky
-**What**: Gravar/transcrever/editar/reproduzir com endpoints server-side em src/app/api/audio; sem permissão, limite, falha de IA e fallback textual cobertos na mesma entrega.
+**What**: Limitar gravação a 3 MiB/60 s e síntese a 1.200 caracteres/3 MiB, sem base64; Gravar/transcrever/editar/reproduzir com endpoints server-side em src/app/api/audio; sem permissão, limite, falha de IA e fallback textual cobertos na mesma entrega.
 **Where**: `src/features/experience/voice.tsx`
 **Depends on**: T18
-**Requirement**: VOICE-01, VOICE-02, VOICE-03, SAFE-01
+**Requirement**: HOST-03, VOICE-01, VOICE-02, VOICE-03, SAFE-01
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -450,10 +450,10 @@ T21 -> T22
 ### T22: Agendamento real e ensaio de demonstração
 
 **Owner**: Bruno + revisão dos três
-**What**: Preparar cron por HTTP protegido e guia; testar processamento sem aba, notificação única, segredo inválido e F1 em até três minutos; ativação remota só após autorização.
+**What**: Preparar um único Supabase Cron de cinco minutos por HTTP protegido para Vercel Hobby; validar seis tarefas com limite de cinco por lote; testar processamento sem aba, notificação única, segredo inválido e F1 em até três minutos; ativação remota só após autorização.
 **Where**: `supabase/migrations/003_schedule.sql`
 **Depends on**: T21
-**Requirement**: TASK-02, TASK-04, SAFE-03, CASH-03
+**Requirement**: HOST-01, HOST-02, TASK-02, TASK-04, SAFE-03, CASH-03
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -529,3 +529,7 @@ STOCK-01 e STOCK-02 são P2, não bloqueiam as três cadeias do MVP. Não começ
 ## Approval boundary
 
 Antes de Execute, confirmar stack, comandos, defaults e ownership. Branches ainda não criadas. Publicação, push, provisionamento e ativação de cron remoto não estão autorizados por esta documentação.
+
+## Restrições adicionais de implantação
+
+Os requisitos HOST-01 a HOST-04 são P1 e têm testes nas tarefas indicadas. T19 testa fronteiras de tamanho/duração; T13 testa seis pendências com apenas cinco aquisições, próxima execução e restart; T22 verifica ausência de cron frequente Vercel. Tudo segue docs/deploy-gratuito.md. Os contadores mínimos de testes originais são pisos; novos casos são adicionais quando não cobertos. Cron real, variáveis remotas e deploy só são ativados após autorização. Não há garantia de preview automático para todas as branches no Hobby.

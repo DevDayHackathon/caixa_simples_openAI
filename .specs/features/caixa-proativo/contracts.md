@@ -68,3 +68,9 @@ T1 materializa F1/F2 e mocks com todos os campos. Jecky e Bruno trabalham sobre 
 ## Fallbacks e ciclo de vida
 
 Áudio acima do limite ou indisponível retorna erro recuperável e mantém texto. Gravação não é persistida; transcrição só fica no histórico da sessão demo. Reset demonstrativo cancela tarefas e apaga somente a empresa demo; não é iniciado por cron nem por instrução importada. Exportar logs sem segredos. Após reinício, tarefas pendentes continuam adquiríveis.
+
+## Contrato de hospedagem gratuita
+
+Supabase Free é a fonte de verdade. POST /api/tasks/run recebe somente segredo de servidor e usa now real no ambiente de produção; relógio controlado só no teste/demo explicitamente marcada. Resposta inclui claimed<=5 e remaining_due, sem varrer ou adquirir todos os pendentes. O executor termina o lote antes de responder. Nenhum timer residente. Cron Supabase verifica a cada cinco minutos, mas tarefas guardam due_at individual. Retry guarda eligible_at e não exige um novo cron.
+
+Áudio binário multipart até 3 MiB/60 s; limite total de transporte precisa permanecer abaixo dos 4.5 MB da Vercel. Síntese recebe até 1.200 caracteres e devolve até 3 MiB, com erro recuperável se exceder. Estado não usa filesystem da função. Rate limit é compartilhado no banco. Preview usa mocks/banco isolado e nunca adquire tarefas de produção. Fontes e configuração em docs/deploy-gratuito.md.

@@ -5,7 +5,7 @@
 
 ## Architecture Overview
 
-Recomendação: uma aplicação Next.js/TypeScript. Interface e endpoints no mesmo projeto. Postgres/Supabase persiste dados. Um cron persistido chama o executor HTTP protegido. O agente conversa via Responses API e usa ferramentas tipadas. Cálculos financeiros são funções determinísticas, nunca texto livre gerado pelo modelo.
+Recomendação: uma aplicação Next.js/TypeScript. Interface e endpoints no mesmo projeto. Supabase Free persiste dados. Um único Supabase Cron a cada cinco minutos chama o executor HTTP protegido na Vercel Hobby. O agente conversa via Responses API e usa ferramentas tipadas. Cálculos financeiros são funções determinísticas, nunca texto livre gerado pelo modelo.
 
 Alternativas de mesmo escopo:
 
@@ -29,7 +29,7 @@ O usuário solicitou recomendação direta; aprovação desta proposta ocorre an
 | Agente | SDK oficial OpenAI, Responses API e function calling | Catálogo explícito de operações permitidas |
 | Voz | Gravação no navegador → transcrição → agente → síntese | Turnos simples, transcrição editável e fallback textual |
 | Testes | Vitest; integração com banco isolado; Playwright E2E | Cálculo isolado, persistência real e fluxos verificáveis |
-| Publicação futura | Hospedagem compatível com Next.js + Supabase | Configurar depois; nenhuma publicação autorizada nesta etapa |
+| Publicação futura | Vercel Hobby + Supabase Free | Restrição confirmada; detalhes e quotas em docs/deploy-gratuito.md |
 
 Fixar versões estáveis compatíveis e lockfile em T1. Modelos de agente, transcrição e síntese por variáveis de ambiente, escolhidos entre os disponíveis na conta e conferidos na documentação antes do primeiro uso. Não há promessa de preço, quota ou modelo específico nesta especificação.
 
@@ -66,7 +66,7 @@ Uma notificação gerada com a aba fechada fica no banco até o próximo acesso.
 | OpenAI indisponível | Não confirmar efeitos inexistentes | 503; texto e painel continuam disponíveis |
 | Executor concorrente | Aquisição atômica e unicidade | Uma ocorrência e uma notificação |
 | Notificação já persistida e retry | Reutilizar chave da ocorrência | Sem segunda entrega |
-| Falha durante execução | Lease de 120 s; retry em 60 s, 300 s e 900 s; após três retries estado failed | Histórico visível, reprocessamento manual idempotente |
+| Falha durante execução | Lease de 120 s; retry elegível após 60 s, 300 s e 900 s, processado no próximo tick de cinco minutos; após três retries estado failed | Histórico visível, reprocessamento manual idempotente |
 
 ## Risks & Concerns
 
@@ -92,3 +92,9 @@ Consulta em 23/10/2026. Não há Context7 disponível nesta sessão; após inspe
 - [Agendamento com pg_cron e pg_net](https://supabase.com/docs/guides/functions/schedule-functions): mecanismo de disparo e armazenamento de credenciais; endpoint escolhido aqui é Next.js, sem runtime Edge adicional.
 - [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling): ferramentas com argumentos estruturados.
 - [OpenAI Audio](https://developers.openai.com/api/reference/typescript/resources/audio): referência de transcrição/síntese; reconferir modelos e limites na implementação.
+
+## Restrições confirmadas de hospedagem gratuita
+
+Aplicar docs/deploy-gratuito.md: runtime Node.js, maxDuration 60 s, lote até cinco tarefas com orçamento de 30 s, cron Supabase de cinco minutos e retries no próximo tick elegível. Sem worker residente, armazenamento local persistente ou timers de browser para agendamento. Dados e rate limit em Postgres por API HTTPS/RPC. Áudio até 3 MiB/60 s, multipart sem base64. Síntese limitada a 1.200 caracteres/3 MiB. Preview sem credenciais nem cron de produção. Nenhuma função continua processando trabalho depois da resposta. O executor automático usa regras/rascunhos determinísticos sem chamada OpenAI por tick. Infraestrutura gratuita não inclui consumo da API de IA.
+
+A precisão do agendamento é por verificação periódica, não horário exato garantido. Supabase pausado ou quotas esgotadas impedem execução; registrar e exibir indisponibilidade. Um responsável centraliza publicação no Hobby, respeitando restrições de Git/autoria da plataforma. Não alterar autores para viabilizar deploy.

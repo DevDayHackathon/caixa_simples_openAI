@@ -42,7 +42,8 @@ Fontes de escopo: `contexto_hackathon_painel_de_caixa.md`, conversa da equipe, `
 | Rotinas permitidas | Criar lembretes internos automaticamente com preferência habilitada e exibi-los | Torna proatividade concreta sem solicitar confirmação repetida | Proposta |
 | Reservas | Aprovação por ação; opção explícita de automação fica P2 | Evita comprometer valores sem decisão do dono | Proposta |
 | Segurança da demo | Somente dados fictícios; sessão assinada de demonstração, sem cadastro | Mantém demo acessível e bloqueia acesso direto indevido às mutações | Proposta |
-| Limites | CSV até 1 MiB/1.000 linhas; áudio até 60 s/10 MiB; mensagem até 4.000 caracteres | Limita custo e processamento da demo | Proposta |
+| Limites | CSV até 1 MiB/1.000 linhas; áudio até 60 s/3 MiB; mensagem até 4.000 caracteres | Limita custo e processamento da demo | Proposta |
+| Hospedagem | Vercel Hobby e Supabase Free | Restrição explícita do usuário; detalhes em docs/deploy-gratuito.md | Sim |
 | Stack | Next.js/TypeScript, Supabase/Postgres/Cron, OpenAI, Tailwind, Zod, Vitest e Playwright | Recomendação solicitada; revisar divisão antes de criar branches | Proposta |
 | Qualidade | Unitários, integração e E2E conforme tasks.md | Não existem testes nem aplicação neste diretório | Proposta |
 | Visão ideal versus MVP | Todas as funções principais de caixa e proatividade em P1; estoque em P2 | Evita que reposição impeça a entrega obrigatória | Proposta |
@@ -160,6 +161,18 @@ Recebível vencido sem nova data fica identificado como incerto e excluído das 
 
 **Independent Test**: estoque 20, consumo 5/dia e entrega em 3 dias resulta em cobertura de 4 dias e pedido necessário em até 1 dia, com premissas visíveis.
 
+### P1: US9 — Executar dentro da infraestrutura gratuita
+
+**User Story**: Como equipe, queremos publicar a demo sem contratar Vercel Pro ou Supabase pago.
+
+**Acceptance Criteria**:
+1. WHEN o ambiente de produção é configurado THEN o sistema SHALL usar Supabase Cron a cada cinco minutos para disparar o executor Vercel, sem cron frequente na Vercel Hobby. [HOST-01]
+2. WHEN um lote vencido é processado THEN o executor SHALL adquirir no máximo cinco ocorrências, mantendo as demais pendentes para o próximo tick. [HOST-02]
+3. IF uma gravação excede 3 MiB ou 60 segundos THEN o cliente SHALL interromper a captura e disponibilizar alternativa textual sem enviar arquivo acima do limite. [HOST-03]
+4. WHEN uma instância serverless é substituída THEN o sistema SHALL recuperar estado financeiro e tarefas do Postgres sem depender de arquivos locais ou memória da instância anterior. [HOST-04]
+
+**Independent Test**: validar cron/configuração; processar seis tarefas e observar cinco aquisições; simular limite de gravação; reiniciar instância e reler o estado. Configuração real só é verificada depois da implantação autorizada; o teste local usa o mesmo executor.
+
 ## Edge Cases
 
 - CSV acima dos limites, IDs repetidos no arquivo, data fora do horizonte e cabeçalho inválido: rejeitar antes da confirmação, sem escrita parcial (DATA-02).
@@ -237,8 +250,12 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | SAFE-06 | P1: MVP | Tasks | Pending | T9 |
 | STOCK-01 | P2: Reposição | Tasks | Pending | Deferred P2 |
 | STOCK-02 | P2: Reposição | Tasks | Pending | Deferred P2 |
+| HOST-01 | P1: Infra gratuita | Tasks | Pending | T1, T22 |
+| HOST-02 | P1: Infra gratuita | Tasks | Pending | T13, T22 |
+| HOST-03 | P1: Infra gratuita | Tasks | Pending | T19 |
+| HOST-04 | P1: Infra gratuita | Tasks | Pending | T2, T12, T13 |
 
-Coverage: 37 critérios; 35 P1 mapeados; 2 P2 adiados; zero P1 sem tarefa.
+Coverage: 41 critérios; 39 P1 mapeados; 2 P2 adiados; zero P1 sem tarefa.
 
 ## Success Criteria
 
