@@ -221,7 +221,7 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | DATA-01 | P1: MVP | Tasks | Pending | T1, T3, T8, T16, T21 |
 | DATA-02 | P1: MVP | Tasks | Pending | T3, T16 |
 | DATA-03 | P1: MVP | Tasks | Pending | T3, T16 |
-| DATA-04 | P1: MVP | Tasks | Pending | T2, T15 |
+| DATA-04 | P1: MVP | Tasks | In Progress | T2, T15 |
 | CASH-01 | P1: MVP | Tasks | Pending | T1, T4, T8, T15 |
 | CASH-02 | P1: MVP | Tasks | Pending | T4, T15 |
 | CASH-03 | P1: MVP | Tasks | Pending | T6, T8, T17, T21, T22 |
@@ -248,17 +248,17 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | TASK-05 | P1: MVP | Tasks | Pending | T12, T14, T20 |
 | TASK-06 | P1: MVP | Tasks | Pending | T12, T13 |
 | SAFE-01 | P1: MVP | Tasks | Pending | T8, T14, T19 |
-| SAFE-02 | P1: MVP | Tasks | Pending | T2, T5 |
+| SAFE-02 | P1: MVP | Tasks | In Progress | T2, T5 |
 | SAFE-03 | P1: MVP | Tasks | Pending | T14, T22 |
 | SAFE-04 | P1: MVP | Tasks | Pending | T4, T9, T10 |
-| SAFE-05 | P1: MVP | Tasks | Pending | T2, T8, T14 |
+| SAFE-05 | P1: MVP | Tasks | In Progress | T2, T8, T14 |
 | SAFE-06 | P1: MVP | Tasks | Pending | T9 |
 | STOCK-01 | P2: Reposição | Tasks | Pending | Deferred P2 |
 | STOCK-02 | P2: Reposição | Tasks | Pending | Deferred P2 |
 | HOST-01 | P1: Infra gratuita | Tasks | Pending | T1, T22 |
 | HOST-02 | P1: Infra gratuita | Tasks | Pending | T13, T22 |
 | HOST-03 | P1: Infra gratuita | Tasks | Pending | T19 |
-| HOST-04 | P1: Infra gratuita | Tasks | Pending | T2, T12, T13 |
+| HOST-04 | P1: Infra gratuita | Tasks | In Progress | T2, T12, T13 |
 | TASK-07 | P1: Agendamento | Tasks | Pending | T1, T12 |
 | TASK-08 | P1: Agendamento | Tasks | Pending | T12 |
 | HOST-05 | P1: Infra gratuita | Tasks | Pending | T13, T22 |
