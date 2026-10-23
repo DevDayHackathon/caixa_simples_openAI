@@ -27,7 +27,7 @@ function records(csv: string) {
     } else { if (closed || c === '"') throw new Error(`Aspas inválidas na linha ${line}.`); cell += c; }
   }
   if (quoted) throw new Error(`Aspas não fechadas na linha ${rowLine}.`);
-  if (cell !== "" || cells.length > 0) rows.push({ cells: [...cells, cell], line: rowLine });
+  if (cell !== "" || cells.length > 0 || closed) rows.push({ cells: [...cells, cell], line: rowLine });
   return rows;
 }
 const previewSchema = financeOperations.previewImport.output.extend({

@@ -34,6 +34,12 @@ describe("T3 CSV atômico", () => {
   it("IDs duplicados no arquivo são inválidos", async () => {
     expect((await load(csv.replace("pay-1", "rec-1"))).preview.errors).toContainEqual(expect.objectContaining({ field: "id" }));
   });
+  it("linha final com uma célula vazia entre aspas não é descartada", async () => {
+    const batch = await load(csv.trimEnd() + '\n""');
+    expect(batch.preview.errors).toContainEqual(expect.objectContaining({ line: 4, field: "csv" }));
+    await expect(batch.confirm()).rejects.toMatchObject({ status: 422 });
+    expect((await db.store.read()).transactions).toEqual([]);
+  });
   it("limita bytes UTF8 e quantidade de linhas", async () => {
     expect((await load("á".repeat(600000))).preview.errors).toContainEqual(expect.objectContaining({ field: "csv" }));
     const lines = csv.trim().split(/\r?\n/); const large = lines[0] + "\n" + Array.from({ length: 1001 }, (_, i) => lines[1].replace("rec-1", `rec-${i}`)).join("\n");

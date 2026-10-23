@@ -2,7 +2,7 @@
 
 Data: 2026-10-23. Branch: feat/daniel-caixa-dados; base eaa8068, comum às três branches.
 
-Skills: karpathy-guidelines aplicada; tlc-spec-driven indisponível e comunicada antes da implementação. Verificação da feature completa permanece pendente nas demais frentes. Sem push, deploy ou migração remota.
+Skills: karpathy-guidelines aplicada; tlc-spec-driven indisponível e comunicada antes da implementação. Verificação da feature completa permanece pendente nas demais frentes. Na entrega inicial não houve push, deploy ou migração remota.
 
 Preflight: npm ci e npm run check passaram (15 unitários, 6 integração, 3 E2E). Chromium instalado pelo script da base. Postgres 17.11 portátil EDB em output/ ignorado, loopback:55432; sem Docker disponível. Banco temporário exclusivo por suíte, removido ao terminar; mesmas funções SQL da produção, transporte psql local em vez de HTTPS Supabase.
 
@@ -72,3 +72,11 @@ Sensor de discriminação executado pelo Verifier em `C:/Users/danie/AppData/Loc
 2/2 falhas detectadas, zero sobreviventes. CASH-06, RES-02, RES-04 e SAFE-02 podem ser Verified pois todas as suas tarefas mapeadas (T5, T7 ou T2/T5) e respectivos gates estão concluídos. Demais requisitos com dependências de outras frentes permanecem In Progress/Pending.
 
 Limites: `finance_resolutions` é o ponto transacional disponível para Bruno anexar encerramento de tarefas em 002_tasks.sql; a integração real desse trigger é T21. Jecky ainda compõe a UI e inicia a sessão demo. T21/T22, agente, voz, cron e validação de Supabase remoto não foram declarados concluídos. Nenhuma publicação ou escrita remota ocorreu. README financeiro contém as instruções dos adaptadores e do banco local.
+
+## Revisão pré-push autorizado — 2026-10-23
+
+Revisão do diff completo, contratos, escopo, persistência, validação, sessão e integridade. A revisão identificou uma linha CSV final com apenas uma célula vazia entre aspas (`""`) que podia ser descartada pelo parser. A condição de fechamento agora conserva esse registro para a validação rejeitar a linha incompleta. O novo teste de regressão em `tests/integration/finance/import.test.ts` exige erro na linha 4, confirmação 422 e zero movimentações persistidas.
+
+Após a correção, `npm run check` passou novamente: **35 unitários, 52 integração e 4 E2E**, lint, tipos e build verdes. Log local: `output/finance-local/pre-push-gate.log`. `git diff --check` passou; contratos, dependências e áreas dos colegas continuam intactos. Não há `.env`, credenciais reais ou banco local versionados. O fetch confirmou que a branch remota não tinha commits ausentes no clone.
+
+O usuário autorizou explicitamente o push da branch `feat/daniel-caixa-dados` para `origin`, após esta revisão. A correção recebe um commit adicional aos sete commits das tarefas. Deploy, provisionamento e migração remota continuam fora da autorização.
