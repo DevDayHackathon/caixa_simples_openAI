@@ -12,6 +12,8 @@ T4 --> T5
 T5 --> T6
 T6 --> T7
 T7 --> T8
+T8 --> T9
+T9 --> T10
 ```
 
 ## Gate Check Commands
@@ -30,6 +32,8 @@ build: npm run check
 | T6 | FINAL-05 | gate completo e verificador |
 | T7 | FINAL-05 | preparo SQL concorrente e gate completo |
 | T8 | FINAL-06 | offsets, instantes ambíguos e contexto temporal do modelo |
+| T9 | FINAL-05 | isolamento de provedores no E2E |
+| T10 | FINAL-07 | recibos finais após avanço de revisão |
 
 ## Task Breakdown
 
@@ -126,3 +130,27 @@ T7 PASS: lock transacional no banco admin comum; sensor independente reproduziu 
 T8 origem: U08 real recebeu erro genérico e nenhuma tarefa foi criada. Diagnóstico real sanitizado confirmou due_at com offset, explicit_time em formato não completo e commitment_due_at como data sem horário; parser anterior exigia UTCZ enquanto schema do modelo só anunciava string|null.
 
 T8 PASS: tools.test.ts cobre16:26-03:00→19:26Z persistido/sourceuser e6formatosincompletos sem escrita; agent-turn.test.ts verificaagora/fusonasduaschamadas. Sensor independente2/2mutaçõesmortas. Primeirofullgate142/100/10de11FAILporherançaOPENAIrealnofixturefinanceiro; assertpreservado. Gate comOPENAIexplicitamentevazioPASS142unit100integrações11E2E,lint/tipos/build,semfalhas/skips;log/tmp/folego-time-fix-clean-gate.log. Testecontroladodeserviçorealcriou task51e7bb72-23ab-4282-a1b4-5c3f7b8b05d0para19:32Z(16:32SP),sourceuser;U08apósdeployaindapendente.
+
+### T9: Isolar credenciais reais dos fixtures E2E
+**What**: Impedir que Next carregue os provedores reais do.envlocal nos cenários financeiro e integrado com Responses simulado.
+**Where**: tests/e2e/finance.spec.ts, tests/e2e/agent-integrated.spec.ts
+**Depends on**: T8
+**Requirement**: FINAL-05
+**Tests**: e2e
+**Gate**: build
+**Done when**: Fixtures sobrescrevem configuração de provedores fora do cenário; npm run check passa sem sanitização externa, sem chamadas pagas e sem alterar asserções. [x]
+
+### T10: Preservar recibo final de proposta na interface
+**What**: Corrigir o cartão que mostra reserva aceita como desatualizada após o próprio aceite avançar a versão financeira.
+**Where**: src/features/experience/conversation.tsx, src/features/experience/conversation.test.tsx
+**Depends on**: T9
+**Requirement**: FINAL-07
+**Tests**: unit
+**Gate**: build
+**Done when**: Aceita/dispensada preservam estado final sem controles mesmo com revisão nova; pendentes antigas continuam desatualizadas; gate e revisão independente passam. [x]
+
+T10 origem: U04real gravou reserva50000/version3 corretamente e devolveuaccepted, mas cartão calculava stale por based_on_version2 antes de considerar estado final.
+
+T9 PASS:2fixtures sobrescrevemenvdeprovedores;assertsintactos. Gate normal npmruncheckPASS142unit100integrações11E2E,lint/tipos/build,semwrapper;log/tmp/folego-fixture-isolation-gate.log. RevisãoindependentePASS;evidênciadiscriminantehistórica:fixtureantigofalhavaaoherdarconfiglocal,novofixturepassacom.envlocalconfigurado. NãosealeganovosensormutacionalT9.
+
+T10 PASS:conversation.test.tsx11/11unitinclui2regressõesnovasaccepted/dismissedapósrevisãonova. Sensorindependentemortopelas2regressõesaoretornarcondiçãoantiga. Impeccablecontext/harden/craftflooraplicadossemredesign;detectorretornou[]. Gate normalPASS144unit100integrações11E2E,lint/tipos/build;log/tmp/folego-receipt-gate.log. U04pósdeploycontinuasendoverificado,semdeclaraçãoantecipada.
