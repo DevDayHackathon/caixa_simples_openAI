@@ -413,12 +413,18 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): conversa e decisões sobre propostas`
+
+**Evidence (Jecky)**: 41 unitários (8 novos); typecheck verde testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso em `src/features/experience/conversation.test.tsx`: :12 — payload completo origin=user/request_id/message e resposta (AGENT-01); :13 — esclarecimento sem Proposta aceita (AGENT-02); :14 — aceite com ID/alvo/versão e sem estado presumido (RES-01 na UI); :15 — mensagens de ajuste/dispensa exatas; :16 e :19 — stale/versão divergente sem botão Aceitar; :17 — rascunho com fatos e sem envio (PRO-03); :18 — texto preservado, envio reabilitado e ausência de sucesso na falha (VOICE-03). Todos PASS; manter. Decisões utilizam AgentPort.turn; não foi inventado endpoint ou payload estruturado ausente no contrato v1.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T19: Interação de voz por turnos
 
