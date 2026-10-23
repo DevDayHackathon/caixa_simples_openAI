@@ -1,5 +1,7 @@
 # Caixa persistido e integração restante
 
+Revisão de 23/10/2026: o PR #3 do Bruno ainda tem bloqueios de migração e contratos; merge e integração final não aprovados. A configuração completa de chaves, evidências e matriz de aceite com APIs ativas estão em [revisao-bruno-e-uat.md](revisao-bruno-e-uat.md). Os limites e handoffs abaixo continuam válidos até a correção e composição T21/T22.
+
 A prévia `/` continua disponível sem credenciais. O link **Abrir caixa persistido** leva a `/caixa`, que usa somente dados fictícios salvos no banco. Banco ou sessão indisponível produz erro recuperável; a tela não substitui dados por fixtures.
 
 ## Configuração local
