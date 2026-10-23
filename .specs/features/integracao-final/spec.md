@@ -14,6 +14,8 @@ Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort 
 - FINAL-04: WHEN agente e voz estiverem configurados THEN /caixa SHALL oferecer conversa/feed e áudio real com sessão e quota persistida antes do provedor; sem configuração SHALL preservar finanças e erro textual.
 - FINAL-05: WHEN os gates e revisão independente passarem THEN os commits SHALL ser publicados e incorporados à main; testes reais com credenciais SHALL permanecer explicitamente pendentes até sua configuração.
 
+- FINAL-06: WHEN o usuário pedir acompanhamento com horário explícito de São Paulo THEN o agente SHALL receber o instante atual e fuso da empresa, aceitar instante ISO com offset e persistir o mesmo instante normalizado em UTC; datas sem horário SHALL exigir esclarecimento sem escrita.
+
 ## Out of Scope
 Implementação de infraestrutura remota não integra este gate de código. O deploy demonstrativo foi autorizado e publicado em etapa posterior; configuração de credenciais, alterações remotas no Supabase e UAT real seguem separadas. Operações bancárias e envio externo de cobranças permanecem fora do escopo.
 
@@ -30,5 +32,6 @@ Como equipe, queremos configurar as chaves no servidor e ensaiar voz e conversa 
 | FINAL-03 | T3, T5 | Verified |
 | FINAL-04 | T4 | Verified |
 | FINAL-05 | T6, T7 | Verified |
+| FINAL-06 | T8 | Verified |
 
 Sem questões em aberto para implementação. O ensaio com APIs reais depende das credenciais a serem configuradas pelo usuário e não é declarado realizado.

@@ -72,4 +72,13 @@ describe("agent conversation turns", () => {
     await service.turn(input); await service.turn({ ...input, request_id: "req-2" });
     expect((await deps.tasks.listTasks("demo")).filter((task) => task.status === "pending")).toHaveLength(1);
   });
+
+  it("supplies the current instant and business timezone throughout a tool turn", async () => {
+    const create = vi.fn().mockResolvedValueOnce({ output_text: "", output: [{ type: "function_call", name: "get_cash_snapshot",
+      call_id: "clock-1", arguments: JSON.stringify({ as_of: null }) }] }).mockResolvedValueOnce(response("Consulta concluída."));
+    await createAgentTurnService(dependencies(create)).turn(input);
+    expect(create.mock.calls[0][0].instructions).toContain("2026-10-23T12:00:00.000Z");
+    expect(create.mock.calls[0][0].instructions).toContain("America/Sao_Paulo");
+    expect(create.mock.calls[1][0].instructions).toBe(create.mock.calls[0][0].instructions);
+  });
 });

@@ -13,9 +13,9 @@ const proposalArgs = z.strictObject({
 const scheduleArgs = z.strictObject({
   target_id: z.string().trim().min(1).max(128),
   kind: z.enum(["payment_reminder", "collection_followup", "cash_review"]),
-  due_at: z.iso.datetime().nullable().optional(),
-  explicit_time: z.iso.datetime().nullable().optional(),
-  commitment_due_at: z.iso.datetime().nullable().optional(),
+  due_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  explicit_time: z.iso.datetime({ offset: true }).nullable().optional(),
+  commitment_due_at: z.iso.datetime({ offset: true }).nullable().optional(),
   lead_time_minutes: z.number().int().min(0).nullable().optional(),
   scheduling_reason: z.string().trim().min(1).max(1000),
   stop_condition: z.string().trim().min(1).max(1000),
@@ -36,7 +36,7 @@ export type ToolResult = { output: unknown; task?: ScheduledTask; proposal?: Pro
 export const agentToolDefinitions = [
   { type: "function" as const, name: "get_cash_snapshot", description: "Read the authoritative cash projection for the demo business.", strict: true, parameters: { type: "object", properties: { as_of: { type: ["string", "null"] } }, required: ["as_of"], additionalProperties: false } },
   { type: "function" as const, name: "prepare_proposal", description: "Prepare a user-reviewable financial proposal. Never applies it.", strict: true, parameters: { type: "object", properties: { kind: { type: "string", enum: ["reserve", "draft_collection", "simulate", "change_expected_date"] }, target_id: { type: "string" }, reason: { type: "string" } }, required: ["kind", "target_id", "reason"], additionalProperties: false } },
-  { type: "function" as const, name: "schedule_followup", description: "Persist an internal follow-up. Ask the user when the requested time is ambiguous.", strict: true, parameters: { type: "object", properties: { target_id: { type: "string" }, kind: { type: "string", enum: ["payment_reminder", "collection_followup", "cash_review"] }, due_at: { type: ["string", "null"] }, explicit_time: { type: ["string", "null"] }, commitment_due_at: { type: ["string", "null"] }, lead_time_minutes: { type: ["integer", "null"] }, scheduling_reason: { type: "string" }, stop_condition: { type: "string" } }, required: ["target_id", "kind", "due_at", "explicit_time", "commitment_due_at", "lead_time_minutes", "scheduling_reason", "stop_condition"], additionalProperties: false } },
+  { type: "function" as const, name: "schedule_followup", description: "Persist an internal follow-up. Ask the user when the requested time is ambiguous.", strict: true, parameters: { type: "object", properties: { target_id: { type: "string" }, kind: { type: "string", enum: ["payment_reminder", "collection_followup", "cash_review"] }, due_at: { type: ["string", "null"], format: "date-time", description: "Complete ISO 8601 date-time with Z or an explicit UTC offset. HH:mm or YYYY-MM-DD alone are invalid; use null if unknown and never infer a time." }, explicit_time: { type: ["string", "null"], format: "date-time", description: "Complete user-requested ISO 8601 date-time with Z or an explicit UTC offset, preserving their timezone. HH:mm or YYYY-MM-DD alone are invalid; use null if unknown or ambiguous." }, commitment_due_at: { type: ["string", "null"], format: "date-time", description: "Complete known commitment ISO 8601 date-time with Z or an explicit UTC offset. HH:mm or YYYY-MM-DD alone are invalid. Use null when unknown or when only a due_date (YYYY-MM-DD) is known; never infer a time." }, lead_time_minutes: { type: ["integer", "null"] }, scheduling_reason: { type: "string" }, stop_condition: { type: "string" } }, required: ["target_id", "kind", "due_at", "explicit_time", "commitment_due_at", "lead_time_minutes", "scheduling_reason", "stop_condition"], additionalProperties: false } },
 ];
 
 export async function executeAgentTool(name: string, rawArgs: string, context: AgentToolContext): Promise<ToolResult> {

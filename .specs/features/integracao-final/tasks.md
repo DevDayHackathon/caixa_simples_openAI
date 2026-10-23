@@ -11,6 +11,7 @@ T3 --> T4
 T4 --> T5
 T5 --> T6
 T6 --> T7
+T7 --> T8
 ```
 
 ## Gate Check Commands
@@ -28,6 +29,7 @@ build: npm run check
 | T5 | FINAL-01, FINAL-03 | integração SQL real |
 | T6 | FINAL-05 | gate completo e verificador |
 | T7 | FINAL-05 | preparo SQL concorrente e gate completo |
+| T8 | FINAL-06 | offsets, instantes ambíguos e contexto temporal do modelo |
 
 ## Task Breakdown
 
@@ -111,3 +113,16 @@ T6 publicação concluída: revisão independente PASS e 8/8 mutações detectad
 T7 origem: CI da main consolidada40009173098 falhou em pg_authid_rolname_index ao criar anon; lint/tipos e135unitários PASS, integração98/99; E2E não executado. Trata-se do fixture SQL, não de credenciais ou migração remota.
 
 T7 PASS: lock transacional no banco admin comum; sensor independente reproduziu erro pg_authid no SQL antigo (1/2 processos falha) e ambos passam no novo SQL, com três roles únicas. Roles scratch removidas. npm run check nesta continuidade:135unitários99integrações11E2E, lint/tipos/build PASS, nenhum teste removido/ignorado nem assert alterado. Log local /tmp/folego-continuacao-gate.log; evidência independente em validation.md.
+
+### T8: Corrigir contrato temporal observado na UAT real
+**What**: Alinhar validação e schema de ferramenta para instantes ISO com fuso, instruindo o modelo com instante atual e fuso da empresa.
+**Where**: src/features/agent/tools.ts, src/features/agent/tools.test.ts, src/features/agent/turn.ts, tests/integration/agent-turn.test.ts
+**Depends on**: T7
+**Requirement**: FINAL-06
+**Tests**: unit, integration, e2e
+**Gate**: build
+**Done when**: Horário explícito com offset preserva instante UTC e origem user; data sem horário é rejeitada sem escrita; requests do modelo contêm agora/fuso, gate e revisão independente passam. [x]
+
+T8 origem: U08 real recebeu erro genérico e nenhuma tarefa foi criada. Diagnóstico real sanitizado confirmou due_at com offset, explicit_time em formato não completo e commitment_due_at como data sem horário; parser anterior exigia UTCZ enquanto schema do modelo só anunciava string|null.
+
+T8 PASS: tools.test.ts cobre16:26-03:00→19:26Z persistido/sourceuser e6formatosincompletos sem escrita; agent-turn.test.ts verificaagora/fusonasduaschamadas. Sensor independente2/2mutaçõesmortas. Primeirofullgate142/100/10de11FAILporherançaOPENAIrealnofixturefinanceiro; assertpreservado. Gate comOPENAIexplicitamentevazioPASS142unit100integrações11E2E,lint/tipos/build,semfalhas/skips;log/tmp/folego-time-fix-clean-gate.log. Testecontroladodeserviçorealcriou task51e7bb72-23ab-4282-a1b4-5c3f7b8b05d0para19:32Z(16:32SP),sourceuser;U08apósdeployaindapendente.
