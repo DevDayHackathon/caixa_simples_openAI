@@ -287,12 +287,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): persistência e criação de tarefas`
+
+**Evidence**: `schedule.test.ts` covers explicit and agent-chosen time, lead time, deduplication, changed time, disabled reminders, cancellation/version conflicts, reason/stop condition and persisted context. `supabase-tasks.test.ts` covers task RPC persistence, claims, completion, duplicate notification and context restoration. Full gate: 51 unit, 27 integration and 3 E2E pass; production build and types pass.
 
 ### T13: Executor de ocorrências
 
