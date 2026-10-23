@@ -147,8 +147,10 @@ T8 PASS: tools.test.ts cobre16:26-03:00→19:26Z persistido/sourceuser e6formato
 **Requirement**: FINAL-07
 **Tests**: unit
 **Gate**: build
-**Done when**: Aceita/dispensada preservam estado final sem controles mesmo com revisão nova; pendentes antigas continuam desatualizadas; gate e revisão independente passam. [ ]
+**Done when**: Aceita/dispensada preservam estado final sem controles mesmo com revisão nova; pendentes antigas continuam desatualizadas; gate e revisão independente passam. [x]
 
 T10 origem: U04real gravou reserva50000/version3 corretamente e devolveuaccepted, mas cartão calculava stale por based_on_version2 antes de considerar estado final.
 
 T9 PASS:2fixtures sobrescrevemenvdeprovedores;assertsintactos. Gate normal npmruncheckPASS142unit100integrações11E2E,lint/tipos/build,semwrapper;log/tmp/folego-fixture-isolation-gate.log. RevisãoindependentePASS;evidênciadiscriminantehistórica:fixtureantigofalhavaaoherdarconfiglocal,novofixturepassacom.envlocalconfigurado. NãosealeganovosensormutacionalT9.
+
+T10 PASS:conversation.test.tsx11/11unitinclui2regressõesnovasaccepted/dismissedapósrevisãonova. Sensorindependentemortopelas2regressõesaoretornarcondiçãoantiga. Impeccablecontext/harden/craftflooraplicadossemredesign;detectorretornou[]. Gate normalPASS144unit100integrações11E2E,lint/tipos/build;log/tmp/folego-receipt-gate.log. U04pósdeploycontinuasendoverificado,semdeclaraçãoantecipada.

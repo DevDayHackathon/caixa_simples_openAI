@@ -35,6 +35,6 @@ Como equipe, queremos configurar as chaves no servidor e ensaiar voz e conversa 
 | FINAL-04 | T4 | Verified |
 | FINAL-05 | T6, T7, T9 | Verified |
 | FINAL-06 | T8 | Verified |
-| FINAL-07 | T10 | Implementing |
+| FINAL-07 | T10 | Verified |
 
 Sem questões em aberto para implementação. O ensaio com APIs reais depende das credenciais a serem configuradas pelo usuário e não é declarado realizado.
