@@ -84,3 +84,25 @@ create function public.finance_preview_read(p_id text) returns jsonb language sq
 $$;
 revoke execute on function public.finance_preview_save(text,jsonb), public.finance_preview_read(text) from public, anon, authenticated;
 grant execute on function public.finance_preview_save(text,jsonb), public.finance_preview_read(text) to service_role;
+
+-- Bruno can attach an AFTER INSERT trigger in 002_tasks.sql to cancel related tasks
+-- inside this same transaction. No dependency on his yet-to-be-created tables.
+create table public.finance_resolutions (
+  business_id text not null, transaction_id text not null, version bigint not null,
+  status text not null check (status in ('settled','cancelled')),
+  primary key (business_id, transaction_id, version)
+);
+alter table public.finance_resolutions enable row level security;
+revoke all on public.finance_resolutions from public, anon, authenticated;
+grant select, insert on public.finance_resolutions to service_role;
+create function public.finance_record_resolution() returns trigger language plpgsql security invoker set search_path = '' as $$
+begin
+  insert into public.finance_resolutions
+    select new.business_id, t->>'id', (t->>'version')::bigint, t->>'status'
+    from jsonb_array_elements(new.data->'transactions') t
+    join jsonb_array_elements(old.data->'transactions') previous on previous->>'id' = t->>'id'
+    where previous->>'status' = 'pending' and t->>'status' in ('settled','cancelled');
+  return new;
+end $$;
+revoke execute on function public.finance_record_resolution() from public, anon, authenticated;
+create trigger finance_resolution after update on public.finance_state for each row execute function public.finance_record_resolution();

@@ -226,8 +226,8 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | CASH-02 | P1: MVP | Tasks | In Progress | T4, T15 |
 | CASH-03 | P1: MVP | Tasks | Pending | T6, T8, T17, T21, T22 |
 | CASH-04 | P1: MVP | Tasks | Pending | T6, T17 |
-| CASH-05 | P1: MVP | Tasks | Pending | T5, T17 |
-| CASH-06 | P1: MVP | Tasks | Pending | T5 |
+| CASH-05 | P1: MVP | Tasks | In Progress | T5, T17 |
+| CASH-06 | P1: MVP | Tasks | In Progress | T5 |
 | AGENT-01 | P1: MVP | Tasks | Pending | T1, T9, T10, T18 |
 | AGENT-02 | P1: MVP | Tasks | Pending | T9, T10, T18 |
 | VOICE-01 | P1: MVP | Tasks | Pending | T19, T21 |

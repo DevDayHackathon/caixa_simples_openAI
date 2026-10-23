@@ -23,3 +23,9 @@ Gate: npm run check, sem skip/remoção. Casos novos: 10. Log: output/finance-lo
 Calculo puro: F1 100000/300000/150000, janela fixa ate 21/11, vazio/zero, abertura, realizados, incerteza, dividas vencidas, reservas, overflow e escopo. Somatorios BigInt validados como centavos seguros. Testes: src/features/finance/cash.test.ts. Gate quick: 25 unitarios, lint e tipos verdes.
 
 Gate: npm run check, sem skip/remoção. Casos novos: 10. Log: output/finance-local/t4-gate.log.
+
+## T5
+
+Criacao idempotente, alteracao com vencimento preservado, CAS concorrente, liquidacao unica, finais imutaveis, cancelamento/liberacao, chave conflitante e rollback de gancho. finance_resolutions permite a Bruno anexar trigger em 002_tasks.sql na mesma transacao; tarefas reais continuam responsabilidade de T12/T13/T21. Testes: tests/integration/finance/transactions.test.ts. Gate: 25 unitarios, 30 integracao, 3 E2E.
+
+Gate: npm run check, sem skip/remoção. Casos novos: 8. Log: output/finance-local/t5-gate.log.
