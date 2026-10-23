@@ -74,3 +74,11 @@ Testes automatizados devem usar Postgres local e OpenAI simulado. O cluster temp
 - README, guias de integração/deploy/testes, revisão/UAT, spec e tasks foram reconciliados. T6 e FINAL-05 fecham publicação/merge do código; UAT U01–U13 real continua pendente. Relatório independente mantém suas evidências históricas e acrescenta esta conferência.
 - Próxima ação dependente do usuário: confirmar variáveis prontas e identificar banco demo autorizado. Só então inspecionar migrações existentes, aplicar001–003 faltantes, configurar extensões/Vault/Cron, redeployar o mesmo projeto e executar UAT. Não executar suítes destrutivas no banco remoto.
 - Preservados AGENTS.md não rastreado e exclusão de fluxo_agente_proativo.png, fora dos commits.
+
+### Publicação Git desta continuidade
+
+- Configuração `871a619` e documentação `8c18a81` publicadas no PR4: https://github.com/DevDayHackathon/caixa_simples_openAI/pull/4 . Merge confirmado por API em `8e8e6ffe1923bee4e9a0790da850a1d022d3b61b`, 2026-10-23T19:09:30Z. Checkout e main local sincronizados por avanço rápido.
+- CI do PR4: https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40009124996 ; CI da main consolidada: https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40009173098 . Ambos em andamento na última consulta; o repositório permitiu o merge sem aguardar a conclusão. Não foram apresentados como aprovados.
+- `vercel inspect` reconfirmou o deployment `dpl_4SKfLAyz3Lxm9hNEVN8VpPkuctpf` Ready e o alias canônico preservado.
+- Supabase conectado contém projeto `fôlego`, ref `optwdryxvpnqdumzexcs`, ACTIVE_HEALTHY. Consultas somente leitura listaram zero migrações registradas e zero tabelas públicas. Isso não constitui autorização: usuário foi consultado para confirmar se é o banco demo antes de qualquer escrita. Nenhuma chave foi obtida.
+- Próxima ação: aguardar confirmação do banco demo e variáveis prontas, então executar configuração/migrações/redeploy/UAT. Conferir resultados finais dos CIs acima antes de afirmar aprovação pós-merge.
