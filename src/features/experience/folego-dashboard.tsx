@@ -61,11 +61,19 @@ export function FolegoDashboard({
   snapshot,
   transactions,
   reserveThreshold = 0,
+  financePort,
+  onFinancialAction,
+  controls,
 }: {
   snapshot: CashSnapshot;
   transactions: Transaction[];
   reserveThreshold?: number;
+  financePort?: FinancePort;
+  onFinancialAction?: () => void;
+  controls?: React.ReactNode;
 }) {
+  const persisted = snapshot.source === "user_data";
+  const activeFinance = financePort ?? finance;
   const [tool, setTool] = useState<Tool | null>(null),
     [simulation, setSimulation] = useState<Simulation | null>(null),
     [refresh, setRefresh] = useState(0),
@@ -83,7 +91,7 @@ export function FolegoDashboard({
         b.expected_date ?? b.due_date,
       ) || a.id.localeCompare(b.id),
   );
-  const onAction = () => setRefresh((n) => n + 1);
+  const onAction = () => { setRefresh((n) => n + 1); setSimulation(null); setScenarioRevision(n => n + 1); onFinancialAction?.(); };
   const summary = negative
     ? `A ${simulation ? "hipótese" : "previsão"} mostra um saldo mínimo de ${money(visible.minimum_balance_cents)}. Confira o período negativo antes de decidir sobre uma alteração.`
     : `A previsão recebida não apresenta dias negativos nos próximos 30 dias, com mínimo de ${money(visible.minimum_balance_cents)}. Os compromissos previstos já fazem parte dessa projeção.`;
@@ -112,7 +120,8 @@ export function FolegoDashboard({
               {shortDate(first)} — {shortDate(last)}, {first.slice(0, 4)}
             </strong>
           </span>
-          <span className="folego-demo-dot">Dados simulados</span>
+          <span className="folego-demo-dot">{persisted ? "Dados fictícios persistidos" : "Dados simulados"}</span>
+          <a href={persisted ? "/" : "/caixa"}>{persisted ? "Ver prévia simulada" : "Abrir caixa persistido"}</a>
           <span className="folego-avatar" aria-label="Empresa demonstrativa">
             DE
           </span>
@@ -143,9 +152,9 @@ export function FolegoDashboard({
           <div className="folego-scenario-banner" role="status">
             <span className="folego-scenario-label">
               <Icon name="clock" />
-              Hipótese F1 ativa
+              {persisted ? "Hipótese ativa" : "Hipótese F1 ativa"}
             </span>
-            <span>Recebimento em 1 nov. A base continua preservada.</span>
+            <span>A base continua preservada.</span>
             <button
               className="folego-link-button"
               onClick={() => {
@@ -258,7 +267,7 @@ export function FolegoDashboard({
             </div>
             <p className="folego-risk-intro">
               {negative
-                ? "A hipótese cruza o zero. Reveja as datas antes de confirmar uma mudança."
+                ? `${simulation ? "A hipótese" : "A previsão"} cruza o zero. Reveja as datas antes de confirmar uma mudança.`
                 : "Esta previsão não apresenta dias negativos na janela de 30 dias."}
             </p>
             <div className="folego-risk-figure">
@@ -376,7 +385,7 @@ export function FolegoDashboard({
               <span>Previsões não confirmam recebimento ou pagamento.</span>
             </div>
           </section>
-          <aside className="folego-panel folego-ai-panel">
+          {!persisted && <aside className="folego-panel folego-ai-panel">
             <div className="folego-ai-top">
               <span className="folego-ai-brand">
                 <span>
@@ -409,27 +418,28 @@ export function FolegoDashboard({
               <span className="folego-live-dot" />
               Agente simulado · nenhuma IA chamada nesta prévia
             </div>
-          </aside>
+          </aside>}
         </div>
-        <section id="folego-followup" className="folego-followup">
+        {controls}
+        {!persisted && <section id="folego-followup" className="folego-followup">
           <div className="folego-section-kicker">
             <span>ACOMPANHAMENTO</span>
             <span>Avisos de tarefas, separados da conversa</span>
           </div>
           <Inbox agent={agent} refreshKey={refresh} />
-        </section>
+        </section>}
         <details id="folego-details" className="folego-details">
           <summary>
             Resumo detalhado e saldos por dia <Icon name="chevron" />
           </summary>
           <CashPanel snapshot={visible} />
         </details>
-        <details className="folego-demo-details">
+        {!persisted && <details className="folego-demo-details">
           <summary>Ver resposta de exemplo</summary>
           <p>{agentReplyFixture.reply_text}</p>
-        </details>
+        </details>}
         <footer className="folego-source">
-          <p>Modo de desenvolvimento · dados simulados</p>
+          <p>{persisted ? "Empresa demonstrativa · dados fictícios persistidos" : "Modo de desenvolvimento · dados simulados"}</p>
           <p>Sem integração bancária ou chamadas de IA nesta base.</p>
           <p>
             Reservas virtuais · cobranças em rascunho · projeção limitada a 30
@@ -438,9 +448,7 @@ export function FolegoDashboard({
           <details>
             <summary>Sobre os dados desta prévia</summary>
             <p>
-              Atualização: {snapshot.updated_at}. Importação e mutações aguardam
-              os adaptadores reais. Áudio depende da integração de sessão e
-              limites persistidos; o texto continua disponível.
+              Atualização: {snapshot.updated_at}. {persisted ? "Conversa, iniciativas e voz aguardam integração do agente e limites persistidos. Use as ações financeiras manuais." : "Importação e mutações aguardam os adaptadores reais. Áudio depende da integração de sessão e limites persistidos; o texto continua disponível."}
             </p>
           </details>
         </footer>
@@ -450,7 +458,7 @@ export function FolegoDashboard({
         open={tool === "import"}
         onClose={() => setTool(null)}
       >
-        <ImportPanel finance={finance} onAction={onAction} />
+        <ImportPanel finance={activeFinance} onAction={onAction} />
       </ToolDialog>
       <ToolDialog
         title={toolTitles.scenario}
@@ -459,14 +467,14 @@ export function FolegoDashboard({
       >
         <ScenarioPanel
           key={scenarioRevision}
-          finance={finance}
+          finance={activeFinance}
           snapshot={snapshot}
           transactions={transactions}
           onAction={onAction}
           onSimulated={setSimulation}
         />
       </ToolDialog>
-      <ToolDialog
+      {!persisted && <ToolDialog
         title={toolTitles.conversation}
         open={tool === "conversation"}
         onClose={() => setTool(null)}
@@ -477,7 +485,7 @@ export function FolegoDashboard({
           onAction={onAction}
           voiceActive={tool === "conversation"}
         />
-      </ToolDialog>
+      </ToolDialog>}
       {tool === "explanation" && (
         <ToolDialog
           title={toolTitles.explanation}
