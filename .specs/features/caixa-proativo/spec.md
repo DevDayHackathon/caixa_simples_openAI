@@ -237,10 +237,10 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | PRO-02 | P1: MVP | Tasks | Pending | T11 |
 | PRO-03 | P1: MVP | Tasks | Pending | T11, T14, T18 |
 | PRO-04 | P1: MVP | Tasks | Pending | T11, T20 |
-| RES-01 | P1: MVP | Tasks | Pending | T7, T8, T18 |
-| RES-02 | P1: MVP | Tasks | Pending | T7 |
-| RES-03 | P1: MVP | Tasks | Pending | T7, T21 |
-| RES-04 | P1: MVP | Tasks | Pending | T7 |
+| RES-01 | P1: MVP | Tasks | In Progress | T7, T8, T18 |
+| RES-02 | P1: MVP | Tasks | In Progress | T7 |
+| RES-03 | P1: MVP | Tasks | In Progress | T7, T21 |
+| RES-04 | P1: MVP | Tasks | In Progress | T7 |
 | TASK-01 | P1: MVP | Tasks | Pending | T1, T12 |
 | TASK-02 | P1: MVP | Tasks | Pending | T13, T14, T22 |
 | TASK-03 | P1: MVP | Tasks | Pending | T13, T20, T21 |

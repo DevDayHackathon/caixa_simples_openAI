@@ -35,3 +35,9 @@ Gate: npm run check, sem skip/remoção. Casos novos: 8. Log: output/finance-loc
 Simulacao F1: -50000 em todos os dias 27-31/10, recuperacao 150000 em 01/11, affected_dates exatas, base preservada, atraso alem da janela, valor hipotetico, versao/ID/duplicata/finais/overflow. Testes: src/features/finance/scenarios.test.ts. Gate quick: 31 unitarios, lint e tipos verdes.
 
 Gate: npm run check, sem skip/remoção. Casos novos: 6. Log: output/finance-local/t6-gate.log.
+
+## T7
+
+F2 saldo100000/reserva50000/livre50000, reconfirmacao, pagamento saldo50000 e reserva0, excesso com disponivel, limite devido/tipo/final, concorrencia, conflito de valor/reducao e stale. Testes: tests/integration/finance/reservations.test.ts. Gate: 31 unitarios, 38 integracao, 3 E2E.
+
+Gate: npm run check, sem skip/remoção. Casos novos: 8. Log: output/finance-local/t7-gate.log.
