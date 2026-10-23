@@ -1,6 +1,6 @@
 # Caixa proativo — Tasks
 
-**Status**: Draft; nenhum item executado. Plano para revisão antes de criar branches.
+**Status**: In Progress; T1 concluída e verificada. T2–T22 pendentes; branches ainda não criadas.
 
 ## Execution Protocol
 
@@ -10,7 +10,7 @@ O pedido do usuário autoriza três pessoas trabalhando em paralelo. Isso preval
 
 ## Test Coverage Matrix
 
-Gerada pela inspeção: não existe app, manifesto ou suíte. Aplicados defaults fortes. Tipos propostos para confirmação; comandos abaixo serão criados e validados em T1, não existem hoje.
+Gerada inicialmente sem aplicação. T1 agora materializa package.json, Vitest e Playwright; manter os defaults fortes para as próximas camadas. Integração T1 testa clientes/mocks; persistência real pertence às tarefas seguintes.
 
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | --- | --- | --- | --- | --- |
@@ -25,15 +25,15 @@ Gerada pela inspeção: não existe app, manifesto ou suíte. Aplicados defaults
 | --- | --- | --- |
 | Quick | Tarefas unitárias | npm run test:unit |
 | Full | Persistência, rotas e composição | npm run test:unit && npm run test:integration && npm run test:e2e |
-| Build | Fechamento | npm run typecheck && npm run lint && npm run build && npm run test:unit && npm run test:integration && npm run test:e2e |
+| Build | Fechamento | npm run check |
 
-Estes são contratos de scripts propostos, não comandos descobertos no projeto. T1 deve materializá-los; antes disso nenhum Execute dependente pode começar. Full roda os testes existentes das camadas indicadas; testes não podem ser removidos/ignorados para obter verde. Contagens abaixo são mínimos novos por tarefa, e não totais da suíte. Infraestrutura isolada é obrigatória para testes de escrita.
+Scripts materializados e validados em package.json pela T1. test:e2e compila produção antes de iniciar seu servidor; check inclui lint, tipos, testes e esse build. Full roda os testes existentes das camadas indicadas; testes não podem ser removidos/ignorados para obter verde. Contagens abaixo são mínimos novos por tarefa, e não totais da suíte. Infraestrutura isolada é obrigatória para testes de escrita.
 
 ## Execution Plan
 
 ### Phase 1: Base compartilhada
 
-T1 é concluída em main antes de criar as três branches de implementação. Esta etapa está planejada, não foi executada.
+T1 concluída na main; a criação das branches ainda não foi executada.
 
 ### Phase 2: Três cadeias paralelas
 
@@ -88,7 +88,7 @@ T21 -> T22
 
 ### T1: Base comum e contratos executáveis
 
-**Owner**: Daniel + revisão dos três
+**Owner**: Implementada pelo agente principal a pedido do usuário; Daniel segue responsável por T2–T8.
 **What**: Incorporar a configuração Vercel Hobby/Supabase Free do guia, sem provisionamento, e Fixar stack, lockfile, schemas v1, fixtures F1/F2, mocks e scripts de gates; rejeitar schema inválido e provar mocks compatíveis.
 **Where**: `package.json`
 **Depends on**: None
@@ -96,12 +96,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 3 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Base técnica e partes estruturais dos critérios vinculados verificadas; os critérios completos de produto continuam pendentes nas tarefas seguintes.
+- [x] Pelo menos 3 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
-**Commit**: `feat(base): base comum e contratos executáveis`
+**Commit**: `feat(base): prepare shared contracts and development scaffold`
+
+**Evidence**: `t1-checks.md`; gate npm run check: 15 unitários, 6 integração e 3 E2E passaram; tipos, lint e build verdes.
 
 ### Phase 2: Desenvolvimento paralelo
 

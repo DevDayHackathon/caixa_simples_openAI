@@ -33,4 +33,8 @@ Usuário determinou Vercel grátis e Supabase grátis. Decisão fechada de ambie
 
 ## Agendamento aceito após a revisão
 
-O usuário aceitou que o agente escolhe previamente quando avisar e que a verificação leve permanece no Supabase. O banco só chama Vercel se houver tarefa vencida elegível. Zero chamadas Vercel/OpenAI sem trabalho. O pedido explícito do usuário prevalece sobre horário sugerido. As branches ainda não foram criadas nem o bootstrap executado.
+O usuário aceitou que o agente escolhe previamente quando avisar e que a verificação leve permanece no Supabase. O banco só chama Vercel se houver tarefa vencida elegível. Zero chamadas Vercel/OpenAI sem trabalho. O pedido explícito do usuário prevalece sobre horário sugerido. Esse agendamento ainda será implementado nas tarefas de Bruno.
+
+## Entrega T1
+
+Usuário solicitou que o agente principal implementasse a base e escolheu explicitamente não delegar sua implementação. T1 foi concluída e verificada na main, sem iniciar as três frentes. A stack está materializada em package.json; credenciais reais não foram utilizadas. Branches e publicação continuam pendentes.

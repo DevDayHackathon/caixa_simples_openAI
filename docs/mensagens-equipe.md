@@ -1,12 +1,12 @@
 # Mensagens prontas para a equipe
 
-Estado real: documentação pronta, aplicação não iniciada, T1 pendente e nenhuma das três branches criada. Estes textos são para copiar e enviar; nenhuma mensagem foi enviada automaticamente. Jecky, Daniel e Bruno são os três responsáveis propostos. Não presumimos qual deles é o usuário desta conversa.
+Estado real: T1 implementada e verificada; funcionalidades de produto e três branches ainda pendentes. A base foi implementada pelo agente principal por solicitação do usuário. Estes textos são para copiar e enviar; nenhuma mensagem foi enviada automaticamente. Jecky, Daniel e Bruno são os três responsáveis propostos. Não presumimos qual deles é o usuário desta conversa.
 
 ## Antes de enviar o sinal de início
 
-Não é necessário desenvolver o produto antes dos colegas. É necessário concluir a base T1, uma única vez. Proposta: Daniel prepara a base na main, com revisão de Jecky e Bruno. Qualquer integrante pode assumir T1, desde que os demais não recriem o scaffold em suas branches.
+Não é necessário desenvolver o produto antes dos colegas. A base T1 já foi preparada e validada na main; Daniel não precisa refazê-la. Os integrantes devem partir desse mesmo commit e não recriar o scaffold nas suas branches.
 
-Checklist concreto de T1:
+Checklist atendido pela entrega T1:
 
 1. Aplicação Next.js/TypeScript com Tailwind, validação, lockfile e configuração compatível com Vercel Hobby. Página mínima abre, sem desenvolver ainda as telas finais.
 2. Schemas/tipos v1 em `src/contracts/`, interfaces FinancePort/AgentTurn, envelopes de resposta/erro, datas/centavos e campos completos de ScheduledTask. Os tipos expõem o mesmo contrato para os três.
@@ -21,11 +21,11 @@ Só então criar as três branches do mesmo commit-base e informar esse hash aos
 ## Mensagem para Daniel — base comum, depois caixa e dados
 
 ```text
-Daniel, você ficará responsável pela base comum inicial e pela área financeira do nosso agente de caixa.
+Daniel, você ficará responsável pela área financeira do nosso agente de caixa. A base comum T1 já foi implementada e verificada.
 
 Na raiz do clone, leia README.md, .specs/STATE.md, os documentos de .specs/features/caixa-proativo/ e docs/deploy-gratuito.md. Ative as skills tlc-spec-driven e karpathy-guidelines; se a primeira não estiver disponível, avise antes de implementar. Considere somente as tarefas atribuídas a você. A execução paralela humana está autorizada; não dispare outros agentes de implementação por conta própria.
 
-Primeiro faça apenas T1 na main: configuração Next.js/TypeScript, contratos/schemas compartilhados, fixtures F1/F2, mocks/adaptadores, .env.example sem chaves, lockfile e scripts/testes. Use o checklist em docs/mensagens-equipe.md. Não desenvolva as funcionalidades financeiras completas nessa base. Ao terminar, informe BASE COMUM PRONTA, hash e resultados dos gates. Espere as branches serem criadas a partir desse commit antes de continuar.
+Antes de começar, leia docs/base-comum.md, rode npm ci e npm run check. Não refaça T1. Aguarde as três branches nascerem do mesmo commit-base e confirme que o seu clone está nesse histórico.
 
 Depois trabalhe em feat/daniel-caixa-dados, tarefas T2–T8, respeitando suas dependências. Área: src/features/finance/, src/app/api/finance/ e migração 001_finance.sql. Entregue CSV atômico/idempotente, contas, cálculo em centavos, projeção de 30 dias, alterações versionadas, cenários isolados e reservas virtuais.
 

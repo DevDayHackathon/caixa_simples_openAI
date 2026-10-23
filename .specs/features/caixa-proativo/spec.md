@@ -1,6 +1,6 @@
 # Caixa proativo — Specification
 
-Status: especificação de produto pronta para revisão; implementação não iniciada.
+Status: T1 implementada e verificada; funcionalidades de produto ainda pendentes em T2–T22.
 Data: 2026-10-23. Prioridades: P1 = MVP; P2 = evolução; P3 = futuro.
 
 ## Problem Statement

@@ -5,7 +5,7 @@ Status: proposta para revisão. Três branches planejadas, nenhuma criada nesta 
 ## Base comum antes do paralelo
 
 1. Revisar requisitos, defaults, stack e ownership juntos.
-2. Daniel prepara T1 em main e os três revisam: configuração única, contratos executáveis, fixtures, mocks, scripts e lockfile. Essa implementação ainda não foi iniciada.
+2. T1 foi implementada e verificada na main pelo agente principal a pedido do usuário: configuração, contratos, fixtures, mocks, scripts e lockfile. Os três revisam o commit-base e não recriam a base.
 3. Criar exatamente uma branch para cada integrante a partir do mesmo commit de T1.
 4. Cada pessoa usa um clone ou worktree próprio. Trocar de branch no mesmo diretório não permite trabalho simultâneo de três pessoas.
 
@@ -63,7 +63,7 @@ Branches partem do mesmo commit. Sincronizar base antes de integrar. Ordem propo
 
 ## Mensagens de início para uso com IA
 
-Os textos completos e atualizados estão em [mensagens-equipe.md](mensagens-equipe.md), com uma mensagem específica para Daniel, Jecky e Bruno. Daniel prepara T1 na main e comunica o commit-base. Jecky e Bruno só implementam quando suas branches partirem dessa base; não recriam scaffold ou contratos.
+Os textos completos e atualizados estão em [mensagens-equipe.md](mensagens-equipe.md), com uma mensagem específica para Daniel, Jecky e Bruno. T1 já está concluída na main; compartilhar seu commit-base. Jecky e Bruno só implementam quando suas branches partirem dessa base; não recriam scaffold ou contratos.
 
 ## Hospedagem gratuita confirmada
 
@@ -71,4 +71,4 @@ Todos seguem [deploy-gratuito.md](deploy-gratuito.md). Jecky limita áudio e evi
 
 ## Controle de prontidão
 
-T1 ainda pendente. O checklist em mensagens-equipe.md define o mínimo que precisa estar pronto antes das três branches. Separar preparação local de compartilhamento remoto: não pressupor que um commit local já está disponível no clone dos colegas. Só marcar requisito compartilhado Verified após todas as tarefas relacionadas e gates necessários.
+T1 concluída e verificada. O checklist em mensagens-equipe.md define o mínimo que precisa estar pronto antes das três branches. Separar preparação local de compartilhamento remoto: não pressupor que um commit local já está disponível no clone dos colegas. Só marcar requisito compartilhado Verified após todas as tarefas relacionadas e gates necessários.

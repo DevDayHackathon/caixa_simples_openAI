@@ -2,7 +2,25 @@
 
 Projeto do tema 13: Painel de caixa para pequenos negócios.
 
-**Estado atual:** especificações e planejamento. A aplicação ainda não foi implementada. Não há instalação ou comandos de execução disponíveis nesta etapa.
+**Estado atual:** T1 implementada e verificada na main. A base roda sem credenciais com dados simulados. Funcionalidades reais do produto serão implementadas em T2–T22. As três branches ainda não foram criadas.
+
+## Rodar a base
+
+Node 24 e npm:
+
+```bash
+npm ci
+npm run dev
+```
+
+Abrir http://localhost:3000. Não é preciso configurar Supabase nem OpenAI para a T1.
+
+```bash
+npm run test:e2e:install
+npm run check
+```
+
+O gate roda lint, tipos, 15 testes unitários, 6 de integração e 3 E2E. Os E2E compilam e testam a aplicação em produção local. Ver [guia da base comum](docs/base-comum.md) para interfaces, mocks, testes e banco local futuro.
 
 ## Leitura inicial
 
@@ -29,7 +47,7 @@ python3 /home/mestre/.agents/skills/tlc-spec-driven/scripts/validate_spec.py cai
 python3 /home/mestre/.agents/skills/tlc-spec-driven/scripts/validate_tasks.py caixa-proativo --strict
 ```
 
-Os comandos npm de tasks.md são uma proposta a materializar em T1. Nenhuma suíte de produto passou nesta etapa; somente os gates estruturais da documentação foram executados.
+Os comandos npm de tasks.md já existem. A validação T1 cobre a base técnica e os contratos com fixtures; não comprova persistência, agente real ou agendamento. A [verificação de T1](.specs/features/caixa-proativo/t1-checks.md) registra evidências e limites.
 
 ## Hospedagem alvo confirmada
 
@@ -37,4 +55,4 @@ Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gra
 
 ## Início do trabalho da equipe
 
-[Mensagens prontas por integrante e checklist de T1](docs/mensagens-equipe.md). O agente escolhe horários; Supabase verifica elegibilidade localmente e só chama Vercel com trabalho vencido, sem Cron Vercel. Bootstrap e branches permanecem pendentes.
+[Mensagens prontas por integrante](docs/mensagens-equipe.md). Bootstrap pronto; branches e compartilhamento remoto pendentes. O projeto preserva o plano de agente que escolhe horários e gate SQL que só chama Vercel com trabalho vencido, sem Cron Vercel. Esse agendamento ainda não está implementado.

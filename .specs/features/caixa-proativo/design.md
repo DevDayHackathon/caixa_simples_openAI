@@ -1,7 +1,7 @@
 # Caixa proativo — Design proposto
 
 **Spec**: `.specs/features/caixa-proativo/spec.md`
-**Status**: Draft. Recomendação pronta para revisão; sem implementação nem provisionamento.
+**Status**: base T1 implementada; domínio, persistência e integrações reais ainda planejados. Sem provisionamento.
 
 ## Architecture Overview
 
@@ -15,7 +15,7 @@ Alternativas de mesmo escopo:
 | React + FastAPI + Postgres + worker | Python para agente e worker separado | Duas linguagens e mais contratos/deploys para três pessoas | Viável, mais integração |
 | Next.js + Postgres + fila dedicada | Controle de execução e retries | Serviço adicional para administrar | Desnecessário neste recorte |
 
-O usuário solicitou recomendação direta; aprovação desta proposta ocorre antes do bootstrap, junto da divisão de branches. Não há decisão de stack registrada como aprovada em STATE.md.
+O usuário autorizou implementar a base com esta stack, sem delegar a implementação. T1 materializa configurações e contratos; não implementa os demais componentes.
 
 ## Stack
 
@@ -81,7 +81,7 @@ Uma notificação gerada com a aba fechada fica no banco até o próximo acesso.
 
 ## Code Reuse Analysis
 
-Não há aplicação existente. Documentos e fixture são a fonte de comportamento. O HTML é explicação de fluxo, não frontend a reaproveitar como aplicação. Nenhum scaffold ou dependência foi instalado.
+T1 introduziu src/contracts/, src/adapters/ e src/fixtures/ para as frentes seguintes reutilizarem. A tela mínima fica em src/app/page.tsx. O HTML anterior é explicação de fluxo, não a aplicação. Versões exatas constam de package.json e package-lock.json.
 
 ## Research
 

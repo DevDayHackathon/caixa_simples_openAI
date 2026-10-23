@@ -1,6 +1,6 @@
 # Contratos v1 — fronteiras do trabalho paralelo
 
-Status: proposta funcional; converter em tipos e schemas durante T1, antes de implementar consumidores. Alterações de contrato depois disso exigem atualização conjunta dos mocks e testes. Valores em centavos; datas civis ISO; instantes UTC.
+Status: tipos, schemas e portas v1 materializados em src/contracts/ pela T1, com fixtures e adaptadores. Alterações de contrato depois disso exigem atualização conjunta dos mocks e testes. Valores em centavos; datas civis ISO; instantes UTC.
 
 ## Entidades
 

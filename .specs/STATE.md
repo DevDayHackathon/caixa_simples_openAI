@@ -37,8 +37,9 @@
 ## Handoff
 
 - **Feature**: `.specs/features/caixa-proativo/`
-- **Phase / Task**: especificação e proposta de divisão; nenhuma tarefa de produto executada.
-- **Completed**: spec.md, context.md, design.md proposto, contracts.md, tasks.md, fixture, README e divisão da equipe; validate_spec e validate_tasks passaram em modo strict, sem erros ou avisos. Git inicializado em main.
-- **Next step**: entregar mensagens específicas e checklist de T1 em docs/mensagens-equipe.md; T1 não iniciada e branches não criadas. Depois, revisar stack e divisão com implantação gratuita confirmada, antes de criar as três branches. Guia em docs/deploy-gratuito.md. HOST-01 a HOST-04 adicionados; áudio até 3 MiB.
-- **Blockers**: revisão da proposta técnica antes de Execute; sem autorização de publicação remota.
-- **Branch**: main; nenhuma branch da equipe foi criada. As próximas branches propostas são feat/jecky-experiencia-voz, feat/daniel-caixa-dados e feat/bruno-agente-proativo, após revisão e base comum T1. T1 não executada.
+- **Phase / Task**: T1 concluída na main; restante não iniciado.
+- **Completed**: Configuração Next.js/TS/Tailwind/Node24, lockfile, schemas e portas v1, F1/F2, mocks, clientes HTTP, página/endpoint demo, env de exemplo e guia. npm run check passou: 15 unitários, 6 integração e 3 E2E, lint/tipos/build. Sensor em cópia temporária detectou 2/2 falhas. Evidência em t1-checks.md.
+- **Next step**: compartilhar o commit-base e criar as três branches já propostas, quando solicitado. T2–T22 ainda pendentes; nenhum requisito completo de produto marcado Verified.
+- **Blockers**: nenhum para iniciar as frentes após criação/compartilhamento das branches. Sem push, deploy ou provisionamento remoto nesta entrega.
+- **Uncommitted files**: remoção preexistente de fluxo_agente_proativo.png preservada e excluída do commit de T1.
+- **Branch**: main; nenhuma branch de integrante criada.
