@@ -352,12 +352,26 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): painel de caixa`
+
+**Evidence (Jecky)**: `npm run test:unit`: 21/21; 6 novos testes. Mocks v1, sem cálculo financeiro no cliente.
+
+| Critério / mapeamento reverso | Evidência e asserção | Resultado |
+| --- | --- | --- |
+| CASH-01, realizados F1 | `src/features/experience/cash-panel.test.tsx:10` — `expect(result).toContain('1.000,00')`; realizados zero | PASS; manter |
+| CASH-02, fechamentos | `src/features/experience/cash-panel.test.tsx:14` — `expect(result).toContain('3.000,00')` e 1.500,00 | PASS; manter |
+| Reservado/livre recebidos | `src/features/experience/cash-panel.test.tsx:18` — `expect(result).toContain('876,54')` e 123,45 | PASS; manter |
+| DATA-04 e incertos/negativos | `src/features/experience/cash-panel.test.tsx:22` — fonte e updated_at; :23 intervalo e exclusão | PASS; manter |
+| Vazio/erro sem saldo real | `src/features/experience/cash-panel.test.tsx:25` e :26 — `expect(result).not.toContain('R$')` | PASS; manter |
+
+Adequação: critérios locais cobertos; testes necessários e sem skips; contratos e áreas alheias preservados. Requisitos compartilhados continuam Pending.
+
+**Revisão final T15**: asserções específicas por indicador em `src/features/experience/cash-panel.test.tsx:30` e :31 verificam entradas/saídas exatamente `R$ 0,00`. Teste adicional conserva os anteriores.
 
 ### T16: Experiência de importação
 
@@ -369,12 +383,18 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): experiência de importação`
+
+**Evidence (Jecky)**: 27 unitários (6 novos); typecheck verde testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Tabela de cobertura e mapeamento reverso: `src/features/experience/import-panel.test.tsx:12` — `expect(input).toEqual({preview_id:... ,idempotency_key:key})`, resultado 2 importadas (DATA-01/03); :13 payload saldo 100000/data/CSV intacto (DATA-01); :14 erro linha 2/amount e botão disabled, correção invalida prévia (DATA-02); :15 arquivo >1 MiB não chama porta (limite); :16 saldo alterado remove confirmação (prévia coerente); :17 `queryByText(/movimentações importadas/)` null em falha (não simular sucesso). Todos PASS e manter.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T17: Comparação de cenários
 
@@ -386,12 +406,18 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): comparação de cenários`
+
+**Evidence (Jecky)**: 33 unitários (6 novos); typecheck verde testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura e reverso em `src/features/experience/scenario-panel.test.tsx`: :11 — mínimo -500, intervalo 27–31/10 e 1.500 em 01/11 (CASH-03); :12 — override/data/base_version exatos, `expect(update).not.toHaveBeenCalled()` e previsão original preservada (CASH-04); :13 — patch só expected_date com expected_version 1 (CASH-05); :14 — alerta e ausência de hipótese após erro; :15 — mudar data remove hipótese; :16 — vazio sem alterar. Todos PASS; manter por T17/ACs. Somente cenário F1 explicitamente injetado na composição; demais operações mock rejeitam.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T18: Conversa e decisões sobre propostas
 
@@ -403,12 +429,20 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): conversa e decisões sobre propostas`
+
+**Evidence (Jecky)**: 41 unitários (8 novos); typecheck verde testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso em `src/features/experience/conversation.test.tsx`: :12 — payload completo origin=user/request_id/message e resposta (AGENT-01); :13 — esclarecimento sem Proposta aceita (AGENT-02); :14 — aceite com ID/alvo/versão e sem estado presumido (RES-01 na UI); :15 — mensagens de ajuste/dispensa exatas; :16 e :19 — stale/versão divergente sem botão Aceitar; :17 — rascunho com fatos e sem envio (PRO-03); :18 — texto preservado, envio reabilitado e ausência de sucesso na falha (VOICE-03). Todos PASS; manter. Decisões utilizam AgentPort.turn; não foi inventado endpoint ou payload estruturado ausente no contrato v1.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
+
+**Correção da revisão independente**: `currentVersion` considera a versão financeira atual recebida por prop e a do último turno. `src/features/experience/conversation.test.tsx:20` re-renderiza com versão 2 e exige ausência de Aceitar para proposta da versão 1. Regressão aprovada; gate final e relatório em `src/features/experience/validation.md`.
 
 ### T19: Interação de voz por turnos
 
@@ -420,12 +454,18 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 7 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(experiencia): interação de voz por turnos`
+
+**Evidence (Jecky)**: 64 unitários (23 novos incluindo handlers HTTP), 6 integração e 3 E2E; lint/tipos/build verdes via npm run check testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso: `src/features/experience/audio-handlers.test.ts:8` — 200/data.text/no-store (VOICE-01); :9 — 422 e provedor não chamado para bytes/formato/duração/vazio inválidos (HOST-03); :10 — audio/mpeg e bytes exatos (VOICE-02); :11 — 422 sem síntese para >1200/vazio/tipo; :12 — 503 para saída >3 MiB; :13 — 503 sem segredo bruto (SAFE-01/VOICE-03); :14/:15 — 401/429 sem provedor; :16 — rotas 503 até dependências compartilhadas; :17 — payload malformado rejeitado. `recording.test.ts:5` — parada em 60 s/bytes/segundos/tracks; :6 — excesso descartado sem callback de upload; :7 — cancelamento sem transcrição. `voice.test.tsx:9` — microfone negado mantém envio textual; :10 — síntese só por ação e fallback; :11 — >1200 não envia; :12 — transcrição editada, zero turno automático, payload final exato (VOICE-01). Todos PASS e manter. **Limite de integração**: captura/UI/handlers/adaptador concluídos; rotas reais permanecem 503 até sessão assinada e rate limit persistido de T21. Não atesta VOICE/SAFE completos. Guia em src/features/experience/README.md. Duração server-side é declarada pelo capturador, não inferida de arquivo arbitrário.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T20: Notificações e acompanhamento
 
@@ -437,14 +477,20 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): notificações e acompanhamento`
 
 ### Phase 3: Integração e demonstração
+
+**Evidence (Jecky)**: 73 unitários (9 novos), 6 integração e 3 E2E; npm run check verde com lint/tipos/build testes passaram; sem skip/remoção. UI sobre contratos v1; persistência e domínio reais aguardam integração. Requisitos compartilhados continuam Pending.
+
+Cobertura/reverso em `src/features/experience/inbox.test.tsx`: :9 — `getAllByText(title)` length 1 e origem Tarefa programada (TASK-04); :10 — três artigos e ordem exata recebida (PRO-04; ordenação financeira pertence a T11); :11 — consultas no foco/refresh e zero consulta após avançar cinco minutos; :12 — read_at recebido vira Lida e payload de leitura exato; :13 — horário 10h São Paulo vira 13h UTC no turno (TASK-05); :14 — cancelar/resolver pedem ação e preservam alerta até confirmação de estado (TASK-03); :15 — erro não aparece como vazio; :16 — histórico 20+2. Todos PASS; manter. Ações usam AgentPort.turn porque v1 não fornece mutadores específicos de notificação/tarefa. Paginação local, sem alteração unilateral de contrato. Fechamento independente limitado a Jecky, sem marcar produto completo ou requisitos compartilhados Verified.
+
+Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
 
 ### T21: Composição dos adaptadores reais
 

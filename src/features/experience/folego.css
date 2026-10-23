@@ -1,0 +1,1450 @@
+@font-face {
+  font-family: "Folego Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./fonts/dm-sans.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Folego Heading";
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url("./fonts/manrope.woff2") format("woff2");
+}
+.folego-app,
+.folego-dialog {
+  --folego-ink: #182720;
+  --folego-muted: #58665e;
+  --folego-line: #e5e9e3;
+  --folego-paper: #f7f8f4;
+  --folego-green: #1c694c;
+  --folego-green-soft: #e7f2eb;
+  color: var(--folego-ink);
+  font:
+    14px/1.5 "Folego Sans",
+    Arial,
+    sans-serif;
+}
+.folego-app {
+  min-height: 100vh;
+  background: var(--folego-paper);
+}
+.folego-app *,
+.folego-dialog * {
+  box-sizing: border-box;
+}
+.folego-app svg,
+.folego-dialog svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.folego-app button,
+.folego-app input,
+.folego-app select,
+.folego-app textarea,
+.folego-dialog button,
+.folego-dialog input,
+.folego-dialog select,
+.folego-dialog textarea {
+  font: inherit;
+}
+.folego-app button,
+.folego-app summary,
+.folego-dialog button {
+  cursor: pointer;
+}
+.folego-app button:disabled,
+.folego-dialog button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.folego-app a {
+  color: inherit;
+  text-decoration: none;
+}
+.folego-app :is(button, a, input, summary):focus-visible,
+.folego-dialog :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid #83ae94;
+  outline-offset: 3px;
+}
+.folego-skip-link {
+  position: fixed;
+  top: -80px;
+  left: 20px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #fff;
+}
+.folego-skip-link:focus {
+  top: 10px;
+}
+.folego-topbar {
+  height: 76px;
+  padding: 0 max(28px, calc((100vw - 1280px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 1px solid var(--folego-line);
+  background: #ffffffee;
+  backdrop-filter: blur(12px);
+}
+.folego-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font:
+    800 23px/1.2 "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.9px;
+}
+.folego-brandmark {
+  width: 37px;
+  height: 37px;
+  border-radius: 12px;
+  background: var(--folego-green);
+  color: white;
+  display: grid;
+  place-items: center;
+}
+.folego-brandmark svg {
+  width: 24px;
+  height: 24px;
+}
+.folego-brand small {
+  display: block;
+  font:
+    500 10px/1.5 "Folego Sans",
+    sans-serif;
+  letter-spacing: 0;
+  color: var(--folego-muted);
+  margin-top: 1px;
+}
+.folego-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 19px;
+}
+.folego-period {
+  font-size: 12px;
+  color: var(--folego-muted);
+}
+.folego-period strong {
+  color: var(--folego-ink);
+  font-weight: 600;
+}
+.folego-demo-dot {
+  font-size: 11px;
+  color: var(--folego-green);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.folego-demo-dot::before,
+.folego-live-dot {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6b9675;
+  flex-shrink: 0;
+}
+.folego-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #eee8d9;
+  color: #65583e;
+  font-size: 11px;
+  font-weight: 700;
+}
+.folego-wrap {
+  max-width: 1280px;
+  margin: auto;
+  padding: 37px 28px 32px;
+}
+.folego-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.folego-eyebrow {
+  font-size: 10px !important;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: #67816d !important;
+  margin: 0 0 9px !important;
+}
+.folego-welcome h1 {
+  font:
+    700 30px/1.25 "Folego Heading",
+    sans-serif;
+  letter-spacing: -1.1px;
+  margin: 0 0 8px;
+}
+.folego-welcome p {
+  font-size: 14px;
+  color: var(--folego-muted);
+  margin: 0;
+}
+.folego-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-bottom: 2px;
+}
+.folego-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 15px;
+  min-height: 41px;
+  border: 1px solid #dfe6dc;
+  border-radius: 9px;
+  background: white;
+  color: var(--folego-ink);
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.folego-btn:hover {
+  border-color: #a8b9ad;
+  background: #f9fbf8;
+}
+.folego-btn svg {
+  width: 15px;
+  height: 15px;
+}
+.folego-primary {
+  background: var(--folego-green);
+  border-color: var(--folego-green);
+  color: #fff;
+}
+.folego-primary:hover {
+  background: #14573e;
+  border-color: #14573e;
+}
+.folego-stats {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr 1fr;
+  gap: 14px;
+}
+.folego-stat {
+  border: 1px solid var(--folego-line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 19px 21px 17px;
+  min-height: 137px;
+}
+.folego-stat-main {
+  background: #183d2e;
+  border-color: #183d2e;
+  color: #fff;
+}
+.folego-stat-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--folego-muted);
+}
+.folego-stat-label svg {
+  color: #829388;
+  width: 15px;
+  height: 15px;
+}
+.folego-stat-main .folego-stat-label {
+  color: #ccded3;
+}
+.folego-info {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #587869;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #ccded3;
+}
+.folego-amount {
+  font:
+    700 29px/1.3 "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.9px;
+  font-variant-numeric: tabular-nums;
+  margin: 12px 0 9px;
+}
+.folego-stat-foot {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--folego-muted);
+  margin: 0;
+}
+.folego-stat-main .folego-stat-foot {
+  color: #c4d7cb;
+}
+.folego-tiny-line {
+  width: 26px;
+  height: 1px;
+  background: #99c4a7;
+}
+.folego-pill {
+  border-radius: 99px;
+  padding: 4px 8px;
+  background: var(--folego-green-soft);
+  color: var(--folego-green);
+  font-size: 10px;
+  font-weight: 700;
+}
+.folego-realized {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 23px;
+  padding: 12px 2px 17px;
+  color: var(--folego-muted);
+  font-size: 11px;
+}
+.folego-realized > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.folego-realized > span:first-child {
+  margin-right: auto;
+}
+.folego-realized svg {
+  width: 13px;
+  height: 13px;
+  color: #5e8269;
+}
+.folego-realized strong {
+  color: #364d3e;
+  font-weight: 600;
+}
+.folego-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(300px, 0.9fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.folego-panel {
+  border: 1px solid var(--folego-line);
+  border-radius: 13px;
+  background: white;
+  box-shadow: 0 10px 28px #152c2008;
+  min-width: 0;
+}
+.folego-cashflow {
+  padding: 23px 22px 0;
+  display: flex;
+  flex-direction: column;
+}
+.folego-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.folego-panel h2 {
+  font:
+    700 16px/1.4 "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.folego-panel-head p {
+  font-size: 12px;
+  color: var(--folego-muted);
+  margin: 5px 0 0;
+}
+.folego-period-chip {
+  border: 1px solid var(--folego-line);
+  border-radius: 7px;
+  padding: 6px 9px;
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--folego-muted);
+}
+.folego-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 11px;
+  color: var(--folego-muted);
+  margin: 18px 0 4px;
+}
+.folego-legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #267554;
+  margin-right: 6px;
+}
+.folego-legend .folego-amber-dot {
+  background: #d5a04f;
+}
+.folego-chart {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 235px;
+  padding-top: 4px;
+}
+.folego-chart svg {
+  width: 100%;
+  height: auto;
+  min-height: 210px;
+}
+.folego-gridline {
+  stroke: #e9ede8;
+  stroke-width: 1;
+}
+.folego-axis {
+  font:
+    11px "Folego Sans",
+    sans-serif;
+  fill: #708076;
+}
+.folego-chart-line {
+  fill: none;
+  stroke: #267554;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.folego-reserve-line {
+  fill: none;
+  stroke: #d0a15c;
+  stroke-width: 1.3;
+  stroke-dasharray: 5 5;
+}
+.folego-chart-point {
+  fill: white;
+  stroke: #267554;
+  stroke-width: 2;
+}
+.folego-chart-warning {
+  fill: #fff;
+  stroke: #bb6245;
+  stroke-width: 2.5;
+}
+.folego-chart-footer {
+  border-top: 1px solid #eff1ed;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 10px;
+  color: var(--folego-muted);
+}
+.folego-chart-footer > span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.folego-chart-footer a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--folego-green);
+  font-weight: 600;
+}
+.folego-chart-footer svg {
+  width: 12px;
+  height: 12px;
+}
+.folego-risk {
+  padding: 20px;
+  background: #fbfcf8;
+}
+.folego-risk-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.folego-risk-title h2 {
+  font-size: 15px;
+}
+.folego-risk-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #e8f0e2;
+  color: #4f7449;
+  flex-shrink: 0;
+}
+.folego-risk-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.folego-risk-intro {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--folego-muted);
+  margin: 15px 0;
+}
+.folego-risk-figure {
+  background: #fff;
+  border: 1px solid #e3e8dc;
+  border-radius: 9px;
+  padding: 13px 14px;
+  margin-bottom: 14px;
+}
+.folego-risk-figure small {
+  font-size: 11px;
+  color: var(--folego-muted);
+}
+.folego-risk-figure strong {
+  display: block;
+  font:
+    700 23px/1.5 "Folego Heading",
+    sans-serif;
+  color: #3e6646;
+  margin: 2px 0;
+}
+.folego-risk-figure > span {
+  display: block;
+  font-size: 11px;
+  color: #64715a;
+}
+.folego-risk-facts {
+  border-top: 1px solid #e6e9df;
+  padding-top: 5px;
+}
+.folego-risk-facts > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 9px 0;
+  font-size: 11px;
+  color: var(--folego-muted);
+}
+.folego-risk-facts strong {
+  font-weight: 500;
+  color: #40513d;
+  text-align: right;
+}
+.folego-explain-button {
+  width: 100%;
+  margin-top: 8px;
+  background: #fff;
+  font-size: 11px !important;
+}
+.folego-risk-negative {
+  background: #fffdfa;
+  border-color: #f0e7d7;
+}
+.folego-risk-negative .folego-risk-icon {
+  background: #fff0d5;
+  color: #a7640b;
+}
+.folego-risk-negative .folego-risk-figure {
+  border-color: #f0e7d7;
+}
+.folego-risk-negative .folego-risk-figure strong {
+  color: #a05d16;
+}
+.folego-lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(300px, 0.9fr);
+  gap: 16px;
+  margin-top: 17px;
+}
+.folego-transactions {
+  padding: 21px 21px 0;
+  display: flex;
+  flex-direction: column;
+}
+.folego-table-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.folego-table-note {
+  font-size: 11px;
+  color: var(--folego-muted);
+  margin: 5px 0 13px;
+}
+.folego-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: none;
+  color: var(--folego-green);
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 4px 0;
+}
+.folego-table-scroll {
+  overflow-x: auto;
+}
+.folego-transactions table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.folego-transactions th {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #738176;
+  padding: 7px 0 10px;
+}
+.folego-transactions td {
+  padding: 14px 0;
+  border-top: 1px solid #eff1ed;
+  font-size: 11px;
+  color: var(--folego-muted);
+  white-space: nowrap;
+}
+.folego-transactions :is(th, td) + :is(th, td) {
+  padding-left: 13px;
+}
+.folego-description {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #344b3d;
+  white-space: normal;
+  min-width: 170px;
+}
+.folego-description small {
+  display: block;
+  color: #738176;
+  font-size: 10px;
+  font-weight: 400;
+  margin-top: 2px;
+}
+.folego-txicon {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
+  background: #edf3ee;
+  color: #397256;
+  flex-shrink: 0;
+}
+.folego-txicon svg {
+  width: 15px;
+  height: 15px;
+}
+.folego-txicon.folego-out {
+  background: #f7eee5;
+  color: #94642e;
+}
+.folego-money-column {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  color: #344337 !important;
+  font-weight: 500;
+}
+.folego-tag {
+  display: inline-block;
+  border-radius: 30px;
+  padding: 4px 7px;
+  font-size: 10px;
+  background: #f5f0e4;
+  color: #88672f;
+}
+.folego-transactions-footer {
+  margin-top: auto;
+  border-top: 1px solid #eff1ed;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 0;
+  font-size: 10px;
+  color: #77847a;
+}
+.folego-transactions-footer svg {
+  width: 12px;
+  height: 12px;
+}
+.folego-ai-panel {
+  padding: 20px;
+  background: #f0f5ef;
+}
+.folego-ai-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.folego-ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.folego-ai-brand > span {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: #dfece2;
+  color: var(--folego-green);
+}
+.folego-ai-brand svg {
+  width: 15px;
+  height: 15px;
+}
+.folego-demo-label {
+  background: #e4ece2;
+  padding: 4px 7px;
+  border-radius: 20px;
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  color: #5f735e;
+}
+.folego-ai-panel h3 {
+  font:
+    700 17px/1.4 "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.3px;
+  margin: 17px 0 8px;
+}
+.folego-ai-panel > p {
+  font-size: 12px;
+  color: #526550;
+  line-height: 1.7;
+  margin: 0;
+}
+.folego-ai-insight {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #e0e8dc;
+  border-radius: 8px;
+  background: #ffffffcf;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.folego-ai-insight strong {
+  color: #296343;
+  font-weight: 600;
+}
+.folego-ai-insight p {
+  margin: 3px 0 0;
+  color: #526550;
+}
+.folego-chat-link {
+  margin-top: 14px;
+}
+.folego-chat-link svg {
+  width: 13px;
+  height: 13px;
+}
+.folego-ai-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  color: #60765e;
+  margin-top: 13px;
+}
+.folego-section-kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 30px 0 12px;
+  color: #71816f;
+  font-size: 10px;
+}
+.folego-section-kicker > span:first-child {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+.folego-followup > section {
+  margin: 0;
+  border-radius: 13px;
+  border-color: var(--folego-line);
+  padding: 22px;
+  background: #fff;
+  box-shadow: 0 10px 28px #152c2006;
+}
+.folego-followup h2 {
+  font:
+    700 17px "Folego Heading",
+    sans-serif;
+}
+.folego-followup > section > p {
+  font-size: 12px;
+  color: var(--folego-muted);
+  margin-top: 7px;
+}
+.folego-followup > section > p:nth-of-type(2) {
+  font-size: 11px;
+}
+.folego-followup article {
+  background: #fffdf8;
+  border-color: #eee6d3;
+  border-radius: 10px;
+  padding: 17px;
+}
+.folego-followup article h3 {
+  font-size: 13px;
+  margin: 5px 0;
+}
+.folego-followup article p {
+  font-size: 12px;
+  color: #5b6659;
+}
+.folego-followup article p:first-child {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: #8b7044;
+}
+.folego-followup article label {
+  font-size: 11px;
+}
+.folego-followup button {
+  font-size: 11px;
+  border-radius: 7px;
+  background: #fff;
+  border-color: #e0e6da;
+  min-height: 35px;
+}
+.folego-followup input {
+  font-size: 11px;
+  border: 1px solid #dce4d5;
+  background: #fff;
+  border-radius: 6px;
+  margin-top: 4px;
+  min-height: 35px;
+}
+.folego-followup fieldset {
+  align-items: flex-end;
+}
+.folego-details,
+.folego-demo-details {
+  margin-top: 15px;
+  background: #fff;
+  border: 1px solid var(--folego-line);
+  border-radius: 10px;
+}
+.folego-details > summary,
+.folego-demo-details > summary {
+  padding: 15px 20px;
+  font-size: 12px;
+  color: #48634e;
+}
+.folego-details > summary svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 12px;
+  height: 12px;
+  float: right;
+}
+.folego-details > section {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--folego-line);
+  border-radius: 0;
+  padding: 20px;
+}
+.folego-details h2 {
+  font-size: 18px;
+}
+.folego-demo-details p {
+  padding: 0 20px 17px;
+  font-size: 12px;
+  color: var(--folego-muted);
+}
+.folego-source {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #6d7d6a;
+  text-align: center;
+  padding-top: 22px;
+}
+.folego-source p {
+  margin: 2px 0;
+}
+.folego-source details {
+  margin-top: 9px;
+}
+.folego-source details p {
+  max-width: 700px;
+  margin: 9px auto;
+}
+.folego-scenario-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #d8e8d5;
+  background: #edf4e9;
+  font-size: 11px;
+  color: #52684e;
+  margin-bottom: 17px;
+}
+.folego-scenario-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  color: #2a633d;
+}
+.folego-scenario-label svg {
+  width: 14px;
+  height: 14px;
+}
+.folego-scenario-banner button {
+  margin-left: auto;
+}
+.folego-dialog {
+  border: 1px solid #e1e7dc;
+  background: var(--folego-paper);
+  padding: 0;
+  border-radius: 17px;
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  box-shadow: 0 24px 100px #152c2038;
+  overflow: auto;
+}
+.folego-dialog::backdrop {
+  background: #12271d66;
+  backdrop-filter: blur(3px);
+}
+.folego-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 19px 23px;
+  border-bottom: 1px solid #e0e7dc;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f7f8f4;
+}
+.folego-dialog-header h2 {
+  font:
+    700 19px "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+.folego-icon-button {
+  border: 1px solid #e0e7dc;
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #4d6552;
+}
+.folego-tool-content {
+  padding: 22px;
+}
+.folego-tool-content > section {
+  margin: 0;
+  border: 0;
+  border-radius: 11px;
+  background: #fff;
+  padding: 23px;
+  box-shadow: 0 3px 18px #233b2505;
+}
+.folego-tool-content h2 {
+  font:
+    700 20px "Folego Heading",
+    sans-serif;
+  letter-spacing: -0.4px;
+}
+.folego-tool-content :is(p, li) {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.folego-tool-content section > p {
+  margin-top: 9px;
+  color: var(--folego-muted);
+}
+.folego-tool-content label {
+  font-size: 12px;
+  color: #53644f;
+}
+.folego-tool-content :is(input, select, textarea) {
+  border: 1px solid #dbe3d5;
+  border-radius: 7px;
+  background: #fff;
+  min-height: 39px;
+  max-width: 100%;
+  color: #263e2a;
+  margin-top: 5px;
+}
+.folego-tool-content :is(button:not(.folego-btn)) {
+  border-radius: 7px;
+  font-size: 12px;
+  min-height: 38px;
+}
+.folego-tool-content button.bg-emerald-800 {
+  background: var(--folego-green);
+}
+.folego-tool-content li strong {
+  font-size: 11px;
+  color: #51694f;
+}
+.folego-tool-content table {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.folego-tool-content [role="alert"] {
+  background: #fff0df;
+  color: #8b4c21;
+  border: 1px solid #f1d9b6;
+  padding: 10px 12px;
+  border-radius: 7px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+.folego-explanation {
+  padding: 4px;
+}
+.folego-explanation h3 {
+  font:
+    700 20px "Folego Heading",
+    sans-serif;
+  margin: 15px 0 9px;
+}
+.folego-explanation p {
+  color: var(--folego-muted);
+  line-height: 1.8;
+}
+.folego-explanation button {
+  margin-top: 10px;
+}
+.folego-empty {
+  padding: 20px 0;
+  color: var(--folego-muted);
+  font-size: 12px;
+}
+@media (min-width: 1500px) {
+  .folego-wrap {
+    padding-top: 45px;
+  }
+  .folego-welcome {
+    margin-bottom: 32px;
+  }
+  .folego-chart {
+    min-height: 260px;
+  }
+}
+@media (max-width: 900px) {
+  .folego-content,
+  .folego-lower {
+    grid-template-columns: minmax(0, 1.5fr) minmax(270px, 1fr);
+  }
+  .folego-wrap {
+    padding: 28px 22px;
+  }
+  .folego-period {
+    display: none;
+  }
+  .folego-welcome h1 {
+    font-size: 27px;
+  }
+  .folego-actions {
+    gap: 7px;
+  }
+  .folego-btn {
+    padding: 10px 12px;
+  }
+  .folego-stat-foot {
+    font-size: 10px;
+  }
+  .folego-amount {
+    font-size: 26px;
+  }
+  .folego-cashflow {
+    padding: 20px 16px 0;
+  }
+  .folego-period-chip {
+    display: none;
+  }
+  .folego-chart-footer {
+    align-items: flex-start;
+  }
+  .folego-chart-footer > span {
+    max-width: 62%;
+  }
+  .folego-realized {
+    gap: 16px;
+  }
+}
+@media (max-width: 760px) {
+  .folego-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .folego-stat-main {
+    grid-column: 1/-1;
+  }
+  .folego-content,
+  .folego-lower {
+    grid-template-columns: 1fr;
+  }
+  .folego-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 19px;
+  }
+  .folego-welcome h1 {
+    font-size: 29px;
+  }
+  .folego-actions {
+    width: 100%;
+  }
+  .folego-btn {
+    min-height: 43px;
+  }
+  .folego-chart {
+    min-height: 220px;
+  }
+  .folego-chart svg {
+    min-height: 210px;
+  }
+  .folego-risk {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 22px;
+  }
+  .folego-risk-intro {
+    margin-bottom: 0;
+  }
+  .folego-risk-figure {
+    grid-column: 2;
+    grid-row: 1/3;
+    margin-bottom: 0;
+  }
+  .folego-risk-facts {
+    grid-column: 1/3;
+    margin-top: 17px;
+  }
+  .folego-explain-button {
+    grid-column: 1/3;
+  }
+  .folego-lower {
+    gap: 14px;
+  }
+  .folego-ai-panel {
+    padding: 22px;
+  }
+  .folego-amount {
+    font-size: 25px;
+  }
+  .folego-stat {
+    padding: 17px;
+  }
+  .folego-realized > span:first-child {
+    display: none;
+  }
+  .folego-realized {
+    justify-content: flex-start;
+  }
+  .folego-section-kicker {
+    font-size: 9px;
+  }
+  .folego-source {
+    font-size: 10px;
+  }
+}
+@media (max-width: 520px) {
+  .folego-chart .folego-axis {
+    font-size: 22px;
+  }
+  .folego-chart .folego-mobile-hide {
+    display: none;
+  }
+  .folego-topbar {
+    height: 67px;
+    padding: 0 17px;
+  }
+  .folego-brand {
+    font-size: 21px;
+    gap: 9px;
+  }
+  .folego-brandmark {
+    width: 33px;
+    height: 33px;
+    border-radius: 10px;
+  }
+  .folego-brand small {
+    font-size: 8px;
+  }
+  .folego-demo-dot {
+    font-size: 10px;
+  }
+  .folego-top-actions {
+    gap: 10px;
+  }
+  .folego-avatar {
+    display: none;
+  }
+  .folego-wrap {
+    padding: 26px 15px 24px;
+  }
+  .folego-welcome {
+    margin-bottom: 22px;
+    gap: 17px;
+  }
+  .folego-welcome h1 {
+    font-size: 26px;
+    letter-spacing: -1px;
+  }
+  .folego-welcome p {
+    font-size: 12px;
+  }
+  .folego-eyebrow {
+    font-size: 9px !important;
+  }
+  .folego-actions .folego-btn {
+    flex: 1;
+  }
+  .folego-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .folego-stat {
+    min-height: 121px;
+    padding: 15px 13px;
+  }
+  .folego-stat-main {
+    grid-column: 1/-1;
+    min-height: 132px;
+    padding: 18px 19px;
+  }
+  .folego-stat-main .folego-amount {
+    font-size: 31px;
+    margin: 9px 0;
+  }
+  .folego-stat-label {
+    font-size: 10px;
+    gap: 6px;
+  }
+  .folego-stat-label svg {
+    width: 13px;
+    height: 13px;
+  }
+  .folego-amount {
+    font-size: 22px;
+    margin-top: 13px;
+    letter-spacing: -0.7px;
+  }
+  .folego-stat-foot {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .folego-pill {
+    font-size: 8px;
+    padding: 3px 6px;
+  }
+  .folego-realized {
+    gap: 17px;
+    font-size: 10px;
+    padding-top: 13px;
+  }
+  .folego-realized > span {
+    gap: 4px;
+  }
+  .folego-content {
+    gap: 13px;
+  }
+  .folego-cashflow {
+    padding: 18px 13px 0;
+  }
+  .folego-panel h2 {
+    font-size: 15px;
+  }
+  .folego-panel-head p {
+    font-size: 11px;
+    max-width: 240px;
+  }
+  .folego-legend {
+    font-size: 9px;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  .folego-chart {
+    min-height: 185px;
+  }
+  .folego-chart svg {
+    min-height: 185px;
+  }
+  .folego-chart-footer {
+    font-size: 9px;
+  }
+  .folego-chart-footer > span {
+    max-width: 59%;
+  }
+  .folego-chart-footer a {
+    font-size: 9px;
+    text-align: right;
+  }
+  .folego-risk {
+    display: block;
+    padding: 18px;
+  }
+  .folego-risk-intro {
+    margin: 12px 0;
+  }
+  .folego-risk-figure {
+    padding: 11px 13px;
+  }
+  .folego-risk-facts {
+    margin-top: 13px;
+  }
+  .folego-explain-button {
+    margin-top: 5px;
+  }
+  .folego-transactions {
+    padding: 18px 13px 0;
+  }
+  .folego-transactions :is(th, td):nth-child(3) {
+    display: none;
+  }
+  .folego-transactions :is(th, td) + :is(th, td) {
+    padding-left: 7px;
+  }
+  .folego-description {
+    min-width: 135px;
+    gap: 7px;
+    font-size: 10px;
+  }
+  .folego-description small {
+    font-size: 9px;
+  }
+  .folego-transactions td {
+    font-size: 10px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+  .folego-txicon {
+    width: 24px;
+    height: 24px;
+  }
+  .folego-txicon svg {
+    width: 13px;
+    height: 13px;
+  }
+  .folego-transactions th {
+    font-size: 8px;
+  }
+  .folego-table-note {
+    font-size: 10px;
+  }
+  .folego-transactions-footer {
+    font-size: 9px;
+  }
+  .folego-ai-panel {
+    padding: 18px;
+  }
+  .folego-followup > section {
+    padding: 17px;
+  }
+  .folego-followup h2 {
+    font-size: 16px;
+  }
+  .folego-followup article {
+    padding: 13px;
+  }
+  .folego-followup article label {
+    width: 100%;
+    margin-top: 5px;
+  }
+  .folego-followup article input {
+    width: 100%;
+  }
+  .folego-followup article fieldset {
+    gap: 7px;
+  }
+  .folego-followup article button {
+    font-size: 10px;
+  }
+  .folego-followup .my-3 {
+    flex-wrap: wrap;
+  }
+  .folego-section-kicker {
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 25px;
+  }
+  .folego-details > summary,
+  .folego-demo-details > summary {
+    padding: 14px 16px;
+    font-size: 11px;
+  }
+  .folego-dialog {
+    width: calc(100vw - 18px);
+    max-height: calc(100dvh - 24px);
+    border-radius: 12px;
+  }
+  .folego-dialog-header {
+    padding: 14px 15px;
+  }
+  .folego-dialog-header h2 {
+    font-size: 17px;
+  }
+  .folego-tool-content {
+    padding: 12px;
+  }
+  .folego-tool-content > section {
+    padding: 16px;
+  }
+  .folego-tool-content h2 {
+    font-size: 18px;
+  }
+  .folego-tool-content :is(p, li) {
+    font-size: 12px;
+  }
+  .folego-tool-content fieldset {
+    min-width: 0;
+  }
+  .folego-tool-content :is(input, select, textarea) {
+    width: 100%;
+  }
+  .folego-tool-content table {
+    font-size: 9px;
+  }
+  .folego-tool-content table td {
+    overflow-wrap: anywhere;
+  }
+  .folego-scenario-banner {
+    gap: 9px;
+  }
+  .folego-scenario-banner button {
+    margin-left: 0;
+  }
+  .folego-followup input {
+    max-width: 100%;
+  }
+}
