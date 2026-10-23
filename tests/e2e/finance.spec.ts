@@ -15,7 +15,7 @@ test.describe("T8 rotas reais em produção local", () => {
   async function start() {
     let log = "";
     child = spawn(process.execPath, [resolve("node_modules/next/dist/bin/next"), "start", "--hostname", "127.0.0.1", "--port", String(port)], { windowsHide: true,
-      env: { ...process.env, NODE_ENV: "production", VERCEL_ENV: "preview", SESSION_SECRET: secret, APP_ORIGIN: origin, SUPABASE_URL: gateway.url, SUPABASE_SERVICE_ROLE_KEY: key }, stdio: ["ignore", "pipe", "pipe"] });
+      env: { ...process.env, NODE_ENV: "production", VERCEL_ENV: "preview", SESSION_SECRET: secret, APP_ORIGIN: origin, SUPABASE_URL: gateway.url, SUPABASE_SERVICE_ROLE_KEY: key, OPENAI_API_KEY: "", OPENAI_MODEL: "", OPENAI_TRANSCRIBE_MODEL: "", OPENAI_TTS_MODEL: "" }, stdio: ["ignore", "pipe", "pipe"] });
     child.stdout?.on("data", part => { log = (log + part).slice(-4000); }); child.stderr?.on("data", part => { log = (log + part).slice(-4000); });
     for (let attempt = 0; attempt < 120; attempt++) {
       if (child.exitCode !== null) throw new Error("Next encerrou: " + log);
