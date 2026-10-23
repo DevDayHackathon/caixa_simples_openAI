@@ -11,3 +11,9 @@ Preflight: npm ci e npm run check passaram (15 unitários, 6 integração, 3 E2E
 Persistencia: recarga por adaptador novo, CAS antigo rejeitado, escopo demo, historico por versao, RLS/RPC bloqueadas e guarda loopback. Testes: tests/integration/finance/persistence.test.ts. Gate: 15 unitarios, 12 integracao, 3 E2E, lint/tipos/build.
 
 Gate: npm run check, sem skip/remoção. Casos novos: 6. Log: output/finance-local/t2-gate.log.
+
+## T3
+
+CSV: F1, retry, reimportacao identica, rollback com linha invalida/conflitante, IDs repetidos, limites UTF8/1000, datas/cabecalho, RFC4180, concorrencia e expiracao/stale. Testes: tests/integration/finance/import.test.ts. Previa parseada expira em 30 minutos; CSV bruto descartado. Gate: 15 unitarios, 22 integracao, 3 E2E.
+
+Gate: npm run check, sem skip/remoção. Casos novos: 10. Log: output/finance-local/t3-gate.log.

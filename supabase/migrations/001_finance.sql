@@ -67,3 +67,20 @@ begin
 end $$;
 revoke execute on function public.finance_read(text), public.finance_replay(text,text,jsonb), public.finance_commit(text,bigint,jsonb,text,jsonb,jsonb,text) from public, anon, authenticated;
 grant execute on function public.finance_read(text), public.finance_replay(text,text,jsonb), public.finance_commit(text,bigint,jsonb,text,jsonb,jsonb,text) to service_role;
+
+-- Store parsed previews only. Expired previews are deleted on the next preview save.
+create table public.finance_previews (id text primary key, data jsonb not null, expires_at timestamptz not null default now() + interval '30 minutes');
+alter table public.finance_previews enable row level security;
+revoke all on public.finance_previews from public, anon, authenticated;
+grant select, insert, delete on public.finance_previews to service_role;
+create function public.finance_preview_save(p_id text, p_data jsonb) returns jsonb language plpgsql security invoker set search_path = '' as $$
+begin
+  delete from public.finance_previews where expires_at <= now();
+  insert into public.finance_previews(id,data) values (p_id,p_data);
+  return '{}'::jsonb;
+end $$;
+create function public.finance_preview_read(p_id text) returns jsonb language sql security invoker set search_path = '' as $$
+  select data from public.finance_previews where id = p_id and expires_at > now();
+$$;
+revoke execute on function public.finance_preview_save(text,jsonb), public.finance_preview_read(text) from public, anon, authenticated;
+grant execute on function public.finance_preview_save(text,jsonb), public.finance_preview_read(text) to service_role;

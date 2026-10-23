@@ -136,12 +136,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(caixa): importador csv atômico`
+
+**Evidence**: `daniel-checks.md` — T3; gate verde; 10 casos novos.
 
 ### T4: Cálculo do caixa diário
 

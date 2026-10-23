@@ -218,9 +218,9 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 
 | Requirement ID | Story | Phase | Status | Tasks |
 | --- | --- | --- | --- | --- |
-| DATA-01 | P1: MVP | Tasks | Pending | T1, T3, T8, T16, T21 |
-| DATA-02 | P1: MVP | Tasks | Pending | T3, T16 |
-| DATA-03 | P1: MVP | Tasks | Pending | T3, T16 |
+| DATA-01 | P1: MVP | Tasks | In Progress | T1, T3, T8, T16, T21 |
+| DATA-02 | P1: MVP | Tasks | In Progress | T3, T16 |
+| DATA-03 | P1: MVP | Tasks | In Progress | T3, T16 |
 | DATA-04 | P1: MVP | Tasks | In Progress | T2, T15 |
 | CASH-01 | P1: MVP | Tasks | Pending | T1, T4, T8, T15 |
 | CASH-02 | P1: MVP | Tasks | Pending | T4, T15 |
