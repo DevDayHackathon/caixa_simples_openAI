@@ -60,6 +60,10 @@ begin
     if saved is not null then return saved; end if;
   end if;
   if current_version <> p_expected_version or (p_state->>'version')::bigint <> current_version + 1 then raise exception 'CONFLICT'; end if;
+  if exists (select 1 from jsonb_array_elements(p_state->'transactions') t group by t->>'id' having count(*) > 1)
+    or exists (select 1 from jsonb_array_elements(p_state->'reservations') r group by r->>'id' having count(*) > 1)
+    or exists (select 1 from jsonb_array_elements(p_state->'reservations') r where r->>'status' = 'active' group by r->>'transaction_id' having count(*) > 1)
+    then raise exception 'CONFLICT'; end if;
   update public.finance_state set data = p_state, version = current_version + 1 where business_id = p_business_id;
   insert into public.finance_history values (p_business_id, current_version + 1, p_operation, p_state, now());
   if p_key is not null then insert into public.finance_idempotency values (p_operation, p_key, p_input, p_result); end if;

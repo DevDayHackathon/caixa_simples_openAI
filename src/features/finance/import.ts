@@ -3,6 +3,7 @@ import { z } from "zod";
 import { financeOperations, transactionSchema, balanceSchema, dateSchema } from "@/contracts";
 import { FinanceError, nextState, type FinanceStore } from "./store";
 import { addDays } from "./dates";
+import { calculateCash } from "./cash";
 
 const columns = ["id", "direction", "amount_cents", "status", "due_date", "expected_date", "settled_date", "counterparty", "description"];
 type CsvError = { line: number; field: string; message: string };
@@ -101,5 +102,6 @@ export async function confirmImport(store: FinanceStore, raw: z.input<typeof fin
     if (!existing) { next.transactions.push(row); inserted_count++; }
   }
   const result = { inserted_count, business_version: next.version };
+  calculateCash(next, next.business.start_date);
   return financeOperations.confirmImport.output.parse(await store.commit(state, next, "import", input, result, input.idempotency_key));
 }

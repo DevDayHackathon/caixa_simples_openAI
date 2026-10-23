@@ -10,6 +10,11 @@ export async function reserveForPayment(store: FinanceStore, raw: z.input<typeof
   const replay = await store.replay("reserve", input.idempotency_key, input);
   if (replay) return financeOperations.reserveForPayment.output.parse(replay);
   const before = await store.read(), next = nextState(before);
+  const current = before.transactions.find(tx => tx.id === input.target_id);
+  if (current?.version !== input.expected_version || current?.status !== "pending") {
+    const raced = await store.replay("reserve", input.idempotency_key, input);
+    if (raced) return financeOperations.reserveForPayment.output.parse(raced);
+  }
   const tx = pendingTransaction(before, input.target_id, input.expected_version);
   if (tx.direction !== "out") throw new FinanceError(422, "NOT_A_PAYMENT", "Reserva exige uma conta a pagar pendente.");
   const cash = calculateCash(before, asOf ?? before.business.start_date);

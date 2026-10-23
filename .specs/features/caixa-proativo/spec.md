@@ -227,7 +227,7 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | CASH-03 | P1: MVP | Tasks | In Progress | T6, T8, T17, T21, T22 |
 | CASH-04 | P1: MVP | Tasks | In Progress | T6, T17 |
 | CASH-05 | P1: MVP | Tasks | In Progress | T5, T17 |
-| CASH-06 | P1: MVP | Tasks | In Progress | T5 |
+| CASH-06 | P1: MVP | Tasks | Verified | T5 |
 | AGENT-01 | P1: MVP | Tasks | Pending | T1, T9, T10, T18 |
 | AGENT-02 | P1: MVP | Tasks | Pending | T9, T10, T18 |
 | VOICE-01 | P1: MVP | Tasks | Pending | T19, T21 |
@@ -238,17 +238,17 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | PRO-03 | P1: MVP | Tasks | Pending | T11, T14, T18 |
 | PRO-04 | P1: MVP | Tasks | Pending | T11, T20 |
 | RES-01 | P1: MVP | Tasks | In Progress | T7, T8, T18 |
-| RES-02 | P1: MVP | Tasks | In Progress | T7 |
+| RES-02 | P1: MVP | Tasks | Verified | T7 |
 | RES-03 | P1: MVP | Tasks | In Progress | T7, T21 |
-| RES-04 | P1: MVP | Tasks | In Progress | T7 |
+| RES-04 | P1: MVP | Tasks | Verified | T7 |
 | TASK-01 | P1: MVP | Tasks | Pending | T1, T12 |
 | TASK-02 | P1: MVP | Tasks | Pending | T13, T14, T22 |
 | TASK-03 | P1: MVP | Tasks | Pending | T13, T20, T21 |
 | TASK-04 | P1: MVP | Tasks | Pending | T13, T20, T22 |
 | TASK-05 | P1: MVP | Tasks | Pending | T12, T14, T20 |
 | TASK-06 | P1: MVP | Tasks | Pending | T12, T13 |
-| SAFE-01 | P1: MVP | Tasks | Pending | T8, T14, T19 |
-| SAFE-02 | P1: MVP | Tasks | In Progress | T2, T5 |
+| SAFE-01 | P1: MVP | Tasks | In Progress | T8, T14, T19 |
+| SAFE-02 | P1: MVP | Tasks | Verified | T2, T5 |
 | SAFE-03 | P1: MVP | Tasks | Pending | T14, T22 |
 | SAFE-04 | P1: MVP | Tasks | In Progress | T4, T9, T10 |
 | SAFE-05 | P1: MVP | Tasks | In Progress | T2, T8, T14 |
