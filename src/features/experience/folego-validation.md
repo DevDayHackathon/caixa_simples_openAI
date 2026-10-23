@@ -1,0 +1,22 @@
+# Validação independente Fôlego
+
+Veredito local: **PASS**. Revisão independente do autor em 23/10/2026, diff `475638d..ecdcfb2`, contra os cinco critérios de `folego-interface.md`. Nenhum bloqueador de composição, diálogo ou estado encontrado. Este relatório não marca requisitos compartilhados como Verified.
+
+| Critério | Evidência e resultado |
+| --- | --- |
+| 1. Identidade e 360 px | PASS local. `src/features/experience/folego.css:1` carrega DM Sans/Manrope locais; `:15` define paleta. HTML de referência lido e captura existente `output/playwright/folego-mobile.png` inspecionada: marca, hierarquia, cartões, gráfico, risco e movimentos coerentes, sem corte aparente. `tests/e2e/folego.spec.ts:82` exige scrollWidth <= viewport; `:98` exige painel sem overflow. |
+| 2. Valores recebidos | PASS. `src/features/experience/folego-dashboard.test.tsx:36` verifica saldo123,45; `:38` e `:39` verificam reserva45,67/livre67,89; `:40` rejeita saldo do HTML. `src/features/experience/cash-chart.tsx:21` lê daily_balances e `:28` apenas mapeia coordenadas. `src/features/experience/folego-dashboard.test.tsx:103` preserva identificação de data incerta. |
+| 3. Painéis e conversa | PASS local. `src/features/experience/tool-dialog.tsx:18` usa showModal/close; `:34` trata cancelamento nativo. `tests/e2e/folego.spec.ts:47` fecha por Escape, `:48` verifica foco e `:61` exige resposta após reabrir. `src/features/experience/folego-dashboard.tsx:474` mantém Conversation montada e `:478` desativa somente Voice. `src/features/experience/conversation.tsx:8` retém editor/histórico; `:15` desmonta Voice. `src/features/experience/voice.tsx:7` cancela captura, aborta requisição e revoga URL; `src/features/experience/recording.ts:11` libera tracks/timer. ImportPanel/ScenarioPanel também continuam montados ao fechar, preservando prévia e rascunhos. |
+| 4. Hipótese e restauração | PASS. `src/features/experience/folego-dashboard.test.tsx:55` exige -500,00 e `:69` exige path original restaurado. `src/features/experience/folego-dashboard.tsx:34` devolve clone da fixture; `:47` recebe intervalos da fixture; `:74` seleciona snapshot sem mutar a base; `:152` limpa hipótese e reinicia painel. `src/features/experience/folego-dashboard.tsx:270` renderiza intervalos recebidos. Sensor abaixo detecta ausência de atualização e restauração. |
+| 5. Acompanhamento e limites | PASS. `src/features/experience/folego-dashboard.tsx:421` mantém Inbox separado; `src/features/experience/inbox.tsx:19` consulta na montagem/foco/refresh, sem setInterval. `tests/e2e/folego.spec.ts:77` exige origem Tarefa programada e `:66` ausência de Próximas frentes. |
+
+Verificação executada nesta revisão: `vitest run --config vitest.config.ts src/features/experience/folego-dashboard.test.tsx` em cópia isolada: **4/4 passam**. Gate completo informado pelo autor e registrado em `folego-interface.md:16`: 79 unitários, 6 integração, 6 E2E, lint/tipos/build verdes; não foi repetido nesta revisão proporcional. Asserções E2E foram lidas, não reexecutadas. Diff não altera contratos, lockfile nem adaptadores financeiros; alteração do E2E anterior troca o título mantendo as demais verificações.
+
+Sensor em `/tmp/folego-sensor-gAjJ5S`, com src/config copiados e node_modules compartilhado apenas para dependências:
+
+- Remover `onSimulated?.(simulation)` em ScenarioPanel: **morto**, 1 falha/3 passam; `folego-dashboard.test.tsx:54` não encontra Hipótese F1 ativa.
+- Restaurar arquivo original no scratch e remover `setSimulation(null)` do reset: **morto**, 1 falha/3 passam; `folego-dashboard.test.tsx:66` recebe -500,00 em vez de1.000,00.
+
+Scratch removido. `git status --porcelain=v1` real idêntico antes/depois do sensor: exclusão preexistente de `fluxo_agente_proativo.png` e `?? AGENTS.md`. Somente este relatório foi acrescentado após a conferência; nenhum stash, código ou teste real modificado.
+
+Limites: PASS restrito à experiência demonstrativa F1/v1. Importação, alteração financeira, decisões persistidas e áudio real aguardam integração descrita em `README.md:7` e `README.md:19`. A verificação de cleanup de voz e retenção de rascunhos foi por composição/código; o navegador cobre histórico textual, Escape/foco e largura, mas não uma captura real ativa ao fechar. A comparação visual usa o HTML como referência de identidade, preservando os valores e significado de reservas do contrato. Não comprova persistência nem chamadas reais a serviços externos.
