@@ -17,3 +17,9 @@ npm run check
 ```
 
 No Linux/macOS o padrão é psql no PATH. No Windows pode definir PSQL_PATH ao executável instalado. Não use banco de apresentação. O workflow check fornece Postgres 17 isolado e executa o mesmo gate, sem credenciais remotas. Os artefatos de falha ajudam a diagnosticar jornadas de navegador.
+
+## Evidência e limite do gate integrado
+
+O gate final registrado em 23/10/2026 passou com 135 unitários, 99 integrações SQL e 11 E2E, além de lint, tipos e build. A correção de isolamento usa banco/servidor por cenário financeiro; a execução completa com um worker também passou. A [validação independente](../.specs/features/integracao-final/validation.md) preserva a proveniência, as falhas anteriores resolvidas e o sensor de 8/8 mutações detectadas.
+
+Esses são resultados registrados da sessão anterior, não uma nova execução desta revisão documental. O provedor OpenAI é simulado localmente. A aplicação de migrações no teste não aplica nada ao Supabase remoto. A publicação da landing em [folego-hackathon-2026.vercel.app](https://folego-hackathon-2026.vercel.app) também não substitui a [UAT U01–U13 com serviços ativos](revisao-bruno-e-uat.md), ainda pendente.

@@ -2,7 +2,9 @@
 
 Projeto do tema 13: Painel de caixa para pequenos negócios.
 
-**Estado atual:** as frentes financeira, experiência/voz e agente/tarefas estão compostas em `/caixa`. A prévia `/` funciona sem credenciais com dados identificados como simulados. Configuração dos serviços e aceite humano permanecem necessários antes da apresentação.
+**Estado atual:** as frentes financeira, experiência/voz e agente/tarefas estão compostas em `/caixa`. A prévia `/` funciona sem credenciais com dados identificados como simulados. PR #3 integrado à main e protótipo publicado em **[folego-hackathon-2026.vercel.app](https://folego-hackathon-2026.vercel.app)**. Configuração dos serviços reais e UAT U01–U13 permanecem necessários antes de apresentar os fluxos credenciados como prontos.
+
+CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
 
 ## Rodar o protótipo
 
@@ -51,7 +53,7 @@ A [validação da integração final](.specs/features/integracao-final/validatio
 
 ## Hospedagem alvo confirmada
 
-Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gratuito.md) define agendamento Supabase, limites serverless, áudio, ambientes e colaboração. O consumo da API OpenAI é separado. Nenhuma publicação foi realizada.
+Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gratuito.md) define agendamento Supabase, limites serverless, áudio, ambientes e colaboração. O consumo da API OpenAI é separado. A publicação atual usa o projeto `folego-hackathon-2026`, na conta `jecky3806-2935s-projects`, via CLI e sem vínculo GitHub; alterações na main não disparam deploy automaticamente. APP_ORIGIN e os segredos internos já estão configurados em Production. Faltam credenciais/modelos OpenAI, credenciais Supabase, migrações remotas e Vault/Cron. Cadastre os valores somente nas [variáveis do projeto](https://vercel.com/jecky3806-2935s-projects/folego-hackathon-2026/settings/environment-variables) e faça novo deploy após configurar. Consulte [CONTINUAR-SESSAO.md](docs/CONTINUAR-SESSAO.md) antes de retomar operações de ambiente.
 
 ## Equipe e integração
 

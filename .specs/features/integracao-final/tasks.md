@@ -1,5 +1,7 @@
 # Integração final
 
+CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
+
 ## Execution Plan
 ```mermaid
 flowchart TD
@@ -79,7 +81,7 @@ build: npm run check
 **Requirement**: FINAL-05
 **Tests**: integration, e2e
 **Gate**: build
-**Done when**: Relatório PASS e main remota contém o head revisado; ensaio credenciado pendente identificado. [ ]
+**Done when**: Relatório PASS e main remota contém o head revisado; ensaio credenciado pendente identificado. [x]
 
 T1 PASS: lint/tipos,135 unitários,82 integração. FINAL-01: agent-sql.test.ts:11 `toBe('t\nf')`, :16 `toHaveLength(20)`, :24 `toBe('cancelled')`; supabase-tasks.test.ts:59 normaliza metadata/null/data. Mapeamento reverso: novos testes cobrem somente FINAL-01. T1 agrupa migração e adaptador porque o contrato de persistência deve ser verificável junto.
 
@@ -91,4 +93,6 @@ T4 PASS: npm run check,135 unitários,95 integração,11 E2E; lint/tipos/build. 
 
 T5 PASS: npm run check,135 unitários,99 integração,11 E2E; zero falhas/skips. tasks-sql-runtime.test.ts:25 runner claimed1/completed1/notified1, :26 repetição claimed0, :32 cancelamento devolve createNotification=false, :40 tentativa antiga rejeitada e statusrunning, :43 tentativa atual completed. agent-actions.test.ts:67 alerta negativo não oferece proposta incompleta; :71 simulação concreta accepted sem escrita/version3. Reverso: casos novos correspondem FINAL-01/03 e corrigem achados da revisão independente; nenhuma asserção preexistente alterada.
 
-T6 correção CI: run40005794067 no head21335e6 expôs dependência entre cenários (saldo500 no lugar1000). Reproduzida localmente com finance.spec --workers=1, sem alterar expectativas. beforeEach/afterEach agora isolam banco/servidor por cenário. Gate completo com todos11E2E em1worker PASS (135unit,99integração,11E2E). Nenhuma asserção foi removida/enfraquecida; publicação final segue pendente.
+T6 correção CI: run40005794067 no head21335e6 expôs dependência entre cenários (saldo500 no lugar1000). Reproduzida localmente com finance.spec --workers=1, sem alterar expectativas. beforeEach/afterEach agora isolam banco/servidor por cenário. Gate completo com todos11E2E em1worker PASS (135unit,99integração,11E2E). Nenhuma asserção foi removida/enfraquecida.
+
+T6 publicação concluída: revisão independente PASS e 8/8 mutações detectadas; CI do candidato `4186bdf` aprovado em https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40006622435/job/120599339880. PR3 aprovado e integrado no merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116` em 2026-10-23T19:00:21Z. Protótipo publicado via CLI em https://folego-hackathon-2026.vercel.app (projeto `folego-hackathon-2026`, sem vínculo GitHub), com landing demonstrativa verificada. Evidência de publicação e seus limites em docs/CONTINUAR-SESSAO.md; configuração remota OpenAI/Supabase, migrações/Vault/Cron e UAT U01–U13 permanecem pendentes e não são declarados executados por este fechamento de T6.

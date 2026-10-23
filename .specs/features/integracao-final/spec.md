@@ -5,7 +5,7 @@ Corrigir o PR Bruno e integrar agente, finanças, tarefas e voz sem mocks em pro
 
 ## Assumptions & Open Questions
 Open questions: none.
-Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort v1. Sem credenciais reais disponíveis. Usuário autorizou correções, push e merge automático; não autorizou deploy nem migração remota. Sessão antiga assinada permanece compatível, nova sessão financeira é a autoridade. Modelos são configurados explicitamente no servidor.
+Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort v1. Sem credenciais reais disponíveis. Usuário autorizou correções, push e merge automático. Posteriormente autorizou criar e publicar o projeto Vercel, já realizado; migração/Vault/Cron remotos dependem da confirmação do banco demo autorizado. Sessão antiga assinada permanece compatível, nova sessão financeira é a autoridade. Modelos são configurados explicitamente no servidor.
 
 ## Requirements
 - FINAL-01: WHEN migrações 001/002 forem aplicadas em Postgres vazio THEN o banco SHALL aceitar tarefas, histórico limitado a vinte entradas, quota e encerramento transacional sem erro.
@@ -15,7 +15,7 @@ Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort 
 - FINAL-05: WHEN os gates e revisão independente passarem THEN os commits SHALL ser publicados e incorporados à main; testes reais com credenciais SHALL permanecer explicitamente pendentes até sua configuração.
 
 ## Out of Scope
-Deploy, alterações remotas no Supabase, chaves reais, operações bancárias, envio externo de cobranças.
+Implementação de infraestrutura remota não integra este gate de código. O deploy demonstrativo foi autorizado e publicado em etapa posterior; configuração de credenciais, alterações remotas no Supabase e UAT real seguem separadas. Operações bancárias e envio externo de cobranças permanecem fora do escopo.
 
 ## User Stories
 Como apresentador, quero perguntar sobre o caixa persistido e confirmar propostas para demonstrar decisões verificáveis.
@@ -29,6 +29,6 @@ Como equipe, queremos configurar as chaves no servidor e ensaiar voz e conversa 
 | FINAL-02 | T2 | Verified |
 | FINAL-03 | T3, T5 | Verified |
 | FINAL-04 | T4 | Verified |
-| FINAL-05 | T6 | Implementing |
+| FINAL-05 | T6 | Verified |
 
 Sem questões em aberto para implementação. O ensaio com APIs reais depende das credenciais a serem configuradas pelo usuário e não é declarado realizado.

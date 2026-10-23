@@ -1,6 +1,6 @@
 # Implantação alvo — Vercel Hobby + Supabase Free
 
-Decisão de ambiente solicitada em 23/10/2026. Este documento orienta o desenvolvimento. Nenhuma conta, projeto remoto, migração ou publicação foi executada por esta alteração.
+Decisão de ambiente solicitada em 23/10/2026. O protótipo foi publicado com autorização do usuário em **https://folego-hackathon-2026.vercel.app**, via CLI no projeto `folego-hackathon-2026`, conta `jecky3806-2935s-projects`, sem vínculo GitHub. APP_ORIGIN e os segredos internos já estão configurados em Production. Credenciais/modelos OpenAI, credenciais Supabase, migrações remotas, Vault/Cron e UAT continuam pendentes; consulte [CONTINUAR-SESSAO.md](CONTINUAR-SESSAO.md).
 
 ## Arquitetura definida para os planos gratuitos
 
@@ -50,11 +50,11 @@ Produção usa a URL estável e o banco demo. Preview/local usa mocks ou banco d
 
 ## Trabalho em equipe e publicação
 
-Desenvolvimento segue nas três branches, com Jecky na experiência/voz, Daniel nos dados e Bruno no agente/tarefas. Um integrante será responsável pela conta Hobby e publicação da main; pessoa ainda não designada. Não pressupor três assentos de colaboração ou deploy automático de todo commit no Hobby.
+As frentes de Jecky (experiência/voz), Daniel (dados) e Bruno (agente/tarefas) foram integradas à main pelo PR #3, merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116`. A publicação foi realizada pela CLI autenticada como `jecky3806-2935`, na conta `jecky3806-2935s-projects`. Preservar o projeto/link existentes. Como não há vínculo GitHub, commits na main não disparam deploy automático. Não pressupor três assentos de colaboração no Hobby.
 
 Antes de conectar Git, verificar proprietário, visibilidade e restrições de autoria nas regras atuais da Vercel. Preferir repositório pessoal compatível e publicação pelo responsável; não presumir suporte a repositório de organização no Hobby. Preservar autores reais dos commits, sem trocar identidade para contornar restrições.
 
-Guia para executar quando a implantação for autorizada: criar Supabase Free; aplicar migrações e seed fictício; configurar variáveis; publicar main na Vercel Hobby; testar endpoints; configurar Vault e ativar apenas o job de produção; fechar cliente; aguardar execução e verificar notificação única; repetir processamento para provar deduplicação. Exportar seed e migrações para recuperação. Verificar limites e disponibilidade no painel antes da demo.
+Próximos passos da implantação já autorizada: confirmar o banco Supabase demo autorizado e seu controle de migrações; aplicar migrações 001–003 e dados fictícios com datas válidas; configurar as variáveis faltantes no projeto Vercel existente; redeployar; testar endpoints; configurar Vault e ativar apenas o job de produção; fechar cliente; aguardar execução e verificar notificação única; repetir processamento para provar deduplicação. Registrar a matriz U01–U13; não executar as suítes automatizadas destrutivas no banco demo. Exportar seed e migrações para recuperação. Verificar limites e disponibilidade no painel antes da demo.
 
 ## Custos e disponibilidade
 
