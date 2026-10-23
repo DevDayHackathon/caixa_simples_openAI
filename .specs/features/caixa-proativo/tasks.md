@@ -357,6 +357,8 @@ T21 -> T22
 
 Adequação: critérios locais cobertos; testes necessários e sem skips; contratos e áreas alheias preservados. Requisitos compartilhados continuam Pending.
 
+**Revisão final T15**: asserções específicas por indicador em `src/features/experience/cash-panel.test.tsx:30` e :31 verificam entradas/saídas exatamente `R$ 0,00`. Teste adicional conserva os anteriores.
+
 ### T16: Experiência de importação
 
 **Owner**: Jecky
@@ -425,6 +427,8 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 Cobertura/reverso em `src/features/experience/conversation.test.tsx`: :12 — payload completo origin=user/request_id/message e resposta (AGENT-01); :13 — esclarecimento sem Proposta aceita (AGENT-02); :14 — aceite com ID/alvo/versão e sem estado presumido (RES-01 na UI); :15 — mensagens de ajuste/dispensa exatas; :16 e :19 — stale/versão divergente sem botão Aceitar; :17 — rascunho com fatos e sem envio (PRO-03); :18 — texto preservado, envio reabilitado e ausência de sucesso na falha (VOICE-03). Todos PASS; manter. Decisões utilizam AgentPort.turn; não foi inventado endpoint ou payload estruturado ausente no contrato v1.
 
 Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento reverso nas mesmas linhas, todos necessários ao What/AC indicado. Sem alteração em contratos ou áreas alheias.
+
+**Correção da revisão independente**: `currentVersion` considera a versão financeira atual recebida por prop e a do último turno. `src/features/experience/conversation.test.tsx:20` re-renderiza com versão 2 e exige ausência de Aceitar para proposta da versão 1. Regressão aprovada; gate final e relatório em `src/features/experience/validation.md`.
 
 ### T19: Interação de voz por turnos
 

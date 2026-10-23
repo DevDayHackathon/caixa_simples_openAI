@@ -25,3 +25,8 @@ describe('T15 CASH-01/02 DATA-04', () => {
   it('vazio não mostra saldo zero', () => { const result=html({snapshot:null}); expect(result).toContain('Sem dados financeiros'); expect(result).not.toContain('R$'); });
   it('erro não mostra valores antigos como atuais', () => { const result=html({snapshot:f1Snapshot,error:'Falha ao carregar'}); expect(result).toContain('Falha ao carregar'); expect(result).not.toContain('R$'); });
 });
+it('T15 realizados são verificados em seus próprios indicadores',()=>{
+ const result=html({snapshot:f1Snapshot});
+ expect(result.match(/Entradas realizadas<\/dt><dd[^>]*>([^<]+)/)?.[1]).toBe('R$\u00a00,00');
+ expect(result.match(/Saídas realizadas<\/dt><dd[^>]*>([^<]+)/)?.[1]).toBe('R$\u00a00,00');
+});
