@@ -1,6 +1,6 @@
 # Caixa proativo — Specification
 
-Status: T1 implementada e verificada; funcionalidades de produto ainda pendentes em T2–T22.
+Status: especificação original do MVP. As três frentes foram compostas e verificadas localmente em `.specs/features/integracao-final/`; ensaio com APIs/Cron remotos e critérios restantes de apresentação continuam pendentes.
 Data: 2026-10-23. Prioridades: P1 = MVP; P2 = evolução; P3 = futuro.
 
 ## Problem Statement

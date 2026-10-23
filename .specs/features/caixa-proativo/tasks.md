@@ -1,6 +1,6 @@
 # Caixa proativo — Tasks
 
-**Status**: In Progress; T1 concluída e verificada. T2–T22 pendentes; branches ainda não criadas.
+**Status**: três frentes compostas; evidência da integração final em `.specs/features/integracao-final/`. Ensaio com serviços remotos e T22 ainda pendentes.
 
 ## Execution Protocol
 
@@ -506,6 +506,8 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 
 ### T21: Composição dos adaptadores reais
 
+**Integração posterior**: implementação e testes compostos em `.specs/features/integracao-final/`. Jornadas locais SQL/HTTP/navegador aprovadas; validação com credenciais reais e T22 permanecem etapas de ambiente.
+
 **Owner**: Jecky + Bruno + Daniel
 **What**: Trocar mocks por adaptadores reais e provar jornadas CSV, atraso, reserva, voz e lembrete resolvido sem reescrever contratos.
 **Where**: `src/app/page.tsx`
@@ -522,6 +524,8 @@ Adequação A–D: resultados locais mapeados às asserções abaixo; mapeamento
 **Commit**: `feat(experiencia): composição dos adaptadores reais`
 
 ### T22: Agendamento real e ensaio de demonstração
+
+**Integração posterior**: executor/gate SQL, deduplicação, cancelamento e fencing de tentativa testados em Postgres real; extensões/Vault/Cron remoto e ensaio humano sem aba ainda não executados. Roteiro U01–U13 em `docs/revisao-bruno-e-uat.md`.
 
 **Owner**: Bruno + revisão dos três
 **What**: Preparar um único Supabase Cron de cinco minutos com gate SQL antes do HTTP protegido para Vercel Hobby; provar zero HTTP com fila vazia ou apenas tarefas futuras; validar seis tarefas com limite de cinco por lote; testar processamento sem aba, notificação única, segredo inválido e F1 em até três minutos; ativação remota só após autorização.

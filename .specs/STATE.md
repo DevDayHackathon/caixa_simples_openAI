@@ -36,16 +36,15 @@
 
 ## Handoff
 
-
-- **Feature**: `.specs/features/integracao-financeira/`, extensão independente do agente.
-- **Phase / Task**: I1–I4 concluídas e verificadas localmente em 23/10/2026. T21 integral e T22 do MVP permanecem pendentes.
-- **Completed**: main remota recebeu Daniel/Jecky; esta branch adiciona CI/Postgres reproduzível, workspace autenticado consistente, `/caixa` com CSV/simulação/ações manuais persistidas, recuperação de erro e handoff de agente/voz. FinancePort v1 preservado.
-- **Validation**: gate completo independente PASS: 99 unitários, 56 integração SQL, 10 E2E, zero skips; lint/tipos/build. Sensor 2/2 morto em scratch. Relatório em `.specs/features/integracao-financeira/validation.md`.
-- **In-progress**: nenhum código parcial desta extensão. Somente commits locais, sem push, deploy, chamadas pagas ou migração remota.
-- **Next step**: configurar ambiente demo autorizado conforme `docs/integracao-financeira.md`; integrar AgentPort/quota persistida de Bruno quando disponíveis; publicar commits somente com autorização.
-- **Blockers**: agente, tarefas, quota de áudio e cron dependem de Bruno; ambiente persistido exige Supabase e segredos do servidor configurados. UAT humana e CI hospedada ainda não realizados.
-- **Uncommitted files**: exclusão preexistente de fluxo_agente_proativo.png e AGENTS.md não rastreado preservados e excluídos dos commits.
-- **Branch**: codex/integracao-financeira, base main `1e3b9c7`.
+- **Feature**: `.specs/features/integracao-final/`, composição das três frentes e correções do PR3.
+- **Phase / Task**: T1–T5 locais concluídas; T6 publicação/merge aguardando verificação independente final.
+- **Completed**: FinancePort persistida compartilhada, sessão financeira para agente/voz, migrações002/003 corrigidas, propostas/aceites transacionais e idempotentes, feed real, áudio com quota SQL, runner com cancelamento e validação de tentativa/lease.
+- **Validation**: npm run check PASS135 unitários,99 integração SQL,11 E2E, zero falhas/skips; lint/tipos/build. SQL real e provedor OpenAI simulado localmente, sem chamadas pagas.
+- **Publication authority**: usuário autorizou explicitamente correções, push na branch do Bruno e merge automático após validação nesta conversa.
+- **Next step**: revisão independente PASS (8/8 mutações detectadas); publicar candidato corrigido e fazer merge com head validado. Configurar credenciais/migrações no ambiente demo depois.
+- **Environment pending**: OpenAI/Supabase reais, deploy, extensões/Vault/Cron remoto e UAT U01–U13 ainda não executados. Guia atual em docs/integracao-financeira.md.
+- **Uncommitted user files**: exclusão preexistente fluxo_agente_proativo.png e AGENTS.md não rastreado preservados e excluídos dos commits.
+- **Branch**: codex/integracao-financeira, base main1e3b9c7; código final909085f.
 
 ## Handoff Daniel — 2026-10-23 (atualiza somente a frente financeira)
 

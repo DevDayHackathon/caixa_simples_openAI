@@ -2,9 +2,9 @@
 
 Projeto do tema 13: Painel de caixa para pequenos negócios.
 
-**Estado atual:** T1 implementada e verificada na main. A base roda sem credenciais com dados simulados. Funcionalidades reais do produto serão implementadas em T2–T22. As três branches ainda não foram criadas.
+**Estado atual:** as frentes financeira, experiência/voz e agente/tarefas estão compostas em `/caixa`. A prévia `/` funciona sem credenciais com dados identificados como simulados. Configuração dos serviços e aceite humano permanecem necessários antes da apresentação.
 
-## Rodar a base
+## Rodar o protótipo
 
 Node 24 e npm:
 
@@ -13,14 +13,14 @@ npm ci
 npm run dev
 ```
 
-Abrir http://localhost:3000. Não é preciso configurar Supabase nem OpenAI para a T1.
+Abrir http://localhost:3000 para a prévia. Para `/caixa`, preencher `.env.local` a partir de `.env.example`, aplicar as migrações001–003 no ambiente demo e reiniciar Next. O [guia de integração](docs/integracao-financeira.md) explica cada chave, sessão, voz e Cron.
 
 ```bash
 npm run test:e2e:install
 npm run check
 ```
 
-O gate roda lint, tipos, 15 testes unitários, 6 de integração e 3 E2E. Os E2E compilam e testam a aplicação em produção local. Ver [guia da base comum](docs/base-comum.md) para interfaces, mocks, testes e banco local futuro.
+O gate roda lint, tipos, unitários, integração com SQL real e E2E de produção local. Os testes usam somente Postgres loopback e um provedor OpenAI simulado local; veja [testes locais](docs/testes-locais.md). O [roteiro de aceite](docs/revisao-bruno-e-uat.md) separa a evidência automatizada dos testes ainda necessários com APIs reais.
 
 ## Leitura inicial
 
@@ -47,12 +47,12 @@ python3 /home/mestre/.agents/skills/tlc-spec-driven/scripts/validate_spec.py cai
 python3 /home/mestre/.agents/skills/tlc-spec-driven/scripts/validate_tasks.py caixa-proativo --strict
 ```
 
-Os comandos npm de tasks.md já existem. A validação T1 cobre a base técnica e os contratos com fixtures; não comprova persistência, agente real ou agendamento. A [verificação de T1](.specs/features/caixa-proativo/t1-checks.md) registra evidências e limites.
+A [validação da integração final](.specs/features/integracao-final/validation.md) registra o gate e a revisão independente. A [verificação de T1](.specs/features/caixa-proativo/t1-checks.md) é histórica e cobre somente a base inicial.
 
 ## Hospedagem alvo confirmada
 
 Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gratuito.md) define agendamento Supabase, limites serverless, áudio, ambientes e colaboração. O consumo da API OpenAI é separado. Nenhuma publicação foi realizada.
 
-## Início do trabalho da equipe
+## Equipe e integração
 
-[Mensagens prontas por integrante](docs/mensagens-equipe.md). Bootstrap pronto; branches e compartilhamento remoto pendentes. O projeto preserva o plano de agente que escolhe horários e gate SQL que só chama Vercel com trabalho vencido, sem Cron Vercel. Esse agendamento ainda não está implementado.
+Daniel: caixa e dados; Jecky: experiência e voz; Bruno: agente e tarefas. A função SQL condicional chama o executor somente com trabalho elegível; a ativação remota do Cron/Vault depende do ambiente. Não é necessário manter a aba aberta após configurar esse job.

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 3,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap::valide o aceite de cada tipo de proposta automatica contra o mesmo contrato usado pelas propostas preparadas por ferramenta",
+      "text": "Valide o aceite de cada tipo de proposta automática contra o mesmo contrato usado pelas propostas preparadas por ferramenta.",
+      "signal": "ac_gap",
+      "scope": "agent",
+      "status": "candidate",
+      "features": [
+        "integracao-final"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "FINAL-03 src/features/agent/proactivity.ts:14 (agent)"
+      ],
+      "created": "2026-10-23T18:39:02Z",
+      "last_seen": "2026-10-23T18:39:02Z"
+    },
+    {
+      "id": "L-002",
+      "key": "gate_fail::no gateway sql de testes consulte funcoes set returning pela clausula from antes de agregar ou converter seu resultado json",
+      "text": "No gateway SQL de testes, consulte funções set-returning pela cláusula FROM antes de agregar ou converter seu resultado JSON.",
+      "signal": "gate_fail",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "integracao-final"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "tests/integration/tasks-sql-runtime.test.ts (tests)"
+      ],
+      "created": "2026-10-23T18:39:02Z",
+      "last_seen": "2026-10-23T18:39:02Z"
+    }
+  ]
+}

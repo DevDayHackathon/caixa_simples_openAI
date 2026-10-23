@@ -1,61 +1,73 @@
-# Caixa persistido e integração restante
+# Integração do protótipo Fôlego
 
-Revisão de 23/10/2026: o PR #3 do Bruno ainda tem bloqueios de migração e contratos; merge e integração final não aprovados. A configuração completa de chaves, evidências e matriz de aceite com APIs ativas estão em [revisao-bruno-e-uat.md](revisao-bruno-e-uat.md). Os limites e handoffs abaixo continuam válidos até a correção e composição T21/T22.
+Daniel fornece o financeiro persistido, Jecky a experiência/voz e Bruno o agente/tarefas. A composição conecta esses módulos em `/caixa`. A prévia `/` continua identificada como simulada, sem exigir credenciais. Produção não usa memória ou fixtures quando uma dependência está ausente.
 
-A prévia `/` continua disponível sem credenciais. O link **Abrir caixa persistido** leva a `/caixa`, que usa somente dados fictícios salvos no banco. Banco ou sessão indisponível produz erro recuperável; a tela não substitui dados por fixtures.
+## Configurar antes de executar
 
-## Configuração local
-
-Use Node 24 e `npm ci`. Configure `.env.local` exclusivamente no servidor:
+Use Node24, `npm ci` e copie `.env.example` para `.env.local` na raiz. Preencha somente no servidor:
 
 ```dotenv
 APP_ORIGIN=http://localhost:3000
 SESSION_SECRET=<segredo aleatório com pelo menos 32 caracteres>
-SUPABASE_URL=<URL do Supabase local ou ambiente demo autorizado>
+SUPABASE_URL=<URL do projeto demo>
 SUPABASE_SERVICE_ROLE_KEY=<chave privilegiada somente no servidor>
+OPENAI_API_KEY=<chave OpenAI>
+OPENAI_MODEL=<modelo habilitado para Responses e ferramentas>
+OPENAI_TRANSCRIBE_MODEL=<modelo habilitado para transcrição>
+OPENAI_TTS_MODEL=<modelo habilitado para síntese>
+TASK_RUNNER_SECRET=<outro segredo aleatório independente>
 ```
 
-A migração financeira `supabase/migrations/001_finance.sql` precisa estar aplicada no banco do ambiente. Não foi aplicado SQL em banco remoto nesta entrega. A URL usada no navegador deve corresponder exatamente a APP_ORIGIN, inclusive porta e protocolo. Inicie com `npm run dev` e abra `/caixa`. Nunca use dados pessoais/reais: o escopo é a empresa fictícia compartilhada `demo`, sem contas privadas por usuário.
+Gere os dois segredos separadamente com `openssl rand -hex 32`. Não use prefixo `NEXT_PUBLIC_`. Não envie chaves por chat nem versionamento. Reinicie Next após preencher o arquivo, execute `npm run dev` e abra a URL exata de `APP_ORIGIN`, inclusive porta e protocolo.
 
-Em Vercel Preview permanece a proteção existente que permite somente banco loopback. Preparar ambiente de apresentação e revisar essa política é trabalho de implantação separado; não remover a proteção para fazer um preview funcionar.
+No Supabase demo, aplicar **na ordem** as migrações corrigidas:
 
-## Jornada disponível
+1. `supabase/migrations/001_finance.sql`: financeiro, empresa fictícia, resolução e idempotência.
+2. `supabase/migrations/002_tasks.sql`: contexto, tarefas, quota, executor condicional e resolução transacional.
+3. `supabase/migrations/003_agent_actions.sql`: propostas, decisões atômicas e notificação com validação da tentativa.
 
-1. Abrir `/caixa` emite cookie HttpOnly da sessão demo e consulta `/api/finance/workspace`.
-2. Importar CSV, conferir erros e confirmar salva um lote atômico; o painel recarrega a revisão completa.
-3. Simular um atraso usa o serviço financeiro. Alterar previsão é uma ação separada e persistida. Atualizações desmontam a hipótese anterior.
-4. Em **Gerenciar compromissos**, criar entrada/saída, selecionar pendência, reservar virtualmente ou liquidar. O checkbox confirma a ação escolhida; editar campos remove essa confirmação.
-5. Recarregar a página conserva os dados. Falhas não geram sucesso presumido nem repetição automática. No caso de resposta perdida, tentar a mesma ação preserva sua chave de idempotência enquanto o formulário permanece montado; atualizar a tela primeiro permite verificar o estado persistido.
+Não reaplicar 001/003 em banco já migrado; usar o controle de migrações do ambiente. Não foi aplicado SQL em banco remoto por esta entrega. Banco de teste automatizado deve ser exclusivamente Postgres loopback, nunca a demo remota. A empresa `demo` é compartilhada e só deve receber dados fictícios; a sessão não representa uma conta privada por usuário.
 
-O horizonte financeiro continua fixo em 30 dias. A data de referência é exibida; quando hoje está fora da janela, a leitura usa o limite mais próximo. Simulação/reserva seguem a regra existente da data atual: se o horizonte expirou, é necessário preparar outro ambiente demo com datas válidas, sem deslocar silenciosamente registros existentes.
+Na Vercel, cadastrar as mesmas variáveis no ambiente de produção/demo. Preview conserva a proteção de banco exclusivamente loopback. Uma chave configurada não remove essa proteção. Deploy e ativação do banco/Cron são passos de ambiente separados.
 
-## Consistência e contrato
+## Jornada integrada
 
-`GET /api/finance/workspace` é um endpoint adicional da experiência, sem mudanças em FinancePort v1. Requer sessão demo válida e retorna `{data: {business, transactions, snapshot}, request_id}` a partir de uma única leitura versionada. Aceita `as_of` opcional, rejeita campos desconhecidos/repetidos e datas fora da janela. Respostas no-store; 401 sessão, 422 consulta e 503 dependência indisponível. Mutadores existentes mantêm Origin, validação, CAS e idempotência.
+1. `/caixa` emite ou conserva o cookie HttpOnly financeiro e carrega empresa, transações e snapshot da mesma revisão. Esse cookie também autentica agente, feed e voz; atualizar a tela não troca a identidade de uma sessão ainda válida.
+2. Importar CSV mostra a prévia; confirmar grava um lote atômico. Simulação não altera a base. Ações manuais de criação, reserva virtual, alteração e liquidação continuam exigindo confirmação.
+3. Com banco, chave e modelo de conversa configurados, a área de acompanhamento oferece conversa e iniciativas reais. `get_finance_workspace` entrega compromissos, reservas e propostas da sessão; saldos e cenários vêm exclusivamente do serviço financeiro.
+4. Propostas concretas exibem ID, alvo e versão. Aceitar valida a referência e a revisão financeira. Reserva e alteração de previsão gravam a mudança e o recibo de aceite na mesma transação; repetir o aceite não duplica efeitos. Dispensa não muda finanças. Ajustar prepara uma nova proposta para revisão. Proposta desatualizada exige nova avaliação.
+5. Simulações só oferecem aceite com compromisso e nova data definidos. Alertas automáticos sem parâmetros executáveis permanecem informativos no painel de risco; não geram um botão que aparenta aplicar uma hipótese indefinida. Cobrança é rascunho, sem envio externo.
+6. Agendamento grava alvo pendente, horário UTC, motivo, origem e condição de encerramento. O feed atualiza ao abrir/focar e após ações, sem polling contínuo. A consulta atual mostra os vinte avisos mais recentes. Ler persiste leitura; adiar cria/substitui acompanhamento; cancelar encerra os acompanhamentos ativos relacionados. Marcar resolvido confere o estado financeiro; se ainda pendente, orienta confirmar a liquidação manualmente.
+7. Com os modelos de áudio configurados, gravação usa transcrição real por turnos; texto permanece editável e não é enviado sozinho. Síntese ocorre somente ao clicar. Falha de microfone, modelo ou provedor preserva o texto.
 
-A composição injeta FinancePort no dashboard. Após uma mutação, snapshot, compromissos e configuração são relidos juntos. O painel desmonta durante a recarga e reinicia na nova versão, eliminando cenários e propostas da revisão anterior. Nenhuma escrita é repetida automaticamente ao renovar a sessão.
+O horizonte financeiro é fixo em trinta dias. O painel informa sua data de referência. Se hoje estiver fora dessa janela, preparar dados demo com datas válidas antes de testar agente/simulação/reserva; não deslocar registros silenciosamente.
 
-## Handoff para Bruno: agente, iniciativas e voz
+## Autorização, limites e execução
 
-A área persistida não mostra conversa simulada nem botões de voz. O rodapé informa a dependência pendente. A prévia mantém os exemplos identificados. Contratos, migrações e módulos do agente/tarefas não foram alterados.
+Mutadores validam Origin contra `APP_ORIGIN`. O servidor conserva compatibilidade com sessões antigas assinadas do agente, mas novas sessões são emitidas pelo financeiro. Sem sessão/origem válida, voz e conversa não chamam o provedor. Sem banco configurado em produção, há erro recuperável; fallback em memória existe exclusivamente nos testes isolados do legado.
 
-Quando T14 estiver disponível:
+Quota persistida por minuto: dez chamadas por sessão e trinta para a demo compartilhada, com contadores separados para conversa e áudio. O teto da demo impede contornar a quota apenas emitindo outra sessão. Áudio mantém até60s/3MiB; síntese até1.200 caracteres e saída até3MiB. Nenhum áudio é armazenado permanentemente.
 
-- Injetar `createAgentClient` na composição e ligar conversa e feed ao estado financeiro. Decisões por mensagem devem validar ID, alvo, versão e confirmação no agente; uma resposta textual sozinha não comprova mutação.
-- Relacionar `finance_resolutions` ao encerramento de tarefas na mesma transação pela migração do Bruno.
-- Reconsultar o financeiro depois de turnos que possam modificar dados; invalidar propostas baseadas em versões antigas.
+O executor protegido por `TASK_RUNNER_SECRET` adquire no máximo cinco tarefas por lote. Valida compromisso novamente antes de notificar. A inserção bloqueia primeiro a revisão financeira e depois a tarefa, confere tentativa/lease e usa ocorrência única. Um executor expirado não finaliza a tentativa retomada. A liquidação cancela tarefas relacionadas na transação financeira; cancelamento de tarefa em execução também impede nova notificação.
 
-Para áudio, os pontos de composição já existem: `createOpenAIAudioProvider()` e `createAudioHandlers(services)`. Antes de substituir os handlers atualmente desabilitados:
+O processamento automático usa regras e rascunhos, sem chamar OpenAI em cada ciclo. Para executar com a aba fechada, configurar as extensões necessárias e um único Supabase Cron condicional, conforme `docs/deploy-gratuito.md`. Supabase Vault precisa de `task_runner_secret` igual a `TASK_RUNNER_SECRET` e `task_runner_url` com a URL HTTPS completa de `/api/tasks/run`. Sem tarefas elegíveis, a função retorna sem HTTP Vercel/OpenAI. Chaves da aplicação sozinhas não ativam o job.
 
-1. `authorize` precisa reutilizar a sessão assinada e conferir Origin contra APP_ORIGIN. Sem sessão/origem válida, não chamar provedor.
-2. `allow` precisa adquirir quota **persistida e compartilhada** para a sessão segundo a política acordada com Bruno. Não usar Map/contador em memória, nem chamar provedor antes de adquirir quota.
-3. Injetar `transcribe`/`speak` do adaptador OpenAI, com OPENAI_API_KEY e modelos explícitos somente no servidor. Testar 401, origem inválida, 429, limites, falhas sanitizadas e fallback textual antes de habilitar.
-4. Manter a transcrição editável, sem envio automático ao agente. Reproduzir áudio apenas por ação explícita.
+Depois de habilitar Cron/pg_net e cadastrar os dois nomes no Vault pelo painel do ambiente demo, o responsável pode ativar o job único:
 
-Nenhuma chamada paga ou modelo default foi habilitado. T21 integral e T22 continuam pendentes: agente real, decisões, lembretes, cron condicional e ensaio completo com processamento sem aba.
+```sql
+select cron.schedule(
+  'caixa-agent-due',
+  '*/5 * * * *',
+  'select public.dispatch_due_agent_tasks();'
+);
+```
 
-## Evidências
+Conferir a lista e o histórico de Jobs no Supabase antes do ensaio U09. O mesmo nome atualiza o job existente, conforme a [documentação oficial de Cron](https://supabase.com/docs/guides/cron/quickstart); o [guia de agendamento com Vault/pg_net](https://supabase.com/docs/guides/functions/schedule-functions) explica as dependências. Esse comando não foi executado no projeto remoto.
 
-`docs/testes-locais.md` explica o Postgres isolado. Os testes HTTP novos cobrem consistência e erros; `tests/e2e/finance.spec.ts` cobre a jornada no navegador com SQL real, recarga, ausência de mocks em falhas, conflito de versão e viewport 360 px. O E2E usa ponte HTTP local para as RPCs, sem substituir a persistência por memória; provisionamento Supabase remoto continua fora desta evidência.
+## Evidências e aceite
 
-`.github/workflows/check.yml` prepara Postgres 17, Node 24 e Chromium e executa `npm run check`. O workflow foi preparado localmente; a execução no GitHub depende de publicação posterior dos commits.
+`npm run check` executa lint, tipos, unitários, integração SQL e E2E de produção local; `.github/workflows/check.yml` fornece Postgres17/Node24/Chromium. `tests/integration/agent-sql.test.ts` aplica a migração real. `agent-actions.test.ts` cobre decisão/versão/recibo. `tasks-sql-runtime.test.ts` usa SDK Supabase sobre Postgres real para aquisição, notificação, cancelamento e retomada. O E2E `agent-integrated.spec.ts` percorre navegador→rotas reais→proposta→aceite→SQL→recarga, usando somente um provedor OpenAI simulado localmente.
+
+Configuração de credenciais, OpenAI/Supabase remotos, extensões/Vault/Cron e ensaio humano com aba fechada permanecem pendentes do ambiente. A matriz U01–U13 em [revisao-bruno-e-uat.md](revisao-bruno-e-uat.md) define resultados observáveis. Passar o gate local não declara esse ensaio realizado.
+
+Referência de implementação: [OpenAI Function Calling](https://developers.openai.com/api/docs/guides/function-calling). Segredos e modelos são explícitos no servidor; não há escolha silenciosa de modelo pago.

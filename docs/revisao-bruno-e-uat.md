@@ -1,8 +1,10 @@
 # Revisão do Bruno e aceite do protótipo
 
-## Decisão em 23/10/2026
+A implementação posterior corrige os bloqueios e conecta os três módulos. Veja o estado atual em [integracao-financeira.md](integracao-financeira.md). A revisão abaixo preserva a evidência do head original; a matriz manual U01–U13 continua aplicável e ainda depende das credenciais.
 
-**Não aprovar nem fazer merge do PR #3 no head `533e73d1b21d78fbc11b3eb6e05792c730c67055`.** A migração não aplica em Postgres 17 e existem incompatibilidades entre os três módulos. Daniel e Jecky já estão na main (`452c817` e `1e3b9c7`). A extensão descrita em `docs/integracao-financeira.md` está na branch local `codex/integracao-financeira`, até `6f6315f`; não confundir essa extensão com código já publicado na main.
+## Revisão histórica do head original em 23/10/2026
+
+**Decisão histórica: não aprovar nem fazer merge do PR #3 no head `533e73d1b21d78fbc11b3eb6e05792c730c67055`.** A migração não aplica em Postgres 17 e existem incompatibilidades entre os três módulos. Daniel e Jecky já estão na main (`452c817` e `1e3b9c7`). A extensão descrita em `docs/integracao-financeira.md` está na branch local `codex/integracao-financeira`, até `6f6315f`; não confundir essa extensão com código já publicado na main.
 
 PR revisado: https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3. A revisão usou o ref do PR: a branch anunciada por `git ls-remote` ainda apontava para `eaa8068`, enquanto o GitHub informou o head acima.
 
@@ -49,7 +51,7 @@ Reiniciar Next após alterações. Gerar cada segredo separadamente com `openssl
 
 Na implantação, cadastrar as mesmas variáveis no ambiente de produção da Vercel e republicar a versão validada. Em Supabase Vault, configurar `task_runner_secret` com o mesmo valor de `TASK_RUNNER_SECRET` e `task_runner_url` com a URL HTTPS completa de `/api/tasks/run`. Não usar localhost como URL do executor remoto. A proteção de Preview existente recusa banco remoto; usar o ambiente de produção/demo acordado, sem remover a proteção para contorná-la.
 
-Aplicar migrações somente após corrigir os bloqueios e ensaiá-las em banco descartável. A 001 cria a empresa fictícia; preparar datas dentro do horizonte de trinta dias e dados de teste. Habilitar extensões e o único job condicional conforme `docs/deploy-gratuito.md` depois de configurar Vault e validar o endpoint. Não executar o SQL atual do Bruno no projeto remoto.
+Aplicar migrações somente após corrigir os bloqueios e ensaiá-las em banco descartável. A 001 cria a empresa fictícia; preparar datas dentro do horizonte de trinta dias e dados de teste. Habilitar extensões e o único job condicional conforme `docs/deploy-gratuito.md` depois de configurar Vault e validar o endpoint. Não executar o SQL do head original não corrigido no projeto remoto.
 
 ## Ordem de integração e gates
 
