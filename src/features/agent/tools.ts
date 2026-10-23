@@ -4,7 +4,7 @@ import { agentTurnInputSchema, scheduledTaskSchema } from "@/contracts";
 import { FIXTURE_NOW } from "@/fixtures/demo";
 import { createTaskScheduler, type TaskRepository } from "@/features/tasks/schedule";
 
-const getSnapshotArgs = z.strictObject({ as_of: z.iso.date().optional() });
+const getSnapshotArgs = z.strictObject({ as_of: z.iso.date().nullable().optional() });
 const proposalArgs = z.strictObject({
   kind: z.enum(["reserve", "draft_collection", "simulate", "change_expected_date"]),
   target_id: z.string().trim().min(1).max(128),

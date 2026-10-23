@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual, randomUUID } from "node:crypto";
 import { FinanceError } from "./store";
 
 export const FINANCE_COOKIE = "caixa_demo_session";
@@ -8,7 +8,7 @@ export function sessionSecret(secret: string) {
   return secret;
 }
 export function issueFinanceSession(secret: string, now = Date.now()) {
-  const payload = Buffer.from(JSON.stringify({ business_id: "demo", expires_at: now + 8 * 60 * 60 * 1000 })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({ business_id: "demo", session_id: randomUUID(), expires_at: now + 8 * 60 * 60 * 1000 })).toString("base64url");
   return payload + "." + sign(payload, sessionSecret(secret));
 }
 export function requireFinanceSession(request: Request, secret: string, now = Date.now()) {
@@ -25,6 +25,7 @@ export function requireFinanceSession(request: Request, secret: string, now = Da
     const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
     if (!Number.isSafeInteger(data.expires_at) || data.expires_at <= now) throw new Error();
     if (data.business_id !== "demo") throw new FinanceError(403, "FORBIDDEN", "Empresa fora do escopo.");
+    return { businessId: "demo" as const, sessionId: sign(payload, secret) };
   } catch (error) {
     if (error instanceof FinanceError) throw error;
     throw new FinanceError(401, "UNAUTHORIZED", "Sessão inválida ou expirada.");

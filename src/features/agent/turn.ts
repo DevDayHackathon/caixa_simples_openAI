@@ -1,3 +1,4 @@
+import { saoPauloDate } from "@/features/finance/port";
 import OpenAI from "openai";
 import { agentToolDefinitions, executeAgentTool, type AgentToolContext } from "./tools";
 import { evaluateProactivity } from "./proactivity";
@@ -34,10 +35,11 @@ export function createAgentTurnService(deps: TurnDependencies) {
       if (!deps.client) throw new Error("Agente indisponível: configure o provedor de IA.");
       const now = (deps.now ?? (() => new Date()))();
       const history = await deps.contextStore.load(deps.sessionId);
+      const initialSnapshot = await deps.finance.getCashSnapshot({ business_id: "demo", as_of: saoPauloDate(now) });
       const context = { businessId: "demo", now: now.toISOString(), finance: deps.finance, tasks: deps.tasks,
-        businessVersion: 1, userMessage: input.message };
+        businessVersion: initialSnapshot.version, userMessage: input.message };
       const response = await deps.client.responses.create({
-        model: deps.model ?? process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
+        model: deps.model ?? process.env.OPENAI_MODEL ?? (process.env.NODE_ENV === "test" ? "test-model" : ""),
         instructions: systemPrompt,
         input: [...history, { role: "user", content: input.message }],
         tools: agentToolDefinitions, parallel_tool_calls: false, store: false,
@@ -55,12 +57,12 @@ export function createAgentTurnService(deps: TurnDependencies) {
           outputs.push({ type: "function_call_output" as const, call_id: call.call_id, output: JSON.stringify(result.output) });
         }
         modelInput = [...modelInput, ...current.output, ...outputs];
-        current = await deps.client.responses.create({ model: deps.model ?? process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
+        current = await deps.client.responses.create({ model: deps.model ?? process.env.OPENAI_MODEL ?? (process.env.NODE_ENV === "test" ? "test-model" : ""),
           instructions: systemPrompt, input: modelInput as never,
           tools: agentToolDefinitions, parallel_tool_calls: false, store: false });
       }
       if (current.output.some((item) => item.type === "function_call")) throw new Error("O agente excedeu o limite de ações deste turno.");
-      const snapshot = await deps.finance.getCashSnapshot({ business_id: "demo", as_of: now.toISOString().slice(0, 10) });
+      const snapshot = await deps.finance.getCashSnapshot({ business_id: "demo", as_of: saoPauloDate(now) });
       const initiativeSet = evaluateProactivity({ snapshot, now: now.toISOString(), origin: "user" });
       const proposals = [...results.flatMap((result) => result.proposal ? [result.proposal] : []), ...initiativeSet.proposals].slice(0, 3);
       const taskIds = results.flatMap((result) => result.task ? [result.task.id] : []);
@@ -74,7 +76,7 @@ export function createAgentTurnService(deps: TurnDependencies) {
 
 export function createOpenAiClient(apiKey = process.env.OPENAI_API_KEY) {
   if (!apiKey) return null;
-  return new OpenAI({ apiKey });
+  return new OpenAI({ apiKey, maxRetries: 0, timeout: 25000 });
 }
 
 export function mockAgentTurn(message: string): AgentTurnResult {

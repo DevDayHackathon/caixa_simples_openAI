@@ -35,7 +35,7 @@ build: npm run check
 **Requirement**: FINAL-02
 **Tests**: integration
 **Gate**: full
-**Done when**: Sessão real autoriza; falhas não ativam mocks; versão e null do tool testados. [ ]
+**Done when**: Sessão real autoriza; falhas não ativam mocks; versão e null do tool testados. [x]
 
 ### T3: Persistir decisões e ações do feed
 **What**: Propostas e decisões confirmadas com CAS/idempotência, ferramentas de simulação/registro e ações do feed.
@@ -65,3 +65,5 @@ build: npm run check
 **Done when**: Relatório PASS e main remota contém o head revisado; ensaio credenciado pendente identificado. [ ]
 
 T1 PASS: lint/tipos,135 unitários,82 integração. FINAL-01: agent-sql.test.ts:11 `toBe('t\nf')`, :16 `toHaveLength(20)`, :24 `toBe('cancelled')`; supabase-tasks.test.ts:59 normaliza metadata/null/data. Mapeamento reverso: novos testes cobrem somente FINAL-01. T1 agrupa migração e adaptador porque o contrato de persistência deve ser verificável junto.
+
+T2 PASS: lint/tipos,135 unitários,85 integração. FINAL-02 agent-composition.test.ts:23 sessão emitida/identidade conservada; :33 source=user_data e version=7; :37 based_on_version=7; :43 produção sem banco lança erro. Reverso: três testes novos cobrem exclusivamente FINAL-02. Legado assinado mantido para compatibilidade; novas sessões usam somente cookie financeiro.

@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
-import { createMockFinancePort } from "@/adapters/mock";
+import { saoPauloDate } from "@/features/finance/port";
 import { runDueTasks } from "@/features/tasks/runner";
-import { getTaskRepository, readCommitmentStatus } from "@/features/tasks/server";
+import { getTaskRepository, readCommitmentStatus, getServerFinance } from "@/features/tasks/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,10 +17,10 @@ export async function POST(request: Request) {
   const request_id = crypto.randomUUID();
   if (!authorized(request)) return Response.json({ error: { code: "UNAUTHORIZED", message: "Segredo do executor inválido." }, request_id }, { status: 401 });
   try {
-    const finance = createMockFinancePort();
-    const data = await runDueTasks({ repository: getTaskRepository(), readCommitment: async (businessId, targetId) => {
+    const repository = getTaskRepository();
+    const data = await runDueTasks({ repository, readCommitment: async (businessId, targetId) => {
       const [status, snapshot] = await Promise.all([
-        readCommitmentStatus(businessId, targetId), finance.getCashSnapshot({ business_id: businessId, as_of: new Date().toISOString().slice(0, 10) }),
+        readCommitmentStatus(businessId, targetId), getServerFinance().getCashSnapshot({ business_id: businessId, as_of: saoPauloDate(new Date()) }),
       ]);
       return { status, snapshot };
     } });

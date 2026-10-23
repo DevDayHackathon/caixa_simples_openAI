@@ -45,3 +45,11 @@ export function createSupabaseFinanceStore(url: string, key: string) {
 export function nextState(state: FinanceState): FinanceState {
   return { ...structuredClone(state), version: state.version + 1, updated_at: new Date().toISOString() };
 }
+
+export function configuredFinanceStore() {
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new FinanceError(503, "DATABASE_UNAVAILABLE", "Configure o banco no servidor.");
+  if (process.env.VERCEL_ENV === "preview" && !["localhost", "127.0.0.1", "[::1]"].includes(new URL(url).hostname))
+    throw new FinanceError(503, "PREVIEW_DATABASE_DISABLED", "Preview requer banco local isolado.");
+  return createSupabaseFinanceStore(url, key);
+}

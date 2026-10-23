@@ -6,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { financeOperations, idSchema } from "@/contracts";
 import { createFinancePort } from "./port";
-import { createSupabaseFinanceStore, FinanceError, type FinanceStore } from "./store";
+import { configuredFinanceStore, FinanceError, type FinanceStore } from "./store";
 import { FINANCE_COOKIE, issueFinanceSession, requireFinanceSession } from "./session";
 
 type Operation = keyof typeof financeOperations;
@@ -41,7 +41,15 @@ export function createFinanceHandler(options: Options) {
       // The configured public origin is the authority for the browser Origin check.
       if (request.method !== "GET" && (!options.appOrigin || request.headers.get("origin") !== options.appOrigin)) throw new FinanceError(403, "FORBIDDEN_ORIGIN", "Origem não permitida.");
       if (operation === "session") {
-        const cookie = `${FINANCE_COOKIE}=${issueFinanceSession(options.sessionSecret, now.getTime())}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800${options.appOrigin.startsWith("https:") ? "; Secure" : ""}`;
+        let token: string;
+        try {
+          requireFinanceSession(request, options.sessionSecret, now.getTime());
+          token = request.headers.get("cookie")!.split(";").map(part => part.trim()).find(part => part.startsWith(FINANCE_COOKIE + "="))!.slice(FINANCE_COOKIE.length + 1);
+        } catch (error) {
+          if (!(error instanceof FinanceError) || error.status !== 401) throw error;
+          token = issueFinanceSession(options.sessionSecret, now.getTime());
+        }
+        const cookie = `${FINANCE_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=28800${options.appOrigin.startsWith("https:") ? "; Secure" : ""}`;
         return Response.json({ data: { business_id: "demo" }, request_id }, { headers: { ...headers, "Set-Cookie": cookie } });
       }
       requireFinanceSession(request, options.sessionSecret, now.getTime());
@@ -83,11 +91,6 @@ export function createFinanceHandler(options: Options) {
 export function financeRoute(operation: Operation | "session" | "workspace", request: Request, pathId?: string) {
   return createFinanceHandler({
     sessionSecret: process.env.SESSION_SECRET ?? "", appOrigin: process.env.APP_ORIGIN ?? "",
-    store: () => {
-      const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-      if (!url || !key) throw new FinanceError(503, "DATABASE_UNAVAILABLE", "Configure o banco no servidor.");
-      if (process.env.VERCEL_ENV === "preview" && !["localhost", "127.0.0.1", "[::1]"].includes(new URL(url).hostname)) throw new FinanceError(503, "PREVIEW_DATABASE_DISABLED", "Preview requer banco local isolado.");
-      return createSupabaseFinanceStore(url, key);
-    },
+    store: configuredFinanceStore,
   })(operation, request, pathId);
 }
