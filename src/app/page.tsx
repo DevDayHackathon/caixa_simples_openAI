@@ -1,3 +1,4 @@
+import { CashPanel } from "@/features/experience/cash-panel";
 import { createMockAgentPort, createMockFinancePort } from "@/adapters/mock";
 
 const currency = (cents: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
@@ -19,6 +20,7 @@ export default async function Home() {
         <div><h2 className="text-sm text-slate-600">Saídas realizadas</h2><p className="mt-2 text-3xl font-medium">{currency(snapshot.realized_out_cents)}</p></div>
       </section>
       <p className="mt-5 text-sm text-slate-600">Referência fixa: 23/10/2026. Sem integração bancária ou chamadas de IA nesta base.</p>
+      <CashPanel snapshot={snapshot} />
       <details className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
         <summary className="font-medium">Ver resposta de exemplo</summary>
         <p className="mt-4 leading-7">{example.reply_text}</p>

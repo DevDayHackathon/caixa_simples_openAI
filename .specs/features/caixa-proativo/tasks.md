@@ -338,12 +338,24 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate quick da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 5 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate quick da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: unit
 **Gate**: quick
 **Commit**: `feat(experiencia): painel de caixa`
+
+**Evidence (Jecky)**: `npm run test:unit`: 21/21; 6 novos testes. Mocks v1, sem cálculo financeiro no cliente.
+
+| Critério / mapeamento reverso | Evidência e asserção | Resultado |
+| --- | --- | --- |
+| CASH-01, realizados F1 | `src/features/experience/cash-panel.test.tsx:10` — `expect(result).toContain('1.000,00')`; realizados zero | PASS; manter |
+| CASH-02, fechamentos | `src/features/experience/cash-panel.test.tsx:14` — `expect(result).toContain('3.000,00')` e 1.500,00 | PASS; manter |
+| Reservado/livre recebidos | `src/features/experience/cash-panel.test.tsx:18` — `expect(result).toContain('876,54')` e 123,45 | PASS; manter |
+| DATA-04 e incertos/negativos | `src/features/experience/cash-panel.test.tsx:22` — fonte e updated_at; :23 intervalo e exclusão | PASS; manter |
+| Vazio/erro sem saldo real | `src/features/experience/cash-panel.test.tsx:25` e :26 — `expect(result).not.toContain('R$')` | PASS; manter |
+
+Adequação: critérios locais cobertos; testes necessários e sem skips; contratos e áreas alheias preservados. Requisitos compartilhados continuam Pending.
 
 ### T16: Experiência de importação
 
