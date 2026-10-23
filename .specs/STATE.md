@@ -43,8 +43,8 @@
 - **Deployment**: https://folego-hackathon-2026.vercel.app , projeto existente `folego-hackathon-2026`/`jecky3806-2935s-projects`, CLI sem vínculo GitHub. Deployment registrado READY `dpl_4SKfLAyz3Lxm9hNEVN8VpPkuctpf`; HEAD HTTP público200 reconfirmado. Configuração/ícone já publicados, agora commitados em `871a619`; sem redeploy redundante.
 - **Authority**: usuário autorizou correções, push, merge automático e publicação. Migrações/Vault/Cron dependem da identificação do banco demo autorizado.
 - **Environment pending**: lista Vercel confirma só APP_ORIGIN e segredos internos em Production. Faltam SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY/OPENAI_API_KEY e três modelos. Usuário orientado a inseri-los no painel, sem enviar chaves ao chat. Migrações001–003 remotas, Vault/Cron e U01–U13 reais não executados.
-- **Next step**: concluir publicação Git da consolidação documental; após variáveis prontas e banco demo identificado, inspecionar ambiente, aplicar migrações faltantes, configurar Vault/Cron, redeployar o mesmo projeto e executar UAT. Ver detalhes em docs/CONTINUAR-SESSAO.md.
-- **Branch**: `codex/integracao-financeira`, base `d3baa174`; consultar Git para HEAD da consolidação. Main local ainda antiga na conferência, não usada.
+- **Next step**: após variáveis prontas e banco demo identificado, inspecionar ambiente, aplicar migrações faltantes, configurar Vault/Cron, redeployar o mesmo projeto e executar UAT. Ver detalhes em docs/CONTINUAR-SESSAO.md.
+- **Branch**: `codex/integracao-financeira`; PR4 de consolidação integrado em `8e8e6ffe1923bee4e9a0790da850a1d022d3b61b` (2026-10-23T19:09:30Z). Checkout e main local sincronizados por avanço rápido. Consultar Git para HEAD do registro documental posterior. CI desta main: https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40009173098 ainda em andamento, sem aprovação declarada.
 - **User files preserved**: exclusão preexistente fluxo_agente_proativo.png e AGENTS.md não rastreado ficam fora dos commits.
 
 ## Handoff Daniel — 2026-10-23 (atualiza somente a frente financeira)
