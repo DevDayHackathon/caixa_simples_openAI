@@ -43,9 +43,10 @@ export function createAgentTurnService(deps: TurnDependencies) {
       const context = { businessId: "demo", now: now.toISOString(), finance: deps.finance, tasks: deps.tasks,
         businessVersion: initialSnapshot.version, userMessage: input.message };
       const tools = deps.actions ? [...agentToolDefinitions.filter(t=>t.name!=="prepare_proposal"), ...integratedToolDefinitions] : agentToolDefinitions;
+      const instructions = `${systemPrompt}\nInstante atual em UTC: ${context.now}. Fuso da empresa: America/Sao_Paulo. Converta horários locais explícitos para um instante ISO 8601 completo com Z ou offset; datas sem horário não são instantes. Peça esclarecimento se faltar horário.`;
       const response = await deps.client.responses.create({
         model: deps.model ?? process.env.OPENAI_MODEL ?? (process.env.NODE_ENV === "test" ? "test-model" : ""),
-        instructions: systemPrompt,
+        instructions,
         input: [...history, { role: "user", content: input.message }],
         tools, parallel_tool_calls: false, store: false,
       });
@@ -68,7 +69,7 @@ export function createAgentTurnService(deps: TurnDependencies) {
         }
         modelInput = [...modelInput, ...current.output, ...outputs];
         current = await deps.client.responses.create({ model: deps.model ?? process.env.OPENAI_MODEL ?? (process.env.NODE_ENV === "test" ? "test-model" : ""),
-          instructions: systemPrompt, input: modelInput as never,
+          instructions, input: modelInput as never,
           tools, parallel_tool_calls: false, store: false });
       }
       if (current.output.some((item) => item.type === "function_call")) throw new Error("O agente excedeu o limite de ações deste turno.");
