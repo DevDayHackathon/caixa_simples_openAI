@@ -1,3 +1,4 @@
+import { createAgentActions } from "@/features/agent/actions";
 import { createClient } from "@supabase/supabase-js";
 import { createFinancePort } from "@/features/finance/port";
 import { configuredFinanceStore } from "@/features/finance/store";
@@ -20,8 +21,9 @@ export function getAgentContextStore(){const client=agentSupabaseClient();return
 export function getServerFinance(){return createFinancePort(configuredFinanceStore());}
 export function getAgentRuntime(sessionId:string){
  if(!process.env.OPENAI_MODEL)throw Error('Modelo não configurado.');
- return {finance:getServerFinance(),tasks:getTaskRepository(),contextStore:getAgentContextStore(),sessionId,
- client:createOpenAiClient(),model:process.env.OPENAI_MODEL};
+ const store=configuredFinanceStore(),tasks=getTaskRepository();
+ return {finance:createFinancePort(store),tasks,contextStore:getAgentContextStore(),sessionId,
+ actions:createAgentActions(store,tasks,sessionId),client:createOpenAiClient(),model:process.env.OPENAI_MODEL};
 }
 export async function checkAgentRateLimit(sessionId:string,kind:'conversation'|'audio'='conversation'){
  const client=agentSupabaseClient();

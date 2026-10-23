@@ -1,3 +1,4 @@
+import { FinanceError } from "@/features/finance/store";
 import { z } from "zod";
 import { createAgentTurnService } from "@/features/agent/turn";
 import { getAgentRuntime, checkAgentRateLimit } from "@/features/tasks/server";
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
     const result = await createAgentTurnService({ ...dependencies, client: client ?? undefined }).turn(body);
     return Response.json({ data: result, request_id }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
+    if (error instanceof FinanceError) return Response.json({ error: {code:error.code,message:error.message},request_id },{status:error.status});
     if (error instanceof z.ZodError) return Response.json({ error: { code: "VALIDATION_ERROR", message: "Entrada inválida.", fields: Object.fromEntries(error.issues.map(issue => [issue.path.join("."), issue.message])) }, request_id }, { status: 422 });
     return Response.json({ error: { code: "DEPENDENCY_ERROR", message: "O agente não conseguiu concluir o turno." }, request_id }, { status: 503 });
   }

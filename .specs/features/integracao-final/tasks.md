@@ -44,7 +44,7 @@ build: npm run check
 **Requirement**: FINAL-03
 **Tests**: integration
 **Gate**: full
-**Done when**: Aceite, dispensa, ajuste, stale, repetição e resolução têm resultados persistidos. [ ]
+**Done when**: Aceite, dispensa, ajuste, stale, repetição e resolução têm resultados persistidos. [x]
 
 ### T4: Conectar experiência e voz
 **What**: Injetar AgentPort no caixa configurado e habilitar voz com autorização e quota compartilhada.
@@ -67,3 +67,5 @@ build: npm run check
 T1 PASS: lint/tipos,135 unitários,82 integração. FINAL-01: agent-sql.test.ts:11 `toBe('t\nf')`, :16 `toHaveLength(20)`, :24 `toBe('cancelled')`; supabase-tasks.test.ts:59 normaliza metadata/null/data. Mapeamento reverso: novos testes cobrem somente FINAL-01. T1 agrupa migração e adaptador porque o contrato de persistência deve ser verificável junto.
 
 T2 PASS: lint/tipos,135 unitários,85 integração. FINAL-02 agent-composition.test.ts:23 sessão emitida/identidade conservada; :33 source=user_data e version=7; :37 based_on_version=7; :43 produção sem banco lança erro. Reverso: três testes novos cobrem exclusivamente FINAL-02. Legado assinado mantido para compatibilidade; novas sessões usam somente cookie financeiro.
+
+T3 PASS: lint/tipos,135 unitários,91 integração. agent-actions.test.ts:32 `reservations.length=1`/version3/replay, :39 dismissed/zero reservas, :46 stale e sessão estrangeira rejeitadas, :51 data e recibo accepted, :57 simulação -50000 sem escrita, :69 resolução não presume liquidação e leitura/cancelamento persistem. Cada teste novo corresponde FINAL-03; simulação e rascunho não têm envio externo.
