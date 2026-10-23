@@ -1,0 +1,35 @@
+digraph FluxoAgente {
+  graph [rankdir=TB, bgcolor="#F8FAFC", pad="0.4", nodesep="0.35", ranksep="0.55", splines=polyline, fontname="DejaVu Sans", label="COMO O AGENTE PROATIVO FUNCIONA\nDois pontos de partida, um acompanhamento contínuo", labelloc=t, fontsize=24, fontcolor="#0F172A", dpi=150];
+  node [shape=box, style="rounded,filled", fontname="DejaVu Sans", fontsize=16, margin="0.25,0.20", color="#CBD5E1", fillcolor="white", fontcolor="#0F172A", penwidth=1.3];
+  edge [color="#94A3B8", arrowsize=0.8, penwidth=1.5, fontname="DejaVu Sans", fontsize=12, fontcolor="#475569"];
+
+  user [label="INPUT DO USUÁRIO\nFala, texto ou CSV\nInforma dados ou faz um pedido", fillcolor="#DBEAFE", color="#93C5FD"];
+  task [label="TAREFA AUTOMATIZADA\nDispara um lembrete ou\numa verificação combinada", fillcolor="#EDE9FE", color="#C4B5FD"];
+  { rank=same; user; task; }
+
+  agent [label="O AGENTE ENTENDE A SITUAÇÃO\nConsulta os dados, atualiza o caixa e escolhe prioridades\nSe faltar informação, faz uma pergunta curta", fillcolor="#0F172A", fontcolor="white", color="#0F172A", margin="0.35,0.25"];
+  user -> agent;
+  task -> agent;
+
+  understand [label="ENTENDER E REGISTRAR\n\nExplica saldo, entradas e saídas\nRegistra receitas e despesas\nSimula mudanças e mostra o impacto", fillcolor="#EFF6FF", color="#BFDBFE"];
+  anticipate [label="ANTECIPAR E ORGANIZAR\n\nAvisa quando pode faltar dinheiro\nPropõe reservas para contas\nLembra pagamentos e recebimentos", fillcolor="#F0FDFA", color="#99F6E4"];
+  act [label="PREPARAR A PRÓXIMA AÇÃO\n\nMonta mensagens de cobrança\nCompara alternativas para o caixa\nSugere reposição, se houver dados", fillcolor="#FFF7ED", color="#FED7AA"];
+  { rank=same; understand; anticipate; act; }
+  agent -> understand;
+  agent -> anticipate;
+  agent -> act;
+
+  decision [label="INTERAÇÃO SIMPLES, POR VOZ OU TOQUE\nO agente explica o motivo e deixa a ação pronta\nO usuário aceita, ajusta, adia ou dispensa", fillcolor="#DBEAFE", color="#93C5FD"];
+  understand -> decision;
+  anticipate -> decision;
+  act -> decision;
+
+  follow [label="ACOMPANHAR ATÉ RESOLVER\n\nRotinas internas seguem as preferências autorizadas\nPendência continua: agenda retorno ou lembrete\nSituação mudou: revisa o plano\nFoi resolvido: atualiza o caixa e encerra lembretes", fillcolor="#DCFCE7", color="#86EFAC"];
+  decision -> follow;
+
+  next [label="PRÓXIMO CICLO\nNovo input do usuário ou novo disparo de tarefa", fillcolor="#E2E8F0", color="#CBD5E1"];
+  follow -> next;
+
+  note [shape=plaintext, label="Reserva é uma separação virtual no painel.\nAções externas exigem autorização. Simulações continuam sendo hipóteses.", fontsize=12, fontcolor="#475569"];
+  next -> note [style=invis];
+}
