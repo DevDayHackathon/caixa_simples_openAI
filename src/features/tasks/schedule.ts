@@ -22,7 +22,7 @@ export interface TaskRepository {
   listTasks(businessId: string): Promise<ScheduledTask[]>;
   cancelTask(id: string, expectedVersion: number): Promise<ScheduledTask>;
   claimDueTasks(now: string, limit: number, leaseSeconds: number): Promise<ClaimedOccurrence[]>;
-  finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string }): Promise<void>;
+  finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string; expected_attempt?: number }): Promise<void>;
   createNotification(notification: NotificationRecord): Promise<boolean>;
   listNotifications(businessId: string): Promise<NotificationRecord[]>;
   storeContext?(taskId: string, context: Record<string, unknown>): Promise<void>;
@@ -32,7 +32,7 @@ export interface TaskRepository {
 export type ClaimedOccurrence = { task: ScheduledTask; occurrence_key: string; attempt: number; lease_until: string };
 export type NotificationRecord = {
   id: string; business_id: string; occurrence_key: string; target_id: string; kind: string;
-  title: string; explanation: string; proposal_ids: string[]; created_at: string; read_at: string | null;
+  title: string; explanation: string; proposal_ids: string[]; created_at: string; read_at: string | null; expected_attempt?: number;
 };
 
 export class TaskConflictError extends Error { readonly code = "TaskConflict"; }
@@ -97,7 +97,7 @@ export class InMemoryTaskRepository implements TaskRepository {
   }
   async saveTask(task: ScheduledTask) {
     return this.exclusive(() => {
-      const found = [...this.tasks.values()].find((item) => item.dedup_key === task.dedup_key && item.status === "pending");
+      const found = [...this.tasks.values()].find((item) => item.dedup_key === task.dedup_key && ["pending", "running"].includes(item.status));
       if (found) {
         if (found.due_at === task.due_at) return structuredClone(found);
         this.tasks.set(found.id, { ...found, status: "cancelled", version: found.version + 1 });
@@ -110,7 +110,7 @@ export class InMemoryTaskRepository implements TaskRepository {
   async cancelTask(id: string, expectedVersion: number) {
     return this.exclusive(() => {
       const task = this.tasks.get(id);
-      if (!task || task.version !== expectedVersion || !["pending", "failed"].includes(task.status)) throw new TaskConflictError("Tarefa alterada; recarregue o contexto.");
+      if (!task || task.version !== expectedVersion || !["pending", "running", "failed"].includes(task.status)) throw new TaskConflictError("Tarefa alterada; recarregue o contexto.");
       const next = { ...task, status: "cancelled" as const, version: task.version + 1 }; this.tasks.set(id, next); return structuredClone(next);
     });
   }
@@ -131,16 +131,21 @@ export class InMemoryTaskRepository implements TaskRepository {
       return claims;
     });
   }
-  async finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string }) {
+  async finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string; expected_attempt?: number }) {
     await this.exclusive(() => {
       const occurrence = this.occurrences.get(key); if (!occurrence) throw new TaskConflictError("Ocorrência não adquirida.");
+      if(result.expected_attempt!==undefined&&occurrence.attempt!==result.expected_attempt)throw new TaskConflictError("Ocorrência retomada por outra execução.");
       occurrence.status = result.status; occurrence.leaseUntil = 0; occurrence.eligibleAt = result.eligible_at ? instant(result.eligible_at) : 0;
       const taskId = key.slice(0, key.indexOf(":")); const task = this.tasks.get(taskId);
-      if (task) this.tasks.set(taskId, { ...task, status: result.status === "pending" ? "pending" : result.status, eligible_at: result.eligible_at, version: task.version + 1 });
+      if (task && task.status !== "cancelled") this.tasks.set(taskId, { ...task, status: result.status === "pending" ? "pending" : result.status, eligible_at: result.eligible_at, version: task.version + 1 });
     });
   }
   async createNotification(notification: NotificationRecord) {
-    return this.exclusive(() => { if (this.notifications.has(notification.occurrence_key)) return false; this.notifications.set(notification.occurrence_key, structuredClone(notification)); return true; });
+    return this.exclusive(() => {
+      if(notification.expected_attempt!==undefined){const run=this.occurrences.get(notification.occurrence_key),task=this.tasks.get(notification.occurrence_key.split(":")[0]);
+        if(!run||run.attempt!==notification.expected_attempt||task?.status!=="running")return false;
+      }
+      if (this.notifications.has(notification.occurrence_key)) return false; this.notifications.set(notification.occurrence_key, structuredClone(notification)); return true; });
   }
   async listNotifications(businessId: string) { return [...this.notifications.values()].filter((item) => item.business_id === businessId).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 20).map((item) => structuredClone(item)); }
   async storeContext(taskId: string, context: Record<string, unknown>) { this.contexts.set(taskId, structuredClone(context)); }

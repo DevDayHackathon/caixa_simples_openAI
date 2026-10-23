@@ -4,6 +4,7 @@
 Corrigir o PR Bruno e integrar agente, finanças, tarefas e voz sem mocks em produção.
 
 ## Assumptions & Open Questions
+Open questions: none.
 Empresa demo compartilhada com dados fictícios; preserva FinancePort/AgentPort v1. Sem credenciais reais disponíveis. Usuário autorizou correções, push e merge automático; não autorizou deploy nem migração remota. Sessão antiga assinada permanece compatível, nova sessão financeira é a autoridade. Modelos são configurados explicitamente no servidor.
 
 ## Requirements
@@ -24,10 +25,10 @@ Como equipe, queremos configurar as chaves no servidor e ensaiar voz e conversa 
 ## Requirement Traceability
 | ID | Tasks | Status |
 | --- | --- | --- |
-| FINAL-01 | T1 | Verified |
+| FINAL-01 | T1, T5 | Verified |
 | FINAL-02 | T2 | Verified |
-| FINAL-03 | T3 | Verified |
+| FINAL-03 | T3, T5 | Verified |
 | FINAL-04 | T4 | Implementing |
-| FINAL-05 | T5 | Implementing |
+| FINAL-05 | T6 | Implementing |
 
 Sem questões em aberto para implementação. O ensaio com APIs reais depende das credenciais a serem configuradas pelo usuário e não é declarado realizado.

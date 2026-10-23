@@ -1,9 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { testDatabase } from './finance/database';
 import { createFinanceStore, type FinanceStore } from '@/features/finance/store';
 import { createFinancePort } from '@/features/finance/port';
 import { createAgentActions } from '@/features/agent/actions';
+import { createAgentTurnService, InMemoryAgentContextStore } from '@/features/agent/turn';
 import { InMemoryTaskRepository, createTaskScheduler } from '@/features/tasks/schedule';
 const clock=()=>new Date('2026-10-23T12:00:00Z');
 describe('FINAL-03 persisted decisions',()=>{
@@ -59,4 +60,15 @@ describe('FINAL-03 persisted decisions',()=>{
   await actions.noticeAction(text('Marcar como lida'));expect(await db.sql("select read_at is not null from public.agent_notifications where id='notice';")).toBe('t');
   await actions.noticeAction(text('Cancelar acompanhamento'));expect((await tasks.getTask(task.id))!.status).toBe('cancelled');
  });
+ it('filters informational cash alerts and accepts only a concrete financial simulation',async()=>{
+  const finance=createFinancePort(store,clock);
+  await finance.updateTransaction({id:'rec-1',expected_version:1,patch:{expected_date:'2026-11-01'}});
+  const create=vi.fn().mockResolvedValue({output_text:'A projeção indica saldo negativo. Escolha um compromisso e uma nova data para simular.',output:[]});
+  const turn=await createAgentTurnService({finance,tasks,actions,sessionId:'session',contextStore:new InMemoryAgentContextStore(),now:clock,client:{responses:{create}} as never}).turn({message:'Analise o caixa',origin:'user',request_id:'cash-alert'});
+  expect(turn.proposals).toEqual([]);expect(turn.snapshot_version).toBe(3);
+  expect((await finance.getCashSnapshot({business_id:'demo',as_of:'2026-10-23'})).minimum_balance_cents).toBe(-50000);
+  const concrete=(await actions.executeTool('prepare_proposal',JSON.stringify({kind:'simulate',target_id:'rec-1',reason:'Antecipação hipotética',amount_cents:null,expected_date:'2026-10-26'})))!.proposal!;
+  const accepted=await actions.decision(command(concrete));expect(accepted?.proposals[0].status).toBe('accepted');expect(accepted?.reply_text).toContain('1000.00');expect((await store.read()).version).toBe(3);
+ });
+
 });

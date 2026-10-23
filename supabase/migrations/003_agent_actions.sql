@@ -66,3 +66,28 @@ revoke all on function public.save_agent_proposal(text,jsonb), public.read_agent
 grant execute on function public.save_agent_proposal(text,jsonb), public.read_agent_proposal(text,text),
  public.decide_agent_proposal(text,text,text,bigint,jsonb), public.commit_agent_proposal(text,text,text,bigint,jsonb,text,jsonb,jsonb,text),
  public.read_agent_notice(text),public.mark_agent_notice_read(text,text,text) to service_role;
+
+create function public.create_agent_notification(p_notice jsonb,p_attempt int)
+returns boolean language plpgsql security definer set search_path=public,pg_temp as $$
+declare current_task public.agent_tasks; inserted text;
+begin
+ perform 1 from public.finance_state where business_id=p_notice->>'business_id' for update;
+ select * into current_task from public.agent_tasks where id=split_part(p_notice->>'occurrence_key',':',1) for update;
+ if not found or current_task.status<>'running' or current_task.business_id<>p_notice->>'business_id' or current_task.target_id<>p_notice->>'target_id' then return false; end if;
+ if not exists(select 1 from public.agent_task_runs r where r.task_id=current_task.id and r.scheduled_due_at=current_task.due_at
+  and r.status='running' and r.attempt=p_attempt and r.lease_until>clock_timestamp()
+  and current_task.id||':'||current_task.due_at::text=p_notice->>'occurrence_key') then raise exception 'STALE_OCCURRENCE'; end if;
+ insert into public.agent_notifications select * from jsonb_populate_record(null::public.agent_notifications,p_notice)
+ on conflict(occurrence_key) do nothing returning id into inserted;
+ return inserted is not null;
+end $$;
+revoke all on function public.create_agent_notification(jsonb,int) from public,anon,authenticated;
+grant execute on function public.create_agent_notification(jsonb,int) to service_role;
+
+create function public.list_agent_proposals(p_session text)
+returns jsonb language sql security definer set search_path=public,pg_temp as $$
+ select coalesce(jsonb_agg(p.proposal),'[]'::jsonb) from
+ (select proposal from public.agent_proposals where session_id=p_session order by created_at desc limit 10) p;
+$$;
+revoke all on function public.list_agent_proposals(text) from public,anon,authenticated;
+grant execute on function public.list_agent_proposals(text) to service_role;

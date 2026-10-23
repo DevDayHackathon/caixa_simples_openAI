@@ -12,7 +12,12 @@ export const integratedToolDefinitions=[
 export function createAgentActions(store:FinanceStore,tasks:TaskRepository,sessionId:string,now:()=>Date=()=>new Date()){
  const finance=createFinancePort(store,now);
  const rpc=store.rpc;
- async function save(proposals:Proposal[]){return Promise.all(proposals.map(p=>rpc('save_agent_proposal',{p_session:sessionId,p_proposal:p}).then(value=>proposalSchema.parse(value))));}
+ async function save(proposals:Proposal[]){
+  // Automatic cash alerts can be informational. Only concrete simulations have
+  // an acceptance control; the dashboard still displays the underlying risk.
+  const state=await store.read();
+  const actionable=proposals.filter(p=>!['simulate','change_expected_date'].includes(p.kind)||(z.iso.date().safeParse(p.arguments.expected_date).success&&state.transactions.some(t=>t.id===p.target_id&&t.status==='pending')));
+  return Promise.all(actionable.map(p=>rpc('save_agent_proposal',{p_session:sessionId,p_proposal:p}).then(value=>proposalSchema.parse(value))));}
  async function result(reply_text:string,proposals:Proposal[]=[]):Promise<AgentTurnResult>{const state=await store.read();return {reply_text,proposals,snapshot_version:state.version,created_task_ids:[]};}
  async function read(id:string){const row=await rpc('read_agent_proposal',{p_session:sessionId,p_id:id}) as {proposal:unknown;result:unknown}|null;if(!row)throw new FinanceError(404,'PROPOSAL_NOT_FOUND','Proposta não encontrada nesta sessão.');return {...row,proposal:proposalSchema.parse(row.proposal)};}
  async function decision(message:string):Promise<AgentTurnResult|null>{
@@ -62,13 +67,14 @@ export function createAgentActions(store:FinanceStore,tasks:TaskRepository,sessi
    const state=await store.read(),tx=state.transactions.find(t=>t.id===target);
    if(!tx||tx.status==='pending')return result('O compromisso ainda está pendente. Confirme a liquidação em Gerenciar compromissos; nenhuma liquidação foi presumida.');
   }
-  if(['pending','failed'].includes(task.status))await tasks.cancelTask(task.id,task.version);
+  const active=(await tasks.listTasks('demo')).filter(t=>t.target_id===target&&t.kind===task.kind&&['pending','running','failed'].includes(t.status));
+  for(const current of active)await tasks.cancelTask(current.id,current.version);
   await rpc('mark_agent_notice_read',{p_id:id,p_occurrence:occurrence,p_target:target});
   return result(action==='Marcar resolvido'?'Resolução conferida no caixa.':'Acompanhamento encerrado; avisos anteriores permanecem no histórico.');
  }
  return {save,decision,noticeAction,
   async executeTool(name:string,raw:string){
-   if(name==='get_finance_workspace'){z.strictObject({}).parse(JSON.parse(raw));const state=await store.read();return {output:{business:state.business,transactions:state.transactions,version:state.version,as_of:saoPauloDate(now())}};}
+   if(name==='get_finance_workspace'){z.strictObject({}).parse(JSON.parse(raw));const state=await store.read();return {output:{business:state.business,transactions:state.transactions,reservations:state.reservations,proposals:await rpc('list_agent_proposals',{p_session:sessionId}),version:state.version,as_of:saoPauloDate(now())}};}
    if(name==='schedule_followup'){
     const args=JSON.parse(raw),state=await store.read();
     if(!state.business.reminders_enabled)throw new FinanceError(422,'REMINDERS_DISABLED','Lembretes desativados.');
@@ -79,7 +85,7 @@ export function createAgentActions(store:FinanceStore,tasks:TaskRepository,sessi
    const args=extendedProposal.parse(JSON.parse(raw)),state=await store.read(),tx=state.transactions.find(t=>t.id===args.target_id&&t.status==='pending');
    if(!tx)throw new FinanceError(422,'TRANSACTION_NOT_FOUND','Escolha um compromisso pendente do caixa.');
    if(['simulate','change_expected_date'].includes(args.kind)&&!args.expected_date)throw new FinanceError(422,'MISSING_DATE','Esclareça a nova data antes de preparar a proposta.');
-   const proposal=proposalSchema.parse({id:crypto.randomUUID(),kind:args.kind,target_id:tx.id,based_on_version:state.version,status:'pending',arguments:{reason:args.reason,amount_cents:args.amount_cents??tx.amount_cents,expected_date:args.expected_date??tx.expected_date,description:tx.description,counterparty:tx.counterparty}});
+   const proposal=proposalSchema.parse({id:crypto.randomUUID(),kind:args.kind,target_id:tx.id,based_on_version:state.version,status:'pending',arguments:{reason:args.reason,amount_cents:args.amount_cents??tx.amount_cents,expected_date:args.expected_date??tx.expected_date,description:tx.description,counterparty:tx.counterparty,...(args.kind==='draft_collection'?{message:`Olá, ${tx.counterparty}. Poderia confirmar a previsão de pagamento de R$ ${(tx.amount_cents/100).toFixed(2)} referente a ${tx.description}?`}:{})}});
    let output:unknown={proposal,applied:false};
    if(args.kind==='simulate')output={proposal,applied:false,simulation:await finance.simulate({base_version:state.version,overrides:[{transaction_id:tx.id,expected_date:args.expected_date!}]})};
    return {proposal:(await save([proposal]))[0],output};

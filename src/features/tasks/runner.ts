@@ -27,13 +27,13 @@ export async function runDueTasks(options: RunnerOptions): Promise<RunnerResult>
     try {
       const firstCheck = await options.readCommitment(claim.task.business_id, claim.task.target_id);
       if (firstCheck.status !== "pending") {
-        await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed" }); completed++; continue;
+        await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed", expected_attempt: claim.attempt }); completed++; continue;
       }
       const initiatives = evaluateProactivity({ snapshot: firstCheck.snapshot, now: clock().toISOString(), origin: "task" });
       // Check again immediately before writing; settlement during evaluation cancels the reminder.
       const latest = await options.readCommitment(claim.task.business_id, claim.task.target_id);
       if (latest.status !== "pending") {
-        await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed" }); completed++; continue;
+        await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed", expected_attempt: claim.attempt }); completed++; continue;
       }
       const generated = initiatives.proposals.filter((proposal) => proposal.target_id === claim.task.target_id);
       const notice: NotificationRecord = {
@@ -41,10 +41,10 @@ export async function runDueTasks(options: RunnerOptions): Promise<RunnerResult>
         target_id: claim.task.target_id, kind: claim.task.kind,
         title: claim.task.kind === "payment_reminder" ? "Lembrete de compromisso" : "Acompanhamento do caixa",
         explanation: renderRuleDraft(claim, latest, generated[0]), proposal_ids: generated.map((proposal) => proposal.id),
-        created_at: clock().toISOString(), read_at: null,
+        created_at: clock().toISOString(), read_at: null, expected_attempt: claim.attempt,
       };
       const inserted = await options.repository.createNotification(notice);
-      await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed" });
+      await options.repository.finishOccurrence(claim.occurrence_key, { status: "completed", expected_attempt: claim.attempt });
       completed++; if (inserted) notified++;
     } catch (error) {
       await retry(options.repository, claim, error instanceof Error ? error.message : "Falha ao executar tarefa", clock); failed++;
@@ -59,10 +59,10 @@ export async function runDueTasks(options: RunnerOptions): Promise<RunnerResult>
 
 async function retry(repository: TaskRepository, claim: ClaimedOccurrence, _error: string, clock: () => Date) {
   if (claim.attempt >= MAX_ATTEMPTS) {
-    await repository.finishOccurrence(claim.occurrence_key, { status: "failed" }); return;
+    await repository.finishOccurrence(claim.occurrence_key, { status: "failed", expected_attempt: claim.attempt }); return;
   }
   const delay = RETRY_SECONDS[Math.min(claim.attempt - 1, RETRY_SECONDS.length - 1)];
-  await repository.finishOccurrence(claim.occurrence_key, { status: "pending", eligible_at: new Date(clock().getTime() + delay * 1000).toISOString() });
+  await repository.finishOccurrence(claim.occurrence_key, { status: "pending", expected_attempt: claim.attempt, eligible_at: new Date(clock().getTime() + delay * 1000).toISOString() });
 }
 
 function renderRuleDraft(claim: ClaimedOccurrence, state: CommitmentState, proposal?: { arguments: Record<string, unknown> }) {

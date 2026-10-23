@@ -13,7 +13,9 @@ export async function localAgentGateway(db:Awaited<ReturnType<typeof testDatabas
    if(url.pathname.startsWith('/rest/v1/rpc/')){
     const name=url.pathname.slice('/rest/v1/rpc/'.length);if(!/^[a-z_]+$/.test(name))throw Error('Invalid RPC');
     const args=Object.entries(body??{}).map(([k,v])=>{if(!/^p_[a-z_]+$/.test(k))throw Error('Invalid argument');return `${k}=>${quote(v)}`;}).join(',');
-    output=await db.sql(`set role service_role; select coalesce(to_jsonb(public.${name}(${args})),'null'::jsonb);`);
+    output=await db.sql(name==='claim_due_agent_tasks'
+      ? `set role service_role; select coalesce(jsonb_agg(to_jsonb(c)),'[]'::jsonb) from public.${name}(${args}) c;`
+      : `set role service_role; select coalesce(to_jsonb(public.${name}(${args})),'null'::jsonb);`);
    }else{
     const table=url.pathname.slice('/rest/v1/'.length);if(!['agent_contexts','agent_tasks','agent_notifications'].includes(table))throw Error('Invalid table');
     const conditions=[...url.searchParams].filter(([k])=>!['select','order','limit'].includes(k)).map(([k,v])=>{if(!['id','business_id','session_id'].includes(k)||!v.startsWith('eq.'))throw Error('Invalid filter');return `${k}=${quote(v.slice(3))}`;}).join(' and ')||'true';

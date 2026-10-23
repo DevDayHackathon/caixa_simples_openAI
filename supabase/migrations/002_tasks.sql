@@ -99,7 +99,7 @@ returns jsonb language plpgsql security definer set search_path = public, pg_tem
 declare saved public.agent_tasks;
 begin
   update public.agent_tasks set status=p_next_status, version=version+1, updated_at=now()
-  where id=p_task_id and version=p_expected_version and status in ('pending','failed') and p_next_status='cancelled'
+  where id=p_task_id and version=p_expected_version and status in ('pending','running','failed') and p_next_status='cancelled'
   returning * into saved;
   if not found then raise exception 'Tarefa alterada; recarregue o contexto.' using errcode='P0001'; end if;
   return to_jsonb(saved) - 'context' - 'created_at' - 'updated_at';
@@ -127,12 +127,13 @@ begin
   end loop;
 end $$;
 
-create or replace function public.finish_agent_occurrence(p_task_id text,p_scheduled_due_at timestamptz,p_status text,p_error text default null,p_eligible_at timestamptz default null)
+create or replace function public.finish_agent_occurrence(p_task_id text,p_scheduled_due_at timestamptz,p_status text,p_error text default null,p_eligible_at timestamptz default null,p_expected_attempt int default null)
 returns void language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if p_status not in ('completed','failed','pending') then raise exception 'Status de ocorrência inválido'; end if;
   update public.agent_task_runs set status=p_status,error=left(p_error,1000),lease_until='-infinity',updated_at=now()
-    where task_id=p_task_id and scheduled_due_at=p_scheduled_due_at and status='running';
+    where task_id=p_task_id and scheduled_due_at=p_scheduled_due_at and status='running'
+      and (p_expected_attempt is null or (attempt=p_expected_attempt and lease_until>clock_timestamp()));
   if not found then raise exception 'Ocorrência não adquirida' using errcode='P0001'; end if;
   update public.agent_tasks set status=p_status,eligible_at=p_eligible_at,version=version+1,updated_at=now()
     where id=p_task_id and status='running';
@@ -178,14 +179,14 @@ end $$;
 revoke all on function public.schedule_agent_task(jsonb) from public, anon, authenticated;
 revoke all on function public.transition_agent_task(text,int,text) from public, anon, authenticated;
 revoke all on function public.claim_due_agent_tasks(timestamptz,int,int) from public, anon, authenticated;
-revoke all on function public.finish_agent_occurrence(text,timestamptz,text,text,timestamptz) from public, anon, authenticated;
+revoke all on function public.finish_agent_occurrence(text,timestamptz,text,text,timestamptz,int) from public, anon, authenticated;
 revoke all on function public.append_agent_context(text,jsonb) from public, anon, authenticated;
 revoke all on function public.consume_agent_rate_limit(text,int) from public, anon, authenticated;
 revoke all on function public.dispatch_due_agent_tasks() from public, anon, authenticated;
 grant execute on function public.schedule_agent_task(jsonb) to service_role;
 grant execute on function public.transition_agent_task(text,int,text) to service_role;
 grant execute on function public.claim_due_agent_tasks(timestamptz,int,int) to service_role;
-grant execute on function public.finish_agent_occurrence(text,timestamptz,text,text,timestamptz) to service_role;
+grant execute on function public.finish_agent_occurrence(text,timestamptz,text,text,timestamptz,int) to service_role;
 grant execute on function public.append_agent_context(text,jsonb) to service_role;
 grant execute on function public.consume_agent_rate_limit(text,int) to service_role;
 grant execute on function public.dispatch_due_agent_tasks() to postgres, service_role;
@@ -227,6 +228,7 @@ returns trigger language plpgsql security definer set search_path=public,pg_temp
 begin
  perform 1 from public.finance_state where business_id=new.business_id for update;
  if public.read_task_commitment_status(new.business_id,new.target_id) <> 'pending' then return null; end if;
+ if exists(select 1 from public.agent_tasks where id=split_part(new.occurrence_key,':',1) and status='cancelled') then return null; end if;
  return new;
 end $$;
 revoke all on function public.guard_agent_notification() from public,anon,authenticated;

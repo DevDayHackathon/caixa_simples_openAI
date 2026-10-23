@@ -33,14 +33,18 @@ export class SupabaseTaskRepository implements TaskRepository {
     if (error) throw error;
     return ((data ?? []) as ClaimRow[]).map((row) => ({ ...row, task: taskFromRow(row.task) }));
   }
-  async finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string }) {
+  async finishOccurrence(key: string, result: { status: "completed" | "failed" | "pending"; error?: string; eligible_at?: string; expected_attempt?: number }) {
     const separator = key.indexOf(":");
     const task_id = key.slice(0, separator); const scheduled_due_at = key.slice(separator + 1);
     const { error } = await this.client.rpc("finish_agent_occurrence", { p_task_id: task_id, p_scheduled_due_at: scheduled_due_at,
-      p_status: result.status, p_error: result.error ?? null, p_eligible_at: result.eligible_at ?? null });
+      p_status: result.status, p_error: result.error ?? null, p_eligible_at: result.eligible_at ?? null, ...(result.expected_attempt!==undefined?{p_expected_attempt:result.expected_attempt}:{}) });
     if (error) throw error;
   }
   async createNotification(notification: NotificationRecord) {
+    if(notification.expected_attempt!==undefined){
+      const {expected_attempt,...notice}=notification;
+      const {data,error}=await this.client.rpc("create_agent_notification",{p_notice:notice,p_attempt:expected_attempt});if(error)throw error;return data===true;
+    }
     const { error, data } = await this.client.from("agent_notifications").insert(notification).select("id").maybeSingle();
     if (error?.code === "23505") return false;
     if (error) throw error;

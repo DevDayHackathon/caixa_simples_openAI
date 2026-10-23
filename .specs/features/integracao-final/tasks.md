@@ -1,7 +1,14 @@
 # Integração final
 
 ## Execution Plan
-T1 -> T2 -> T3 -> T4 -> T5
+```mermaid
+flowchart TD
+T1 --> T2
+T2 --> T3
+T3 --> T4
+T4 --> T5
+T5 --> T6
+```
 
 ## Gate Check Commands
 quick: npm run test:unit
@@ -15,7 +22,8 @@ build: npm run check
 | T2 | FINAL-02 | integração sessão/runtime |
 | T3 | FINAL-03 | integração decisões e conflitos |
 | T4 | FINAL-04 | HTTP áudio e UI/E2E |
-| T5 | FINAL-05 | gate completo e verificador |
+| T5 | FINAL-01, FINAL-03 | integração SQL real |
+| T6 | FINAL-05 | gate completo e verificador |
 
 ## Task Breakdown
 
@@ -55,10 +63,19 @@ build: npm run check
 **Gate**: build
 **Done when**: Fluxo integrado e falhas de áudio/sessão/quota testados sem chamadas pagas. [x]
 
-### T5: Verificar e publicar integração
+### T5: Fechar concorrência e iniciativas
+**What**: Cancelar tarefas running, cercar tentativas retomadas e suprimir aceite de iniciativas sem simulação concreta.
+**Where**: src/features/tasks/, src/features/agent/actions.ts, supabase/migrations/, tests/integration/
+**Depends on**: T4
+**Requirement**: FINAL-01, FINAL-03
+**Tests**: integration
+**Gate**: build
+**Done when**: Runner SQL real entrega uma vez, cancelamento suprime aviso, dono expirado é rejeitado e alerta sem parâmetros não oferece aceite. [x]
+
+### T6: Verificar e publicar integração
 **What**: Revisão independente/sensor, documentação final, push e merge autorizado com head validado.
 **Where**: docs/, .specs/features/integracao-final/, .specs/STATE.md
-**Depends on**: T4
+**Depends on**: T5
 **Requirement**: FINAL-05
 **Tests**: integration, e2e
 **Gate**: build
@@ -71,3 +88,5 @@ T2 PASS: lint/tipos,135 unitários,85 integração. FINAL-02 agent-composition.t
 T3 PASS: lint/tipos,135 unitários,91 integração. agent-actions.test.ts:32 `reservations.length=1`/version3/replay, :39 dismissed/zero reservas, :46 stale e sessão estrangeira rejeitadas, :51 data e recibo accepted, :57 simulação -50000 sem escrita, :69 resolução não presume liquidação e leitura/cancelamento persistem. Cada teste novo corresponde FINAL-03; simulação e rascunho não têm envio externo.
 
 T4 PASS: npm run check,135 unitários,95 integração,11 E2E; lint/tipos/build. FINAL-04 audio-live.test.ts:16 HTTP200/texto, :21 bytes MP3 e falha sanitizada, :27 401/429 e zero provedor; agent-integrated.spec.ts:47 proposta sem escrita, :50 reserva persistida50000, :51 recarga/version3 e 360px. Reverso: quatro casos de áudio/status e E2E correspondem somente FINAL-04. Provedor OpenAI local de teste; Postgres real e rotas Next de produção.
+
+T5 PASS: npm run check,135 unitários,99 integração,11 E2E; zero falhas/skips. tasks-sql-runtime.test.ts:25 runner claimed1/completed1/notified1, :26 repetição claimed0, :32 cancelamento devolve createNotification=false, :40 tentativa antiga rejeitada e statusrunning, :43 tentativa atual completed. agent-actions.test.ts:67 alerta negativo não oferece proposta incompleta; :71 simulação concreta accepted sem escrita/version3. Reverso: casos novos correspondem FINAL-01/03 e corrigem achados da revisão independente; nenhuma asserção preexistente alterada.
