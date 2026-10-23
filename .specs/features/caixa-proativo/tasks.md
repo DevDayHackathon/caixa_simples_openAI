@@ -92,7 +92,7 @@ T21 -> T22
 **What**: Incorporar a configuração Vercel Hobby/Supabase Free do guia, sem provisionamento, e Fixar stack, lockfile, schemas v1, fixtures F1/F2, mocks e scripts de gates; rejeitar schema inválido e provar mocks compatíveis.
 **Where**: `package.json`
 **Depends on**: None
-**Requirement**: HOST-01, DATA-01, CASH-01, AGENT-01, TASK-01
+**Requirement**: TASK-07, HOST-01, DATA-01, CASH-01, AGENT-01, TASK-01
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -278,15 +278,15 @@ T21 -> T22
 ### T12: Persistência e criação de tarefas
 
 **Owner**: Bruno
-**What**: Criar, persistir, cancelar e adiar compromisso não duplica tarefa; preferências desativadas impedem nova criação.
+**What**: Validar e persistir horário escolhido pelo agente, justificativa e prioridade do horário explícito do usuário; Criar, persistir, cancelar e adiar compromisso não duplica tarefa; preferências desativadas impedem nova criação.
 **Where**: `src/features/tasks/schedule.ts`
 **Depends on**: T1
-**Requirement**: HOST-04, TASK-01, TASK-05, TASK-06
+**Requirement**: TASK-07, TASK-08, HOST-04, TASK-01, TASK-05, TASK-06
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
 - [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 6 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [ ] Pelo menos 8 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
 - [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
@@ -295,15 +295,15 @@ T21 -> T22
 ### T13: Executor de ocorrências
 
 **Owner**: Bruno
-**What**: Processar no máximo cinco ocorrências por tick, orçamento 30 s/maxDuration 60 s e persistência entre instâncias; Executor processa sem usuário, adquire ocorrência uma vez, relê pagamento antes de notificar e resiste a retry/falha/concorrência.
+**What**: Integrar despacho SQL condicional: zero HTTP/IA sem tarefa elegível, bloqueio temporário de despacho e recuperação após falha; Processar no máximo cinco ocorrências por tick, orçamento 30 s/maxDuration 60 s e persistência entre instâncias; Executor processa sem usuário, adquire ocorrência uma vez, relê pagamento antes de notificar e resiste a retry/falha/concorrência.
 **Where**: `src/features/tasks/runner.ts`
 **Depends on**: T11, T12
-**Requirement**: HOST-02, HOST-04, TASK-02, TASK-03, TASK-04, TASK-06
+**Requirement**: HOST-05, HOST-02, HOST-04, TASK-02, TASK-03, TASK-04, TASK-06
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
 - [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 9 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [ ] Pelo menos 12 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
 - [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
@@ -450,10 +450,10 @@ T21 -> T22
 ### T22: Agendamento real e ensaio de demonstração
 
 **Owner**: Bruno + revisão dos três
-**What**: Preparar um único Supabase Cron de cinco minutos por HTTP protegido para Vercel Hobby; validar seis tarefas com limite de cinco por lote; testar processamento sem aba, notificação única, segredo inválido e F1 em até três minutos; ativação remota só após autorização.
+**What**: Preparar um único Supabase Cron de cinco minutos com gate SQL antes do HTTP protegido para Vercel Hobby; provar zero HTTP com fila vazia ou apenas tarefas futuras; validar seis tarefas com limite de cinco por lote; testar processamento sem aba, notificação única, segredo inválido e F1 em até três minutos; ativação remota só após autorização.
 **Where**: `supabase/migrations/003_schedule.sql`
 **Depends on**: T21
-**Requirement**: HOST-01, HOST-02, TASK-02, TASK-04, SAFE-03, CASH-03
+**Requirement**: HOST-05, HOST-01, HOST-02, TASK-02, TASK-04, SAFE-03, CASH-03
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
@@ -533,3 +533,7 @@ Antes de Execute, confirmar stack, comandos, defaults e ownership. Branches aind
 ## Restrições adicionais de implantação
 
 Os requisitos HOST-01 a HOST-04 são P1 e têm testes nas tarefas indicadas. T19 testa fronteiras de tamanho/duração; T13 testa seis pendências com apenas cinco aquisições, próxima execução e restart; T22 verifica ausência de cron frequente Vercel. Tudo segue docs/deploy-gratuito.md. Os contadores mínimos de testes originais são pisos; novos casos são adicionais quando não cobertos. Cron real, variáveis remotas e deploy só são ativados após autorização. Não há garantia de preview automático para todas as branches no Hobby.
+
+## Decisão de agendamento aceita
+
+Agente determina due_at e motivo ao criar tarefa; usuário pode substituir o horário. Cron só checa elegibilidade no banco e não chama Vercel/IA sem trabalho. TASK-07/TASK-08 mapeiam T1/T12; HOST-05 mapeia T13/T22. Não aumentar a quantidade de jobs com um cron por compromisso. Ver docs/deploy-gratuito.md.

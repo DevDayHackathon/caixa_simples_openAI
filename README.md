@@ -34,3 +34,7 @@ Os comandos npm de tasks.md são uma proposta a materializar em T1. Nenhuma suí
 ## Hospedagem alvo confirmada
 
 Vercel Hobby + Supabase Free. O [guia de implantação gratuita](docs/deploy-gratuito.md) define agendamento Supabase, limites serverless, áudio, ambientes e colaboração. O consumo da API OpenAI é separado. Nenhuma publicação foi realizada.
+
+## Início do trabalho da equipe
+
+[Mensagens prontas por integrante e checklist de T1](docs/mensagens-equipe.md). O agente escolhe horários; Supabase verifica elegibilidade localmente e só chama Vercel com trabalho vencido, sem Cron Vercel. Bootstrap e branches permanecem pendentes.

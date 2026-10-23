@@ -61,20 +61,14 @@ Cada tarefa inclui implementação e testes, atualiza o seu status e gera um com
 
 Branches partem do mesmo commit. Sincronizar base antes de integrar. Ordem proposta de incorporação: Daniel, Bruno, Jecky, depois T21/T22; não confundir essa ordem de integração com a execução paralela. Rodar gate completo após cada incorporação. Nenhum push ou deploy foi autorizado nesta etapa.
 
-## Prompts de início para uso com IA
+## Mensagens de início para uso com IA
 
-### Jecky
-
-Leia spec.md, context.md, contracts.md e os blocos T15–T20 em tasks.md da feature caixa-proativo. Trabalhe somente na área de experiência/voz na sua branch. Ative tlc-spec-driven e siga tarefas em ordem, com testes co-localizados e um commit por tarefa. Consuma mocks v1 até os adaptadores reais estarem disponíveis. Não altere contratos compartilhados sem combinar. Não faça push ou deploy.
-
-### Daniel
-
-Leia a especificação caixa-proativo, contratos e tarefas T2–T8; T1 precisa estar concluída na base comum. Ative tlc-spec-driven e implemente a fonte de verdade financeira em centavos, com F1/F2 e banco isolado nos testes. Um commit por tarefa, incluindo status e evidência do gate. Não implemente IA nem interface. Não faça push ou deploy.
-
-### Bruno
-
-Leia a especificação caixa-proativo, contratos e tarefas T9–T14. Ative tlc-spec-driven e mantenha separados input do usuário e tarefa programada. Use FinancePort, inicialmente com mocks, sem duplicar cálculos. Teste reprocessamento, concorrência e compromisso já resolvido. Não execute transação bancária nem envie cobrança externa. Um commit por tarefa. Não faça push, provisionamento ou deploy sem autorização.
+Os textos completos e atualizados estão em [mensagens-equipe.md](mensagens-equipe.md), com uma mensagem específica para Daniel, Jecky e Bruno. Daniel prepara T1 na main e comunica o commit-base. Jecky e Bruno só implementam quando suas branches partirem dessa base; não recriam scaffold ou contratos.
 
 ## Hospedagem gratuita confirmada
 
-Todos seguem [deploy-gratuito.md](deploy-gratuito.md). Jecky limita áudio e evita polling permanente. Daniel usa Postgres persistido, transações/RPC e testes locais isolados, sem banco remoto por branch. Bruno configura o único cron Supabase de cinco minutos, lotes pequenos e executor protegido na Vercel, sem Vercel Cron frequente ou worker residente. Um responsável pela conta Hobby publica main; ainda será designado. As três branches continuam sendo desenvolvimento paralelo, sem pressupor três assentos pagos ou três projetos Supabase.
+Todos seguem [deploy-gratuito.md](deploy-gratuito.md). Jecky limita áudio e evita polling permanente. Daniel usa Postgres persistido, transações/RPC e testes locais isolados, sem banco remoto por branch. Bruno prepara o único cron Supabase de cinco minutos, cujo gate SQL só chama a Vercel se houver tarefa vencida elegível, com horário individual decidido pelo agente; mantém lotes pequenos e executor protegido, sem Vercel Cron frequente ou worker residente. Um responsável pela conta Hobby publica main; ainda será designado. As três branches continuam sendo desenvolvimento paralelo, sem pressupor três assentos pagos ou três projetos Supabase.
+
+## Controle de prontidão
+
+T1 ainda pendente. O checklist em mensagens-equipe.md define o mínimo que precisa estar pronto antes das três branches. Separar preparação local de compartilhamento remoto: não pressupor que um commit local já está disponível no clone dos colegas. Só marcar requisito compartilhado Verified após todas as tarefas relacionadas e gates necessários.

@@ -48,7 +48,7 @@ Fontes de escopo: `contexto_hackathon_painel_de_caixa.md`, conversa da equipe, `
 | Qualidade | Unitários, integração e E2E conforme tasks.md | Não existem testes nem aplicação neste diretório | Proposta |
 | Visão ideal versus MVP | Todas as funções principais de caixa e proatividade em P1; estoque em P2 | Evita que reposição impeça a entrega obrigatória | Proposta |
 
-**Open questions:** none — ambiguidades de produto resolvidas ou registradas como propostas acima. Aprovação dessas propostas ainda não ocorreu. Modelos, versões e comandos serão fixados no bootstrap, antes de executar tarefas dependentes.
+**Open questions:** none — ambiguidades de produto resolvidas ou registradas como propostas acima. Aprovação dessas propostas ainda não ocorreu. Agente define horário individual; SQL do cron só despacha tarefas vencidas elegíveis, conforme aceite do usuário. Modelos, versões e comandos serão fixados no bootstrap, antes de executar tarefas dependentes.
 
 ## Business Rules
 
@@ -135,6 +135,9 @@ Recebível vencido sem nova data fica identificado como incerto e excluído das 
 5. WHEN o usuário adia um lembrete para um horário explícito THEN o sistema SHALL reagendar a tarefa sem manter uma segunda ocorrência ativa equivalente. [TASK-05]
 6. IF o executor falha THEN o sistema SHALL registrar o erro e permitir reprocessar a mesma ocorrência sem duplicar seus efeitos. [TASK-06]
 
+7. WHEN o agente cria uma tarefa THEN o sistema SHALL persistir o horário decidido previamente e sua justificativa nos campos de agendamento definidos em contracts.md. [TASK-07]
+8. WHEN o usuário informa horário explícito de lembrete THEN o sistema SHALL usar esse horário em vez da antecedência sugerida pelo agente. [TASK-08]
+
 **Independent Test**: criar tarefa vencida, fechar o cliente, executar o processamento no servidor e reabrir para ler uma notificação persistida; repetir processamento e permanecer uma.
 
 ### P1: US7 — Preservar integridade e limites
@@ -166,10 +169,12 @@ Recebível vencido sem nova data fica identificado como incerto e excluído das 
 **User Story**: Como equipe, queremos publicar a demo sem contratar Vercel Pro ou Supabase pago.
 
 **Acceptance Criteria**:
-1. WHEN o ambiente de produção é configurado THEN o sistema SHALL usar Supabase Cron a cada cinco minutos para disparar o executor Vercel, sem cron frequente na Vercel Hobby. [HOST-01]
+1. WHEN o ambiente de produção é configurado THEN o sistema SHALL usar Supabase Cron para verificar tarefas elegíveis no banco a cada cinco minutos, sem Cron Vercel. [HOST-01]
 2. WHEN um lote vencido é processado THEN o executor SHALL adquirir no máximo cinco ocorrências, mantendo as demais pendentes para o próximo tick. [HOST-02]
 3. IF uma gravação excede 3 MiB ou 60 segundos THEN o cliente SHALL interromper a captura e disponibilizar alternativa textual sem enviar arquivo acima do limite. [HOST-03]
 4. WHEN uma instância serverless é substituída THEN o sistema SHALL recuperar estado financeiro e tarefas do Postgres sem depender de arquivos locais ou memória da instância anterior. [HOST-04]
+
+5. IF a verificação SQL não encontra tarefa vencida elegível THEN o sistema SHALL encerrar a verificação sem chamada HTTP à Vercel ou à OpenAI. [HOST-05]
 
 **Independent Test**: validar cron/configuração; processar seis tarefas e observar cinco aquisições; simular limite de gravação; reiniciar instância e reler o estado. Configuração real só é verificada depois da implantação autorizada; o teste local usa o mesmo executor.
 
@@ -254,8 +259,11 @@ Tabela gerada ao lado das tarefas; IDs representam critérios verificáveis, nã
 | HOST-02 | P1: Infra gratuita | Tasks | Pending | T13, T22 |
 | HOST-03 | P1: Infra gratuita | Tasks | Pending | T19 |
 | HOST-04 | P1: Infra gratuita | Tasks | Pending | T2, T12, T13 |
+| TASK-07 | P1: Agendamento | Tasks | Pending | T1, T12 |
+| TASK-08 | P1: Agendamento | Tasks | Pending | T12 |
+| HOST-05 | P1: Infra gratuita | Tasks | Pending | T13, T22 |
 
-Coverage: 41 critérios; 39 P1 mapeados; 2 P2 adiados; zero P1 sem tarefa.
+Coverage: 44 critérios; 42 P1 mapeados; 2 P2 adiados; zero P1 sem tarefa.
 
 ## Success Criteria
 

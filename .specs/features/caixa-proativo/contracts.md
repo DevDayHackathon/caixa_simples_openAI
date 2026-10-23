@@ -10,7 +10,7 @@ Status: proposta funcional; converter em tipos e schemas durante T1, antes de im
 | Transaction | id, business_id, direction=in/out, amount_cents positivo inteiro, status=pending/settled/cancelled, due_date, expected_date, settled_date opcional, counterparty, description, version, source, updated_at |
 | Reservation | id, business_id, transaction_id de saída, amount_cents, status=active/released, version |
 | Scenario | id, business_id, base_version, overrides de expected_date/amount_cents; nunca grava liquidação |
-| ScheduledTask | id, business_id, target_id, kind=payment_reminder/collection_followup/cash_review, due_at, status=pending/running/completed/cancelled/failed, version, dedup_key, stop_condition |
+| ScheduledTask | id, business_id, target_id, kind=payment_reminder/collection_followup/cash_review, due_at, status=pending/running/completed/cancelled/failed, version, dedup_key, stop_condition, timezone, lead_time_minutes, scheduling_reason, schedule_source=user/agent/default, eligible_at opcional |
 | TaskRun | id, task_id, scheduled_due_at, lease_until, attempt, status; unique(task_id,scheduled_due_at) |
 | Notification | id, occurrence_key única, target_id, kind, title, explanation, proposal_ids, created_at, read_at opcional |
 | Proposal | id, kind=reserve/draft_collection/simulate/change_expected_date, target_id, based_on_version, arguments, status=pending/accepted/dismissed/stale |
@@ -31,7 +31,7 @@ CSV usa colunas da fixture. `expected_date` é obrigatória para pendências nov
 | simulate | overrides, base_version | scenario_id, baseline, projected, affected_dates, deficit_intervals |
 | reserveForPayment | target_id, amount_cents, expected_version, idempotency_key | Reservation, reserved_cents, free_cents |
 | evaluateProactivity | origin, business_version, now | proposals, scheduled_tasks, notifications; no máximo três iniciativas apresentadas |
-| scheduleTask | target_id, kind, due_at, stop_condition | tarefa nova ou equivalente existente |
+| scheduleTask | target_id, kind, due_at, stop_condition, timezone, lead_time_minutes, scheduling_reason, schedule_source | tarefa nova ou equivalente existente |
 | runDueTasks | now, executor_secret | claimed, completed, notified, failed; nenhuma dependência de browser |
 
 `FinancePort` é a interface dessas operações financeiras para Bruno. `AgentTurn` recebe `message`, `origin=user`, `request_id` e contexto de sessão; retorna `reply_text`, `snapshot_version`, `proposals` e `created_task_ids`. Áudio transcrito entra como a mesma mensagem textual. Notificações agendadas não fingem que houve uma nova fala do usuário.
@@ -74,3 +74,9 @@ T1 materializa F1/F2 e mocks com todos os campos. Jecky e Bruno trabalham sobre 
 Supabase Free é a fonte de verdade. POST /api/tasks/run recebe somente segredo de servidor e usa now real no ambiente de produção; relógio controlado só no teste/demo explicitamente marcada. Resposta inclui claimed<=5 e remaining_due, sem varrer ou adquirir todos os pendentes. O executor termina o lote antes de responder. Nenhum timer residente. Cron Supabase verifica a cada cinco minutos, mas tarefas guardam due_at individual. Retry guarda eligible_at e não exige um novo cron.
 
 Áudio binário multipart até 3 MiB/60 s; limite total de transporte precisa permanecer abaixo dos 4.5 MB da Vercel. Síntese recebe até 1.200 caracteres e devolve até 3 MiB, com erro recuperável se exceder. Estado não usa filesystem da função. Rate limit é compartilhado no banco. Preview usa mocks/banco isolado e nunca adquire tarefas de produção. Fontes e configuração em docs/deploy-gratuito.md.
+
+## Decisão de horário e gate SQL
+
+`due_at` é o horário da próxima execução, não o vencimento financeiro. `lead_time_minutes` registra a antecedência em relação ao compromisso e vale zero quando a execução é imediata; prazos combinados sem vencimento relacionado podem usar null. `scheduling_reason` é obrigatório. `schedule_source=user` prevalece sobre decisão automática; solicitações ambíguas são esclarecidas. Validar horários contra now e timezone antes da escrita.
+
+`dispatchDueTasks(now)` é função SQL do agendamento, não ferramenta pública do agente. Retorna `dispatched=false` sem HTTP se não existir ocorrência vencida/elegível e sem lease válida. Quando há trabalho, verifica/adquire lease curta de despacho e chama `/api/tasks/run` com o segredo do Vault, sem expor esse segredo. Se a chamada não completar, o lease expira e a tarefa persiste para tentativa posterior. A resposta do executor e TaskRun, não o simples envio HTTP, determinam conclusão. Índice por status/due_at/eligible_at dá suporte à verificação. Essa otimização não elimina rechecagem nem deduplicação no executor.

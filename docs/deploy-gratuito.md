@@ -6,14 +6,18 @@ Decisão de ambiente solicitada em 23/10/2026. Este documento orienta o desenvol
 
 - Uma aplicação Next.js/TypeScript na Vercel Hobby, com endpoints Node.js.
 - Um projeto Supabase Free para a demo, com Postgres, migrações, unicidade, aquisição atômica e rate limit persistido. Não abrir três projetos para os três integrantes: os testes de escrita usam banco local isolado.
-- Um único job Supabase Cron (`*/5 * * * *`) usa pg_net para fazer POST na URL de produção `/api/tasks/run`. O horário real de cada lembrete fica na tabela tasks, não em um cron individual.
+- Um único job Supabase Cron (`*/5 * * * *`) executa uma função SQL leve no próprio banco. Essa função só usa pg_net para fazer POST em `/api/tasks/run` quando há tarefas vencidas e elegíveis. Sem tarefas elegíveis: zero HTTP à Vercel e zero chamadas OpenAI. O horário individual é escolhido pelo agente ou informado pelo usuário; não existe cron por lembrete.
 - URL de produção estável e segredo de executor em Supabase Vault. O servidor Vercel valida o segredo antes de executar. Não usar a chave pública do Supabase como segredo do executor.
 - Não configurar um cron frequente em vercel.json: Hobby não permite frequência maior que diária. Não manter worker residente, processo infinito ou setInterval como agendador.
 - Cliente acessa endpoints tipados; servidor usa API HTTPS do Supabase e funções SQL transacionais para operações atômicas. Não manter conexões Postgres diretas por usuário nem depender de memória de uma instância.
 
 ## Comportamento dos lembretes
 
-O job busca tarefas vencidas e adquire no máximo cinco por chamada. O executor tem orçamento interno de 30 s e a função tem maxDuration de 60 s. Lease continua em 120 s. O restante fica persistido para o próximo disparo; não inicia processamento sem aquisição e não agenda trabalho para depois da resposta HTTP.
+O agente calcula due_at antes de persistir a tarefa e registra motivo, antecedência, origem da decisão e condição de encerramento. Horário solicitado pelo usuário tem prioridade; uma informação temporal ambígua exige esclarecimento.
+
+A função SQL do cron verifica pending, due_at <= now e eligible_at <= now (quando houver), além de execução em andamento/lease válida. Tarefas futuras, canceladas, concluídas e ocorrências ainda adquiridas não justificam HTTP. Ocorrências com lease expirada e retry elegível voltam a ser candidatas. Um bloqueio de despacho com validade evita dois disparos concorrentes equivalentes; a expiração permite recuperação após falha de rede, sem apagar as tarefas. Essa verificação não chama a IA nem decide o conteúdo do aviso.
+
+Se há trabalho, o banco chama o executor. A aquisição atômica das ocorrências acontece no executor, que relê as condições e adquire no máximo cinco por chamada. O gate SQL é uma otimização; a aquisição e a deduplicação no servidor continuam sendo a garantia de integridade. O executor tem orçamento interno de 30 s e a função tem maxDuration de 60 s. Lease continua em 120 s. O restante fica persistido para o próximo disparo; não inicia processamento sem aquisição e não agenda trabalho para depois da resposta HTTP.
 
 No volume normal de até cinco ocorrências por intervalo, processamento começa no próximo disparo após due_at. A interface diz “verificação a cada cinco minutos”, sem prometer entrega em um segundo exato. Falha do provedor ou fila excedente pode atrasar a entrega. O limite de trinta segundos é de processamento por lote, não SLA de entrega.
 
@@ -66,3 +70,9 @@ O Supabase informa 500 MB de banco, 1 GB de arquivos, 5 GB de egress e até dois
 - [Vercel: colaboração e Git](https://vercel.com/docs/git) e [repositórios de organizações](https://vercel.com/docs/limits).
 - [Supabase Free](https://supabase.com/pricing).
 - [Supabase Cron](https://supabase.com/docs/guides/cron) e [pg_cron/pg_net e Vault](https://supabase.com/docs/guides/functions/schedule-functions).
+
+## Exemplos de horário e verificação
+
+Fornecedor vence em 30/10/2026 às 15h de São Paulo. O agente escolhe antecedência de 24h: due_at = 29/10 às 15h local, persistido como 18h UTC; scheduling_reason explica o motivo. Se o usuário pede 29/10 às 10h, esse horário substitui a sugestão: 13h UTC e schedule_source=user. Não confundir data do pagamento com horário do lembrete. O agente registra os campos validados, não interpreta datas dentro do cron.
+
+Testes obrigatórios: zero pendências → zero HTTP/IA; somente tarefas futuras → zero HTTP; uma tarefa vencida → um despacho; execução concorrente → sem efeitos duplicados; horário do usuário prevalece; lease expirada e retry elegível permitem retomar. Pagamento realizado entre despacho e execução é rechecado e não gera cobrança.

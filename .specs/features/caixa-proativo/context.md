@@ -30,3 +30,7 @@ Estoque P2, WhatsApp, banco, pagamentos reais, envio externo, personalização d
 ## Atualização de 23/10/2026 — hospedagem confirmada
 
 Usuário determinou Vercel grátis e Supabase grátis. Decisão fechada de ambiente; demais propostas de stack/ownership continuam em revisão. O cron de lembretes fica no Supabase; Vercel Hobby recebe o HTTP protegido. Áudio foi reduzido de 10 MiB para 3 MiB por compatibilidade de payload. Ver docs/deploy-gratuito.md. Nenhuma implantação foi solicitada para execução agora.
+
+## Agendamento aceito após a revisão
+
+O usuário aceitou que o agente escolhe previamente quando avisar e que a verificação leve permanece no Supabase. O banco só chama Vercel se houver tarefa vencida elegível. Zero chamadas Vercel/OpenAI sem trabalho. O pedido explícito do usuário prevalece sobre horário sugerido. As branches ainda não foram criadas nem o bootstrap executado.

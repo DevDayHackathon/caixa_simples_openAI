@@ -5,7 +5,7 @@
 
 ## Architecture Overview
 
-Recomendação: uma aplicação Next.js/TypeScript. Interface e endpoints no mesmo projeto. Supabase Free persiste dados. Um único Supabase Cron a cada cinco minutos chama o executor HTTP protegido na Vercel Hobby. O agente conversa via Responses API e usa ferramentas tipadas. Cálculos financeiros são funções determinísticas, nunca texto livre gerado pelo modelo.
+Recomendação: uma aplicação Next.js/TypeScript. Interface e endpoints no mesmo projeto. Supabase Free persiste dados. Um único Supabase Cron verifica o banco a cada cinco minutos e só chama o executor HTTP protegido na Vercel Hobby quando há tarefa vencida e elegível. O agente conversa via Responses API e usa ferramentas tipadas. Cálculos financeiros são funções determinísticas, nunca texto livre gerado pelo modelo.
 
 Alternativas de mesmo escopo:
 
@@ -51,7 +51,7 @@ Definições completas e operações em `contracts.md`. `business` tem saldo ini
 ## Dois fluxos
 
 1. Usuário envia input. O agente valida a intenção e consulta ferramentas. Mutações publicam nova versão financeira. A avaliação proativa prepara propostas e tarefas. A UI mostra resultado e próximos passos.
-2. Cron dispara executor. Ele adquire ocorrência vencida, recarrega o estado e encerra se já resolvido. Se pendente, prepara notificação/proposta, registra uma única entrega e decide a próxima execução. Não precisa chamar IA quando regra determinística basta.
+2. Cron verifica elegibilidade dentro do banco; sem trabalho, termina sem HTTP nem IA. Havendo trabalho, dispara executor. Ele adquire ocorrência vencida, recarrega o estado e encerra se já resolvido. Se pendente, prepara notificação/proposta, registra uma única entrega e decide a próxima execução. Não precisa chamar IA quando regra determinística basta.
 
 Uma notificação gerada com a aba fechada fica no banco até o próximo acesso. Não há push externo. Para a demo, um relógio controlado dispara as mesmas ocorrências pelo mesmo executor, claramente identificado como simulação de horário. Isso não substitui testar o cron real depois do provisionamento autorizado.
 
@@ -95,6 +95,10 @@ Consulta em 23/10/2026. Não há Context7 disponível nesta sessão; após inspe
 
 ## Restrições confirmadas de hospedagem gratuita
 
-Aplicar docs/deploy-gratuito.md: runtime Node.js, maxDuration 60 s, lote até cinco tarefas com orçamento de 30 s, cron Supabase de cinco minutos e retries no próximo tick elegível. Sem worker residente, armazenamento local persistente ou timers de browser para agendamento. Dados e rate limit em Postgres por API HTTPS/RPC. Áudio até 3 MiB/60 s, multipart sem base64. Síntese limitada a 1.200 caracteres/3 MiB. Preview sem credenciais nem cron de produção. Nenhuma função continua processando trabalho depois da resposta. O executor automático usa regras/rascunhos determinísticos sem chamada OpenAI por tick. Infraestrutura gratuita não inclui consumo da API de IA.
+Aplicar docs/deploy-gratuito.md: runtime Node.js, maxDuration 60 s, lote até cinco tarefas com orçamento de 30 s, cron Supabase com verificação SQL de cinco minutos e despacho HTTP condicional, e retries no próximo tick elegível. Sem worker residente, armazenamento local persistente ou timers de browser para agendamento. Dados e rate limit em Postgres por API HTTPS/RPC. Áudio até 3 MiB/60 s, multipart sem base64. Síntese limitada a 1.200 caracteres/3 MiB. Preview sem credenciais nem cron de produção. Nenhuma função continua processando trabalho depois da resposta. O executor automático usa regras/rascunhos determinísticos sem chamada OpenAI por tick. Infraestrutura gratuita não inclui consumo da API de IA.
 
 A precisão do agendamento é por verificação periódica, não horário exato garantido. Supabase pausado ou quotas esgotadas impedem execução; registrar e exibir indisponibilidade. Um responsável centraliza publicação no Hobby, respeitando restrições de Git/autoria da plataforma. Não alterar autores para viabilizar deploy.
+
+## Horários definidos pelo agente
+
+O agente decide o horário antes de criar a tarefa e registra referência do compromisso, due_at UTC, timezone, antecedência, motivo, origem user/agent/default e condição de encerramento. Um pedido temporal explícito do usuário prevalece sobre a sugestão. O cron não chama IA para escolher quando acordar. Uma mudança no compromisso reavalia tarefas associadas; não mantém lembrete baseado em uma versão antiga sem verificar pertinência. A proposta usa verificação SQL condicional com bloqueio de despacho temporário, além da aquisição atômica de ocorrência já especificada.
