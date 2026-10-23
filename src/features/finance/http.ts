@@ -1,3 +1,7 @@
+import { workspaceInputSchema, workspaceSchema } from "./workspace";
+import { calculateCash } from "./cash";
+import { saoPauloDate } from "./port";
+import { addDays } from "./dates";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { financeOperations, idSchema } from "@/contracts";
@@ -27,7 +31,7 @@ async function readJson(request: Request) {
 }
 
 export function createFinanceHandler(options: Options) {
-  return async (operation: Operation | "session", request: Request, pathId?: string) => {
+  return async (operation: Operation | "session" | "workspace", request: Request, pathId?: string) => {
     const supplied = idSchema.safeParse(request.headers.get("x-request-id"));
     const request_id = supplied.success ? supplied.data : randomUUID();
     const headers = { "Cache-Control": "no-store", "X-Data-Source": "user_data" };
@@ -41,6 +45,17 @@ export function createFinanceHandler(options: Options) {
         return Response.json({ data: { business_id: "demo" }, request_id }, { headers: { ...headers, "Set-Cookie": cookie } });
       }
       requireFinanceSession(request, options.sessionSecret, now.getTime());
+      if (operation === "workspace") {
+        const params = new URL(request.url).searchParams;
+        if ([...params.keys()].length !== new Set(params.keys()).size) throw new FinanceError(422, "INVALID_QUERY", "Parâmetro repetido.");
+        const query = workspaceInputSchema.parse(Object.fromEntries(params));
+        const state = await options.store().read();
+        const today = saoPauloDate(now), start = state.business.start_date, end = addDays(start, 29);
+        // The reference remains explicit when the fixed demo horizon has elapsed.
+        const asOf = query.as_of ?? (today < start ? start : today > end ? end : today);
+        const data = workspaceSchema.parse({ business: state.business, transactions: state.transactions, snapshot: calculateCash(state, asOf) });
+        return Response.json({ data, request_id }, { headers });
+      }
       let raw: unknown;
       if (operation === "getCashSnapshot") {
         const params = new URL(request.url).searchParams;
@@ -65,7 +80,7 @@ export function createFinanceHandler(options: Options) {
   };
 }
 
-export function financeRoute(operation: Operation | "session", request: Request, pathId?: string) {
+export function financeRoute(operation: Operation | "session" | "workspace", request: Request, pathId?: string) {
   return createFinanceHandler({
     sessionSecret: process.env.SESSION_SECRET ?? "", appOrigin: process.env.APP_ORIGIN ?? "",
     store: () => {
