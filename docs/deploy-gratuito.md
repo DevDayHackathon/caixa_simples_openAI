@@ -1,6 +1,6 @@
 # Implantação alvo — Vercel Hobby + Supabase Free
 
-Decisão de ambiente solicitada em 23/10/2026. O protótipo foi publicado com autorização do usuário em **https://folego-hackathon-2026.vercel.app**, via CLI no projeto `folego-hackathon-2026`, conta `jecky3806-2935s-projects`, sem vínculo GitHub. APP_ORIGIN e os segredos internos já estão configurados em Production. Credenciais/modelos OpenAI, credenciais Supabase, migrações remotas, Vault/Cron e UAT continuam pendentes; consulte [CONTINUAR-SESSAO.md](CONTINUAR-SESSAO.md).
+Decisão de ambiente solicitada em 23/10/2026. O protótipo foi publicado com autorização do usuário em **https://folego-hackathon-2026.vercel.app**, via CLI no projeto `folego-hackathon-2026`, conta `jecky3806-2935s-projects`, sem vínculo GitHub. APP_ORIGIN e os segredos internos já estão configurados em Production. As migrações 001–003 e extensões estão aplicadas na demo autorizada `optwdryxvpnqdumzexcs`; a credencial privilegiada corrigida retornou REST HTTP200 e foi atualizada na Vercel. Os dois segredos Vault foram provisionados, as RPCs temporárias removidas e o Cron `caixa-agent-due` (job1, `*/5 * * * *`) está ativo. O redeploy com T10 está READY, preservando a URL pública. U09 comprovou execução com a aba fechada, uma notificação e repetição sem duplicação. A UAT continua parcial; consulte o [registro de resultados](uat-real-2026-10-23.md), inclusive limites de voz, concorrência e autorização.
 
 ## Arquitetura definida para os planos gratuitos
 
@@ -54,7 +54,7 @@ As frentes de Jecky (experiência/voz), Daniel (dados) e Bruno (agente/tarefas) 
 
 Antes de conectar Git, verificar proprietário, visibilidade e restrições de autoria nas regras atuais da Vercel. Preferir repositório pessoal compatível e publicação pelo responsável; não presumir suporte a repositório de organização no Hobby. Preservar autores reais dos commits, sem trocar identidade para contornar restrições.
 
-Próximos passos da implantação já autorizada: confirmar o banco Supabase demo autorizado e seu controle de migrações; aplicar migrações 001–003 e dados fictícios com datas válidas; configurar as variáveis faltantes no projeto Vercel existente; redeployar; testar endpoints; configurar Vault e ativar apenas o job de produção; fechar cliente; aguardar execução e verificar notificação única; repetir processamento para provar deduplicação. Registrar a matriz U01–U13; não executar as suítes automatizadas destrutivas no banco demo. Exportar seed e migrações para recuperação. Verificar limites e disponibilidade no painel antes da demo.
+Próximos passos: concluir os cenários UAT ainda parciais ou pendentes, investigar o comportamento inconclusivo de payload excessivo sem sessão e conservar a evidência do CI aprovado do PR #8. Preservar o projeto existente, conferir dados fictícios no horizonte válido e não executar suítes destrutivas no banco demo. Configuração de serviços e execução Cron com aba fechada já têm evidência no registro UAT. Exportar seed e migrações para recuperação e conferir disponibilidade antes da apresentação.
 
 ## Custos e disponibilidade
 
@@ -76,3 +76,5 @@ O Supabase informa 500 MB de banco, 1 GB de arquivos, 5 GB de egress e até dois
 Fornecedor vence em 30/10/2026 às 15h de São Paulo. O agente escolhe antecedência de 24h: due_at = 29/10 às 15h local, persistido como 18h UTC; scheduling_reason explica o motivo. Se o usuário pede 29/10 às 10h, esse horário substitui a sugestão: 13h UTC e schedule_source=user. Não confundir data do pagamento com horário do lembrete. O agente registra os campos validados, não interpreta datas dentro do cron.
 
 Testes obrigatórios: zero pendências → zero HTTP/IA; somente tarefas futuras → zero HTTP; uma tarefa vencida → um despacho; execução concorrente → sem efeitos duplicados; horário do usuário prevalece; lease expirada e retry elegível permitem retomar. Pagamento realizado entre despacho e execução é rechecado e não gera cobrança.
+
+Estado do aceite real: U01/U02/U04/U05/U08/U09/U11 PASS; U03/U06/U07/U10/U12/U13 permanecem parciais, com limites e achados no [registro UAT](uat-real-2026-10-23.md). Não há aprovação global de toda a UAT. [CI pós-merge40014394994](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40014394994) em execução na última consulta, separado do CI aprovado do PR #8.

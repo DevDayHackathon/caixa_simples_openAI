@@ -2,9 +2,9 @@
 
 O [PR #3](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3) foi corrigido, aprovado e integrado em 23/10/2026, às 16:00 de São Paulo: merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116`, head revisado `4186bdf2afec1a4b5a89e0fb38e62ad87f4e8110`. O protótipo está publicado em **https://folego-hackathon-2026.vercel.app**. Gate registrado: 135 unitários, 99 integrações SQL e 11 E2E, lint/tipos/build; revisão independente PASS e sensor 8/8. [CI do candidato aprovado](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40006622435/job/120599339880).
 
-Veja a composição atual em [integracao-financeira.md](integracao-financeira.md). As seções históricas abaixo explicam o bloqueio do head original e não representam pendências atuais de código. A matriz manual U01–U13 continua **inteiramente pendente com OpenAI/Supabase reais**, inclusive os casos com cobertura automatizada local. Publicação demonstrativa não constitui esse aceite.
+Veja a composição atual em [integracao-financeira.md](integracao-financeira.md). As seções históricas abaixo explicam o bloqueio do head original e não representam pendências atuais de código. A matriz manual U01–U13 está **parcialmente executada com OpenAI/Supabase reais**. O [registro em andamento](uat-real-2026-10-23.md) separa resultados completos, parciais e pendentes; cobertura automatizada local não substitui os passos restantes.
 
-CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
+Gate local final PASS: 144 unitários, 100 integrações SQL e 11 E2E, lint/tipos/build; revisão independente e sensores T7/T8/T10 registrados. Correção temporal: [PR #7](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/7), [CI40012099595 PASS](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40012099595), merge `c500187`. Isolamento E2E T9 (`295da43`) e recibo T10 (`6c0d43c`) integrados pelo [PR #8](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/8), merge `fc9da5079639ba6109afa0c9da5452b6eaf8c63e`, [CI40013929936 PASS](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40013929936). Gate final registrado em `/tmp/folego-receipt-gate.log`.
 
 ## Revisão histórica do head original em 23/10/2026
 
@@ -53,19 +53,18 @@ TASK_RUNNER_SECRET=<outro segredo aleatório independente>
 
 Reiniciar Next após alterações. Gerar cada segredo separadamente com `openssl rand -hex 32`. Usar a URL exata de `APP_ORIGIN` no navegador. Todas as chaves são exclusivas do servidor, sem prefixo `NEXT_PUBLIC_`; a aplicação atual não pede chave pública do Supabase no cliente. `TEST_DATABASE_URL` é somente para testes automatizados em Postgres loopback, nunca o banco demo remoto.
 
-No [projeto Vercel publicado](https://vercel.com/jecky3806-2935s-projects/folego-hackathon-2026/settings/environment-variables), APP_ORIGIN canônica e os dois segredos internos já estão configurados em Production. Cadastrar somente as credenciais/modelos OpenAI e credenciais Supabase faltantes e fazer novo deploy. Não solicitar nem enviar esses valores pelo chat. Em Supabase Vault, configurar `task_runner_secret` com o mesmo valor de `TASK_RUNNER_SECRET` e `task_runner_url` com a URL HTTPS completa de `/api/tasks/run`. Não usar localhost como URL do executor remoto. A proteção de Preview existente recusa banco remoto; usar o ambiente de produção/demo acordado, sem remover a proteção para contorná-la.
-
-As migrações corrigidas 001–003 já foram ensaiadas em Postgres local descartável. Aplicá-las na ordem somente após confirmar o banco demo remoto autorizado e consultar seu controle de migrações. A 001 cria a empresa fictícia; preparar datas dentro do horizonte de trinta dias e dados de teste. Habilitar extensões e o único job condicional conforme `docs/deploy-gratuito.md` depois de configurar Vault e validar o endpoint. Não executar o SQL do head original não corrigido no projeto remoto.
+As migrações 001–003 e extensões estão aplicadas na demo autorizada `optwdryxvpnqdumzexcs`; a credencial privilegiada corrigida retornou REST HTTP200 e foi atualizada na Vercel. Os dois segredos Vault foram provisionados, as RPCs temporárias removidas e o Cron `caixa-agent-due` (job1, `*/5 * * * *`) está ativo. O redeploy com T10 está READY, preservando a URL pública. U09 comprovou execução com a aba fechada, uma notificação e repetição sem duplicação. A UAT continua parcial; consulte o [registro de resultados](uat-real-2026-10-23.md), inclusive limites de voz, concorrência e autorização. Preparar dados fictícios com datas no horizonte de trinta dias antes do ensaio. No Vault, `task_runner_secret` deve corresponder a `TASK_RUNNER_SECRET` e `task_runner_url` deve usar a URL canônica HTTPS completa de `/api/tasks/run`. Não executar o SQL do head original nem reaplicar migrações já registradas.
 
 ## Ordem atual para o ensaio credenciado
 
-1. Confirmar CI pós-merge e consolidar documentação/configuração de deploy; correções, gate local, revisão independente, merge e publicação já foram concluídos.
-2. Cadastrar credenciais/modelos no servidor da Vercel e confirmar qual banco demo está autorizado. Não compartilhar chaves com agentes.
-3. Aplicar migrações 001–003 conforme controle do ambiente e preparar dados fictícios com datas no horizonte de trinta dias. Configurar extensões/Vault e o único Cron condicional pelo guia de implantação; redeployar com as variáveis configuradas.
-4. Executar U01–U08 no ambiente demo; então U09–U10 com aba fechada e histórico Cron/HTTP. Executar os ensaios de lote, lease e concorrência de U10/U11 em ambiente de ensaio isolado. Executar U12 e encerrar com U13 em desktop/celular.
-5. Registrar evidência e corrigir falhas com revisão independente. Suítes automatizadas destrutivas continuam usando somente banco local; não apontá-las ao banco demo.
+1. CI do PR #8 aprovado; manter a evidência histórica das correções e gates.
+2. Concluir os casos ainda parciais conforme o registro, incluindo passos ainda não ensaiados. Serviços, migrações, Vault/Cron e redeploy estão configurados.
+3. U09 já demonstrou entrega sem aba aberta; U11 tem evidência remota ociosa e ensaio isolado de lote/lease aprovados; concorrência U10 permanece com seu limite explicitado no registro.
+4. Investigar o resultado intermitente de payload excessivo sem sessão em U12 e concluir quotas/voz conforme novas evidências; encerrar com ensaio completo U13.
+5. Registrar falhas e correções com revisão independente. Suítes destrutivas continuam usando somente banco local.
 
-## Matriz manual com APIs ativas — ainda não executada
+
+## Matriz manual com APIs ativas — critérios; resultados no registro UAT
 
 Usar somente empresa e contrapartes fictícias. Registrar para cada caso: commit, ambiente, horário de São Paulo, IDs de compromisso/tarefa/ocorrência, resultado esperado/observado e PASS/FAIL. Qualquer falha bloqueia a apresentação do respectivo fluxo como pronto.
 
@@ -85,4 +84,6 @@ Usar somente empresa e contrapartes fictícias. Registrar para cada caso: commit
 | U12 — Falhas e autorização | Testar sem cookie, Origin diferente e segredo inválido do executor; atingir quota de áudio/conversa; testar provedor/banco indisponível. | 401/403/429 conforme rota; executor não processa sem segredo. Rejeições de autorização/quota não chamam provedor. Falhas de dependência não expõem segredos nem exibem sucesso presumido. |
 | U13 — Apresentação | Ensaiar importação → pergunta → proposta → decisão → voz → lembrete sem aba, desktop e celular. | Sem mistura entre prévia simulada `/` e `/caixa`; rascunho de cobrança nunca é enviado externamente. Console/rede sem credenciais, controles utilizáveis e ausência de regressão visual. |
 
-**Critério final:** código integrado e gates locais aprovados não substituem U02/U06/U07/U09 com serviços ativos. Esses casos permanecem pendentes até configuração das credenciais, migrações/Vault/Cron remotos e execução registrada da UAT. A composição de código já foi integrada; não reabrir merge/publicação como pré-requisito não realizado.
+**Critério final:** código integrado e gates locais aprovados não substituem U02/U06/U07/U09 com serviços ativos. O registro UAT contém a execução real de U09 e passos parciais dos demais casos; critérios não observados continuam pendentes, mesmo com ambiente configurado. A composição de código já foi integrada; não reabrir merge/publicação como pré-requisito não realizado.
+
+Estado do aceite real: U01/U02/U04/U05/U08/U09/U11 PASS; U03/U06/U07/U10/U12/U13 permanecem parciais, com limites e achados no [registro UAT](uat-real-2026-10-23.md). Não há aprovação global de toda a UAT. [CI pós-merge40014394994](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40014394994) em execução na última consulta, separado do CI aprovado do PR #8.

@@ -8,7 +8,7 @@ O [PR #3](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3) foi ap
 
 Link público a preservar: **https://folego-hackathon-2026.vercel.app**. O projeto foi publicado por CLI, sem vínculo GitHub. A landing demonstrativa e sua simulação foram verificadas; `/caixa` ainda depende do Supabase para persistir. O deploy não comprova UAT com provedores reais. Consulte [a continuidade](CONTINUAR-SESSAO.md) para os IDs de publicação e a evidência histórica.
 
-CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
+Gate local final PASS: 144 unitários, 100 integrações SQL e 11 E2E, lint/tipos/build; revisão independente e sensores T7/T8/T10 registrados. Correção temporal: [PR #7](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/7), [CI40012099595 PASS](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40012099595), merge `c500187`. Isolamento E2E T9 (`295da43`) e recibo T10 (`6c0d43c`) integrados pelo [PR #8](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/8), merge `fc9da5079639ba6109afa0c9da5452b6eaf8c63e`, [CI40013929936 PASS](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40013929936). Gate final registrado em `/tmp/folego-receipt-gate.log`.
 
 ## Configurar antes de executar
 
@@ -28,15 +28,15 @@ TASK_RUNNER_SECRET=<outro segredo aleatório independente>
 
 Gere os dois segredos separadamente com `openssl rand -hex 32`. Não use prefixo `NEXT_PUBLIC_`. Não envie chaves por chat nem versionamento. Reinicie Next após preencher o arquivo, execute `npm run dev` e abra a URL exata de `APP_ORIGIN`, inclusive porta e protocolo.
 
-No Supabase demo, aplicar **na ordem** as migrações corrigidas:
+Para um ambiente novo, aplicar **na ordem** as migrações corrigidas abaixo. Na demo autorizada desta sessão, elas já foram aplicadas; consultar o controle de migrações e não reaplicar:
 
 1. `supabase/migrations/001_finance.sql`: financeiro, empresa fictícia, resolução e idempotência.
 2. `supabase/migrations/002_tasks.sql`: contexto, tarefas, quota, executor condicional e resolução transacional.
 3. `supabase/migrations/003_agent_actions.sql`: propostas, decisões atômicas e notificação com validação da tentativa.
 
-Não reaplicar 001/003 em banco já migrado; usar o controle de migrações do ambiente. Não foi aplicado SQL em banco remoto por esta entrega. Banco de teste automatizado deve ser exclusivamente Postgres loopback, nunca a demo remota. A empresa `demo` é compartilhada e só deve receber dados fictícios; a sessão não representa uma conta privada por usuário.
+Não reaplicar 001/003 em banco já migrado; usar o controle de migrações do ambiente. Na continuidade de 23/10/2026, as migrações 001–003 e as extensões foram aplicadas com PASS no projeto demo autorizado `optwdryxvpnqdumzexcs`. Banco de teste automatizado deve ser exclusivamente Postgres loopback, nunca a demo remota. A empresa `demo` é compartilhada e só deve receber dados fictícios; a sessão não representa uma conta privada por usuário.
 
-Na Vercel, APP_ORIGIN da URL canônica, SESSION_SECRET e TASK_RUNNER_SECRET já estão configurados em Production. Cadastrar SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY e os três modelos nas [variáveis do projeto publicado](https://vercel.com/jecky3806-2935s-projects/folego-hackathon-2026/settings/environment-variables), sem copiar segredos para chat ou documentação, e fazer novo deploy. Confirmar o projeto Supabase demo autorizado antes de qualquer migração remota. Preview conserva a proteção de banco exclusivamente loopback. Uma chave configurada não remove essa proteção. Deploy e ativação do banco/Cron são passos de ambiente separados.
+As migrações 001–003 e extensões estão aplicadas na demo autorizada `optwdryxvpnqdumzexcs`; a credencial privilegiada corrigida retornou REST HTTP200 e foi atualizada na Vercel. Os dois segredos Vault foram provisionados, as RPCs temporárias removidas e o Cron `caixa-agent-due` (job1, `*/5 * * * *`) está ativo. O redeploy com T10 está READY, preservando a URL pública. U09 comprovou execução com a aba fechada, uma notificação e repetição sem duplicação. A UAT continua parcial; consulte o [registro de resultados](uat-real-2026-10-23.md), inclusive limites de voz, concorrência e autorização. Preview conserva a proteção de banco exclusivamente loopback; uma chave configurada não remove essa proteção.
 
 ## Jornada integrada
 
@@ -70,12 +70,14 @@ select cron.schedule(
 );
 ```
 
-Conferir a lista e o histórico de Jobs no Supabase antes do ensaio U09. O mesmo nome atualiza o job existente, conforme a [documentação oficial de Cron](https://supabase.com/docs/guides/cron/quickstart); o [guia de agendamento com Vault/pg_net](https://supabase.com/docs/guides/functions/schedule-functions) explica as dependências. Esse comando não foi executado no projeto remoto.
+Conferir a lista e o histórico de Jobs no Supabase antes do ensaio U09. O mesmo nome atualiza o job existente, conforme a [documentação oficial de Cron](https://supabase.com/docs/guides/cron/quickstart); o [guia de agendamento com Vault/pg_net](https://supabase.com/docs/guides/functions/schedule-functions) explica as dependências. Na demo autorizada, o job já está ativo (ID1); não criar outro job. U09 comprovou despacho real e entrega sem aba aberta.
 
 ## Evidências e aceite
 
 `npm run check` executa lint, tipos, unitários, integração SQL e E2E de produção local; `.github/workflows/check.yml` fornece Postgres17/Node24/Chromium. `tests/integration/agent-sql.test.ts` aplica a migração real. `agent-actions.test.ts` cobre decisão/versão/recibo. `tasks-sql-runtime.test.ts` usa SDK Supabase sobre Postgres real para aquisição, notificação, cancelamento e retomada. O E2E `agent-integrated.spec.ts` percorre navegador→rotas reais→proposta→aceite→SQL→recarga, usando somente um provedor OpenAI simulado localmente.
 
-Configuração de credenciais, OpenAI/Supabase remotos, extensões/Vault/Cron e ensaio humano com aba fechada permanecem pendentes do ambiente. A matriz U01–U13 em [revisao-bruno-e-uat.md](revisao-bruno-e-uat.md) define resultados observáveis. Passar o gate local não declara esse ensaio realizado.
+Credencial, Vault/Cron, redeploy e execução sem aba aberta estão verificados; os demais casos de aceite permanecem conforme o registro UAT. Testes diretos OpenAI continuam separados dos resultados observados no aplicativo. A matriz U01–U13 em [revisao-bruno-e-uat.md](revisao-bruno-e-uat.md) define resultados observáveis. Passar o gate local não declara esse ensaio realizado.
 
 Referência de implementação: [OpenAI Function Calling](https://developers.openai.com/api/docs/guides/function-calling). Segredos e modelos são explícitos no servidor; não há escolha silenciosa de modelo pago.
+
+Estado do aceite real: U01/U02/U04/U05/U08/U09/U11 PASS; U03/U06/U07/U10/U12/U13 permanecem parciais, com limites e achados no [registro UAT](uat-real-2026-10-23.md). Não há aprovação global de toda a UAT. [CI pós-merge40014394994](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40014394994) em execução na última consulta, separado do CI aprovado do PR #8.

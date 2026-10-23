@@ -1,5 +1,9 @@
 # Integração final — validação independente
 
+**Result**: PASS
+
+Escopo do resultado: verificação do código integrado, correções T7–T10 e fidelidade documental. A UAT real permanece parcial; este resultado não aprova globalmente U01–U13. As rodadas e seus limites históricos estão preservados abaixo.
+
 Date: 2026-10-23. Verifier: agente independente, autor ≠ verificador.
 Diff range revisado: origin/main..909085f. Rodada1 revisou49763ac; rodada2 confirmou as correções909085f.
 
@@ -130,3 +134,13 @@ As regressões em `src/features/experience/conversation.test.tsx:22` e `:23` sim
 Verificação independente: cópia git archive HEAD `/tmp/folego-t10-verifier-epeee7fo` com os dois arquivos atuais sobrepostos, node_modules linkado e sem .env executou **11/11 unitários PASS**. Sensor restaurou somente a expressão stale antiga na cópia: ambos os novos casos falharam, nove anteriores passaram. **1/1 mutação morta**, nenhuma aplicada ao checkout real. Script `/tmp/folego-t10-sensor.py`; logs `/tmp/folego-t10-baseline.log` e `/tmp/folego-t10-stale-mutant.log`. Não houve acesso a provedor, DB ou aplicação remota. O principal relatou leitura das orientações Impeccable e detector sem achados; esse detector não foi executado por este verificador. U04 após deploy e o gate completo devem receber evidências separadas.
 
 Fechamento T10 local **PASS**: o principal executou `npm run check`, informou exit0, e este verificador conferiu `/tmp/folego-receipt-gate.log`: lint/tipos sem erros, 144/144 unitários, 100/100 integrações e 11/11 E2E (31,5s), incluindo build de produção. Gate completo atribuído ao principal, complementado pelos unitários/sensor independentes acima. A aprovação permite commit T10; não presume CI remoto ou U04 da versão publicada aprovados e mantém U12 oversized aberto.
+
+## Conferência final documental e ensaios independentes U11/U12
+
+Revisão de README, STATE, continuidade, guias de deploy/integração/testes, critérios UAT e registro `docs/uat-real-2026-10-23.md`: resultados reais relatados pelo principal estão separados dos testes locais e smokes diretos de fornecedor; pendências de captura física, nova sessão, concorrência remota, falhas de dependência e apresentação completa permanecem explícitas. Nenhum valor de segredo foi encontrado no diff revisado; não houve leitura de .env. Esta conferência documental não é reexecução dos cenários do principal. A abertura resumida do registro UAT recebeu solicitação de alinhamento à própria matriz quanto a U01/U05/U08, sem alterar o limite de aceite parcial.
+
+U11 independente: `/tmp/folego-u11-verifier-hxefzdu2`, cópia git archive sem .env, executou probe temporário com seis tarefas sobre banco descartável Postgres loopback, gateway local, SDK SupabaseTaskRepository e FinancePort reais. Assertions aprovadas: primeiro lote claimed5/completed5/notified5/remaining_due1/failed0, seis tarefas persistidas e uma pending; segundo lote claimed1/completed1/notified1/remaining_due0; replay claimed0/notified0; seis notificações e seis occurrence_keys únicas. Probe e três testes SQL runtime passaram (4/4 integrações); doze unitários do runner passaram separadamente. Cleanup em finally fechou gateway e descartou banco. Nenhuma das seis tarefas foi criada no banco demo; código temporário somente em /tmp. Cobertura de fencing/cancelamento corresponde a `tests/integration/tasks-sql-runtime.test.ts:28` e `:34`; limite de lote está em `src/features/tasks/runner.ts:12`.
+
+U12 independente remoto, payloads inválidos e sessão fictícia própria: sem cookie/assinatura inválida/segredo runner inválido retornaram401; Origin externa retornou403 nas rotas de agente/finanças. Quota conversa produziu dez422 e429 RATE_LIMITED, request `1d2102c6-4535-4d72-8a2d-ede2a629b933`. Quota áudio produziu dez422 e429 RATE_LIMIT na mesma janela HTTP19:47:15–16Z, request `a0267329-1d5c-4d6a-8f8a-a476cd40712c`; duas tentativas sequenciais anteriores cruzaram o minuto e foram inconclusivas. Cookie permaneceu em memória, sem mutações financeiras/tarefas ou chamadas pagas. Upload anônimo3211265bytes alternou duas500HTML sem request_id e duas401JSON: indício de borda/transporte, causa não determinada e achado aberto, sem declarar U12 completo.
+
+CI pós-merge `fc9da5079639ba6109afa0c9da5452b6eaf8c63e` reconsultado por gh read-only: https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40014394994 ainda in_progress, sem conclusion. Aprovação do candidato PR8 não é apresentada como aprovação desse run.
