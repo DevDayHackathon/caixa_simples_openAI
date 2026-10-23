@@ -26,6 +26,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: tests/integration/tasks-sql-runtime.test.ts (tests)
 - last seen: 2026-10-23T18:39:02Z
 
+### L-003 - Provisione um banco e servidor por cenário E2E mutável e valide a suíte com um único worker para detectar dependência de ordem.
+- signal: `gate_fail` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: integracao-final
+- evidence: tests/e2e/finance.spec.ts:33 CI21335e6 (tests)
+- last seen: 2026-10-23T18:50:47Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

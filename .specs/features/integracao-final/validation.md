@@ -43,3 +43,11 @@ Rodada2 adicionou duas mutações: remover filtro de propostas automáticas, mor
 ## Limites e qualidade
 
 Mudanças dentro do escopo autorizado; dados fictícios/demo compartilhada, nenhuma chave real, nenhuma chamada paga, deploy ou migração remota. UAT com OpenAI/Supabase reais deve ser conduzido após configuração pelo usuário. Documentação atualizada pelo autor em `docs/integracao-financeira.md`, `.env.example` e roteiro UAT foi relida e corresponde à composição final. Alterações de código são cirúrgicas e rastreáveis aFINAL01–04; propostas/efeitos financeiros e fronteiras HTTP têm evidência positiva e negativa. As lições L001/L002 registram os dois sinais da rodada1. T1–T4 concluídos; T5 pronto para etapa remota, ainda sem declarar merge concluído.
+
+## Rodada3 — isolamento E2E observado no CI
+
+O CI remoto de21335e6 encontrou falha real de isolamento: com poucos workers, a suíte financeira reutilizava DB/servidor de beforeAll. O cenário anterior liquidava50000 e o seguinte importava sobre esse estado, recebendo saldo500 em vez de1000. O responsável reproduziu com `--workers=1` (3pass/1fail). O gate local anterior passou com distribuição diferente; esse PASS não era prova de independência entre cenários.
+
+Revisão focada confirmou alteração exclusivamente em `tests/e2e/finance.spec.ts:33` (`beforeEach`) e :41 (`afterEach`), mais comentário: cada cenário provisiona e descarta seu DB, contexto HTTP e servidor. Nenhuma asserção ou comportamento de aplicação foi alterado. `src/` e migrações permanecem909085f.
+
+Verificação independente: cópia `git archive21335e6` em `/tmp/integracao-final-ci-verifier`, contendo apenas finance.spec.ts corrigido e porta local3117 para evitar conflito, executou `playwright test tests/e2e/finance.spec.ts --workers=1`: **4/4 PASS,0 skips**. Evidência `/tmp/final-verifier-ci-isolation.log`; :85 continua exigindo1000 após importação e :104–124 exige persistência/liquidação dos registros próprios. O responsável também reexecutou gate completo com135 unitários,99 integrações e11E2E sob1worker, todos PASS. Prontidão local PASS reafirmada; novo CI remoto e merge precisam ser confirmados sobre o novo head.
