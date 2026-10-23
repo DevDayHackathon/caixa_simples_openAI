@@ -312,12 +312,14 @@ T21 -> T22
 **Reuses**: contracts.md e fixtures F1/F2; nenhuma aplicação preexistente.
 **Tools**: terminal; skills tlc-spec-driven e karpathy-guidelines; OpenAI Docs para API, Playwright para E2E quando aplicável.
 **Done when**:
-- [ ] Resultado descrito em What observado e todos os critérios vinculados exercitados.
-- [ ] Pelo menos 12 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
-- [ ] Gate full da tabela passa com evidência registrada; dependências concluídas.
+- [x] Resultado descrito em What observado e todos os critérios vinculados exercitados.
+- [x] Pelo menos 12 novos casos relevantes passam junto dos testes existentes; sem skip nem enfraquecimento.
+- [x] Gate full da tabela passa com evidência registrada; dependências concluídas.
 **Tests**: integration
 **Gate**: full
 **Commit**: `feat(agente): executor de ocorrências`
+
+**Evidence**: `runner.test.ts` covers empty/future queues, single occurrence, settled commitment recheck, retry and delay, concurrent ticks, five-item cap, 30-second budget, retry exhaustion, expired lease and duplicate notifications. Full gate: unit and integration suites pass; build and 3 E2E pass.
 
 ### T14: Adaptador HTTP do agente e tarefas
 
