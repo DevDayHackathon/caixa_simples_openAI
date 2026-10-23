@@ -2,6 +2,14 @@
 
 Daniel fornece o financeiro persistido, Jecky a experiência/voz e Bruno o agente/tarefas. A composição conecta esses módulos em `/caixa`. A prévia `/` continua identificada como simulada, sem exigir credenciais. Produção não usa memória ou fixtures quando uma dependência está ausente.
 
+## Estado da entrega — 23/10/2026
+
+O [PR #3](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3) foi aprovado e integrado à main no merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116`, incorporando o head revisado `4186bdf2afec1a4b5a89e0fb38e62ad87f4e8110`. O gate final registrado passou com 135 unitários, 99 integrações SQL e 11 E2E, lint, tipos e build; a revisão independente aprovou e detectou 8/8 mutações. Esses resultados usam Postgres local e OpenAI simulado.
+
+Link público a preservar: **https://folego-hackathon-2026.vercel.app**. O projeto foi publicado por CLI, sem vínculo GitHub. A landing demonstrativa e sua simulação foram verificadas; `/caixa` ainda depende do Supabase para persistir. O deploy não comprova UAT com provedores reais. Consulte [a continuidade](CONTINUAR-SESSAO.md) para os IDs de publicação e a evidência histórica.
+
+CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
+
 ## Configurar antes de executar
 
 Use Node24, `npm ci` e copie `.env.example` para `.env.local` na raiz. Preencha somente no servidor:
@@ -28,7 +36,7 @@ No Supabase demo, aplicar **na ordem** as migrações corrigidas:
 
 Não reaplicar 001/003 em banco já migrado; usar o controle de migrações do ambiente. Não foi aplicado SQL em banco remoto por esta entrega. Banco de teste automatizado deve ser exclusivamente Postgres loopback, nunca a demo remota. A empresa `demo` é compartilhada e só deve receber dados fictícios; a sessão não representa uma conta privada por usuário.
 
-Na Vercel, cadastrar as mesmas variáveis no ambiente de produção/demo. Preview conserva a proteção de banco exclusivamente loopback. Uma chave configurada não remove essa proteção. Deploy e ativação do banco/Cron são passos de ambiente separados.
+Na Vercel, APP_ORIGIN da URL canônica, SESSION_SECRET e TASK_RUNNER_SECRET já estão configurados em Production. Cadastrar SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY e os três modelos nas [variáveis do projeto publicado](https://vercel.com/jecky3806-2935s-projects/folego-hackathon-2026/settings/environment-variables), sem copiar segredos para chat ou documentação, e fazer novo deploy. Confirmar o projeto Supabase demo autorizado antes de qualquer migração remota. Preview conserva a proteção de banco exclusivamente loopback. Uma chave configurada não remove essa proteção. Deploy e ativação do banco/Cron são passos de ambiente separados.
 
 ## Jornada integrada
 

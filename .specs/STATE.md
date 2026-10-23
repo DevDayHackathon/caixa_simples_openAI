@@ -36,15 +36,16 @@
 
 ## Handoff
 
-- **Feature**: `.specs/features/integracao-final/`, composição das três frentes e correções do PR3.
-- **Phase / Task**: T1–T5 locais concluídas; T6 publicação/merge aguardando verificação independente final.
-- **Completed**: FinancePort persistida compartilhada, sessão financeira para agente/voz, migrações002/003 corrigidas, propostas/aceites transacionais e idempotentes, feed real, áudio com quota SQL, runner com cancelamento e validação de tentativa/lease.
-- **Validation**: npm run check PASS135 unitários,99 integração SQL,11 E2E, zero falhas/skips; lint/tipos/build. SQL real e provedor OpenAI simulado localmente, sem chamadas pagas.
-- **Publication authority**: usuário autorizou explicitamente correções, push na branch do Bruno e merge automático após validação nesta conversa.
-- **Next step**: revisão independente PASS (8/8 mutações detectadas); publicar candidato corrigido e fazer merge com head validado. Configurar credenciais/migrações no ambiente demo depois.
-- **Environment pending**: OpenAI/Supabase reais, deploy, extensões/Vault/Cron remoto e UAT U01–U13 ainda não executados. Guia atual em docs/integracao-financeira.md.
-- **Uncommitted user files**: exclusão preexistente fluxo_agente_proativo.png e AGENTS.md não rastreado preservados e excluídos dos commits.
-- **Branch**: codex/integracao-financeira, base main1e3b9c7; código final909085f.
+- **Feature**: `.specs/features/integracao-final/`, integração das três frentes e correções PR3.
+- **Completed**: PR3 aprovado e integrado em `d3baa174ff488c71f6bb1e9730ad6d89944f3116`; código equivalente ao candidato `4186bdf`. T1–T6 e FINAL-01–05 concluídos no escopo de código; configuração remota e UAT permanecem separadas.
+- **Validation**: gate histórico PASS135 unitários,99 integração SQL local,11 E2E, lint/tipos/build; OpenAI simulado. Revisão independente histórica PASS, sensor8/8. Continuidade: revisão independente deploy PASS, lint/build reexecutados PASS; sem nova suíte completa nem chamada paga.
+- **CI**: candidato PASS https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40006622435/job/120599339880 ; pós-merge conferido https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510 ainda em andamento na última consulta, sem alegação de aprovação.
+- **Deployment**: https://folego-hackathon-2026.vercel.app , projeto existente `folego-hackathon-2026`/`jecky3806-2935s-projects`, CLI sem vínculo GitHub. Deployment registrado READY `dpl_4SKfLAyz3Lxm9hNEVN8VpPkuctpf`; HEAD HTTP público200 reconfirmado. Configuração/ícone já publicados, agora commitados em `871a619`; sem redeploy redundante.
+- **Authority**: usuário autorizou correções, push, merge automático e publicação. Migrações/Vault/Cron dependem da identificação do banco demo autorizado.
+- **Environment pending**: lista Vercel confirma só APP_ORIGIN e segredos internos em Production. Faltam SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY/OPENAI_API_KEY e três modelos. Usuário orientado a inseri-los no painel, sem enviar chaves ao chat. Migrações001–003 remotas, Vault/Cron e U01–U13 reais não executados.
+- **Next step**: concluir publicação Git da consolidação documental; após variáveis prontas e banco demo identificado, inspecionar ambiente, aplicar migrações faltantes, configurar Vault/Cron, redeployar o mesmo projeto e executar UAT. Ver detalhes em docs/CONTINUAR-SESSAO.md.
+- **Branch**: `codex/integracao-financeira`, base `d3baa174`; consultar Git para HEAD da consolidação. Main local ainda antiga na conferência, não usada.
+- **User files preserved**: exclusão preexistente fluxo_agente_proativo.png e AGENTS.md não rastreado ficam fora dos commits.
 
 ## Handoff Daniel — 2026-10-23 (atualiza somente a frente financeira)
 

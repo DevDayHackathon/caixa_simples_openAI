@@ -1,14 +1,18 @@
 # Revisão do Bruno e aceite do protótipo
 
-A implementação posterior corrige os bloqueios e conecta os três módulos. Veja o estado atual em [integracao-financeira.md](integracao-financeira.md). A revisão abaixo preserva a evidência do head original; a matriz manual U01–U13 continua aplicável e ainda depende das credenciais.
+O [PR #3](https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3) foi corrigido, aprovado e integrado em 23/10/2026, às 16:00 de São Paulo: merge `d3baa174ff488c71f6bb1e9730ad6d89944f3116`, head revisado `4186bdf2afec1a4b5a89e0fb38e62ad87f4e8110`. O protótipo está publicado em **https://folego-hackathon-2026.vercel.app**. Gate registrado: 135 unitários, 99 integrações SQL e 11 E2E, lint/tipos/build; revisão independente PASS e sensor 8/8. [CI do candidato aprovado](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40006622435/job/120599339880).
+
+Veja a composição atual em [integracao-financeira.md](integracao-financeira.md). As seções históricas abaixo explicam o bloqueio do head original e não representam pendências atuais de código. A matriz manual U01–U13 continua **inteiramente pendente com OpenAI/Supabase reais**, inclusive os casos com cobertura automatizada local. Publicação demonstrativa não constitui esse aceite.
+
+CI pós-merge: [run40007942510](https://github.com/DevDayHackathon/caixa_simples_openAI/actions/runs/40007942510) em andamento na conferência desta continuidade; não declarar aprovação até o resultado final.
 
 ## Revisão histórica do head original em 23/10/2026
 
-**Decisão histórica: não aprovar nem fazer merge do PR #3 no head `533e73d1b21d78fbc11b3eb6e05792c730c67055`.** A migração não aplica em Postgres 17 e existem incompatibilidades entre os três módulos. Daniel e Jecky já estão na main (`452c817` e `1e3b9c7`). A extensão descrita em `docs/integracao-financeira.md` está na branch local `codex/integracao-financeira`, até `6f6315f`; não confundir essa extensão com código já publicado na main.
+**Decisão histórica: não aprovar nem fazer merge do PR #3 no head `533e73d1b21d78fbc11b3eb6e05792c730c67055`.** A migração não aplica em Postgres 17 e existem incompatibilidades entre os três módulos. Naquele momento, Daniel e Jecky já estavam na main (`452c817` e `1e3b9c7`). Naquele momento, a extensão descrita em `docs/integracao-financeira.md` estava na branch local `codex/integracao-financeira`, até `6f6315f`; não confundir essa extensão com código já publicado na main.
 
 PR revisado: https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3. A revisão usou o ref do PR: a branch anunciada por `git ls-remote` ainda apontava para `eaa8068`, enquanto o GitHub informou o head acima.
 
-## Bloqueios reproduzidos e correções necessárias
+## Bloqueios históricos reproduzidos — corrigidos na integração
 
 | Prioridade | Evidência no head do Bruno | Resultado e correção |
 | --- | --- | --- |
@@ -21,9 +25,9 @@ PR revisado: https://github.com/DevDayHackathon/caixa_simples_openAI/pull/3. A r
 | P1 | `src/features/agent/turn.ts:38` | Propostas usam `businessVersion:1`. Obter versão financeira autoritativa antes de propor; validar ID, alvo, versão e confirmação no aceite. Ainda faltam ferramentas para aplicar decisões financeiras e tratar ações do feed; texto de sucesso não comprova uma mutação. |
 | P1 | `src/features/agent/tools.ts:7` e definição de `get_cash_snapshot` | Ferramenta anuncia `as_of:string|null`, mas o parser rejeita null. Alinhar contrato e testar argumentos emitidos no formato strict. |
 
-Também faltam na composição final: AgentPort e feed reais em `/caixa`, decisões persistidas de propostas, handlers de voz com sessão e quota compartilhada persistida, configuração do Cron/Vault e ensaio T22. Colocar as chaves não implementa esses pontos. As rotas de áudio atuais continuam desabilitadas por projeto.
+Naquele head também faltavam: AgentPort e feed reais em `/caixa`, decisões persistidas de propostas, handlers de voz com sessão e quota compartilhada persistida, configuração do Cron/Vault e ensaio T22. Colocar as chaves não implementa esses pontos. Naquele head, as rotas de áudio estavam desabilitadas por projeto. Esses pontos de código foram tratados na integração posterior; configuração remota e UAT continuam pendentes.
 
-## Verificações desta revisão
+## Verificações da revisão histórica
 
 - Cópia isolada do head Bruno: lint e tipos passaram; 51 unitários e 27 testes de integração passaram. Os testes de persistência do agente simulam o SDK/RPC; não aplicam a migração real.
 - Composição descartável de `6f6315f` com os arquivos do Bruno: lint, tipos, 135 unitários e 77 testes de integração passaram. Isso não supera os bloqueios SQL reproduzidos separadamente.
@@ -49,17 +53,17 @@ TASK_RUNNER_SECRET=<outro segredo aleatório independente>
 
 Reiniciar Next após alterações. Gerar cada segredo separadamente com `openssl rand -hex 32`. Usar a URL exata de `APP_ORIGIN` no navegador. Todas as chaves são exclusivas do servidor, sem prefixo `NEXT_PUBLIC_`; a aplicação atual não pede chave pública do Supabase no cliente. `TEST_DATABASE_URL` é somente para testes automatizados em Postgres loopback, nunca o banco demo remoto.
 
-Na implantação, cadastrar as mesmas variáveis no ambiente de produção da Vercel e republicar a versão validada. Em Supabase Vault, configurar `task_runner_secret` com o mesmo valor de `TASK_RUNNER_SECRET` e `task_runner_url` com a URL HTTPS completa de `/api/tasks/run`. Não usar localhost como URL do executor remoto. A proteção de Preview existente recusa banco remoto; usar o ambiente de produção/demo acordado, sem remover a proteção para contorná-la.
+No [projeto Vercel publicado](https://vercel.com/jecky3806-2935s-projects/folego-hackathon-2026/settings/environment-variables), APP_ORIGIN canônica e os dois segredos internos já estão configurados em Production. Cadastrar somente as credenciais/modelos OpenAI e credenciais Supabase faltantes e fazer novo deploy. Não solicitar nem enviar esses valores pelo chat. Em Supabase Vault, configurar `task_runner_secret` com o mesmo valor de `TASK_RUNNER_SECRET` e `task_runner_url` com a URL HTTPS completa de `/api/tasks/run`. Não usar localhost como URL do executor remoto. A proteção de Preview existente recusa banco remoto; usar o ambiente de produção/demo acordado, sem remover a proteção para contorná-la.
 
-Aplicar migrações somente após corrigir os bloqueios e ensaiá-las em banco descartável. A 001 cria a empresa fictícia; preparar datas dentro do horizonte de trinta dias e dados de teste. Habilitar extensões e o único job condicional conforme `docs/deploy-gratuito.md` depois de configurar Vault e validar o endpoint. Não executar o SQL do head original não corrigido no projeto remoto.
+As migrações corrigidas 001–003 já foram ensaiadas em Postgres local descartável. Aplicá-las na ordem somente após confirmar o banco demo remoto autorizado e consultar seu controle de migrações. A 001 cria a empresa fictícia; preparar datas dentro do horizonte de trinta dias e dados de teste. Habilitar extensões e o único job condicional conforme `docs/deploy-gratuito.md` depois de configurar Vault e validar o endpoint. Não executar o SQL do head original não corrigido no projeto remoto.
 
-## Ordem de integração e gates
+## Ordem atual para o ensaio credenciado
 
-1. Corrigir migração, serialização e histórico do Bruno; adicionar regressões em SQL real, não apenas mocks. Revalidar o novo head do PR.
-2. Unificar sessão e FinancePort; implementar leitura/trigger de encerramento e decisões de propostas com CAS, confirmação e idempotência. Exercitar as rotas reais entre módulos.
-3. Injetar AgentPort/feed no caixa persistido e ligar voz à autorização e quota persistida antes de qualquer chamada ao provedor. Preservar transcrição editável e reprodução explícita.
-4. Rodar `npm run check`, incluindo migrações 001 + 002 reais, e build no candidato composto. Verificação independente deve passar antes de aprovação/merge. Publicar também os commits da extensão financeira que ainda estão locais.
-5. Com credenciais configuradas, executar a matriz abaixo no ambiente demo. Aprovação do ensaio exige evidência do navegador, banco e execução do Cron, sem registrar segredos. Suítes automatizadas destrutivas continuam usando só banco local.
+1. Confirmar CI pós-merge e consolidar documentação/configuração de deploy; correções, gate local, revisão independente, merge e publicação já foram concluídos.
+2. Cadastrar credenciais/modelos no servidor da Vercel e confirmar qual banco demo está autorizado. Não compartilhar chaves com agentes.
+3. Aplicar migrações 001–003 conforme controle do ambiente e preparar dados fictícios com datas no horizonte de trinta dias. Configurar extensões/Vault e o único Cron condicional pelo guia de implantação; redeployar com as variáveis configuradas.
+4. Executar U01–U08 no ambiente demo; então U09–U10 com aba fechada e histórico Cron/HTTP. Executar os ensaios de lote, lease e concorrência de U10/U11 em ambiente de ensaio isolado. Executar U12 e encerrar com U13 em desktop/celular.
+5. Registrar evidência e corrigir falhas com revisão independente. Suítes automatizadas destrutivas continuam usando somente banco local; não apontá-las ao banco demo.
 
 ## Matriz manual com APIs ativas — ainda não executada
 
@@ -81,4 +85,4 @@ Usar somente empresa e contrapartes fictícias. Registrar para cada caso: commit
 | U12 — Falhas e autorização | Testar sem cookie, Origin diferente e segredo inválido do executor; atingir quota de áudio/conversa; testar provedor/banco indisponível. | 401/403/429 conforme rota; executor não processa sem segredo. Rejeições de autorização/quota não chamam provedor. Falhas de dependência não expõem segredos nem exibem sucesso presumido. |
 | U13 — Apresentação | Ensaiar importação → pergunta → proposta → decisão → voz → lembrete sem aba, desktop e celular. | Sem mistura entre prévia simulada `/` e `/caixa`; rascunho de cobrança nunca é enviado externamente. Console/rede sem credenciais, controles utilizáveis e ausência de regressão visual. |
 
-**Critério final:** código integrado e gates locais aprovados não substituem U02/U06/U07/U09 com serviços ativos. Esses casos permanecem pendentes até configuração das credenciais e conclusão da integração T21/T22.
+**Critério final:** código integrado e gates locais aprovados não substituem U02/U06/U07/U09 com serviços ativos. Esses casos permanecem pendentes até configuração das credenciais, migrações/Vault/Cron remotos e execução registrada da UAT. A composição de código já foi integrada; não reabrir merge/publicação como pré-requisito não realizado.
